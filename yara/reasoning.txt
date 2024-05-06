@@ -21,6 +21,10 @@ ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THE
     2d75cc1bf8e57872781f9cd04a529256
     00f538c3d410822e241486ca061a57ee
 
+    using math.entropy() we can calculate the entropy of a given file
+    anything scoring over 7.2 'tends to be malicious'
+    https://www.schellman.com/blog/cybersecurity/penetration-testing-methods-entropy
+
     use virustotal's own scores (will need to use this to detect false positives)
 
 2.
@@ -45,15 +49,21 @@ ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THE
     LName
     etc.
 
+    Need to check for sensitive information included in the title of the hidden file
+    and in the contents of the file itself (e.g a file may be called .passwords)
+
 3.
     Detecting scripts can be done in a few different ways - and can be very difficult to detect false positives.
     My idea is to check for the common scripting languages "magic bites" and file extensions - a proper implementation would check for all these scripting languages.
     Also - check for some magic words that most likely won't be in legitimate software.
+    https://en.wikipedia.org/wiki/List_of_file_signatures
 
 4.
     Check if the PE bytes are executables.
 
-    (or just use cuckoo)
+    Check for the import of certain network-related dll files using pe.imports(dll_regexp,function_regexp)
+    This can pick up the use of certain dlls and if a function inside that dll is used
+    https://yara.readthedocs.io/en/v4.4.0/modules/pe.html
 
     Then check for strings like this: (thx chatgpt)
     Windows Networking Functions (mpr.dll and netapi32.dll):
@@ -63,48 +73,51 @@ ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THE
     WNetOpenEnum - Opens a network resource enumerator for browsing network resources.
     WNetEnumResource - Enumerates network resources or connections.
 
-File and Directory Access over Network:
+    File and Directory Access over Network:
 
-    CreateFile (with FILE_FLAG_DELETE_ON_CLOSE flag) - Opens a file on a remote network location.
-    CopyFile - Copies a file from or to a network location.
-    MoveFile - Moves a file from or to a network location.
-    DeleteFile - Deletes a file located on a network share.
-    FindFirstFile and FindNextFile - Searches for files on a network share.
+        CreateFile (with FILE_FLAG_DELETE_ON_CLOSE flag) - Opens a file on a remote network location.
+        CopyFile - Copies a file from or to a network location.
+        MoveFile - Moves a file from or to a network location.
+        DeleteFile - Deletes a file located on a network share.
+        FindFirstFile and FindNextFile - Searches for files on a network share.
 
-Network Connection Management:
+    Network Connection Management:
 
-    NetUseAdd - Adds a connection to a shared network resource.
-    NetUseDel - Deletes a connection to a shared network resource.
-    NetUseEnum - Enumerates connections made to shared network resources.
-    NetShareEnum - Enumerates shared resources on a server.
+        NetUseAdd - Adds a connection to a shared network resource.
+        NetUseDel - Deletes a connection to a shared network resource.
+        NetUseEnum - Enumerates connections made to shared network resources.
+        NetShareEnum - Enumerates shared resources on a server.
 
-Socket API (Winsock):
+    Socket API (Winsock):
 
-    socket - Creates a socket for network communication.
-    connect - Initiates a connection on a socket.
-    send and recv - Sends and receives data over a socket.
-    bind and listen - Binds a socket to a local address and listens for incoming connections.
+        socket - Creates a socket for network communication.
+        connect - Initiates a connection on a socket.
+        send and recv - Sends and receives data over a socket.
+        bind and listen - Binds a socket to a local address and listens for incoming connections.
 
-HTTP/HTTPS Functions (winhttp.dll and wininet.dll):
+    HTTP/HTTPS Functions (winhttp.dll and wininet.dll):
 
-    WinHttpOpen and WinHttpConnect - Establishes a connection to an HTTP server.
-    WinHttpOpenRequest and WinHttpSendRequest - Sends an HTTP request to a server.
-    InternetOpen and InternetOpenUrl - Opens an internet handle and retrieves a URL.
-    HttpOpenRequest and HttpSendRequest - Sends an HTTP request to a server.
+        WinHttpOpen and WinHttpConnect - Establishes a connection to an HTTP server.
+        WinHttpOpenRequest and WinHttpSendRequest - Sends an HTTP request to a server.
+        InternetOpen and InternetOpenUrl - Opens an internet handle and retrieves a URL.
+        HttpOpenRequest and HttpSendRequest - Sends an HTTP request to a server.
 
-DNS Functions (dnsapi.dll and winsock.dll):
+    DNS Functions (dnsapi.dll and winsock.dll):
 
-    GetHostByName and GetHostByAddr - Resolves hostnames to IP addresses and vice versa.
-    DnsQuery and DnsRecordListFree - Performs DNS queries to resolve domain names.
+        GetHostByName and GetHostByAddr - Resolves hostnames to IP addresses and vice versa.
+        DnsQuery and DnsRecordListFree - Performs DNS queries to resolve domain names.
 
-    AGAIN ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THEN SEND IT OFF TO VIRUSTOTAL FOR THEM TO SCAN IT
+        AGAIN ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THEN SEND IT OFF TO VIRUSTOTAL FOR THEM TO SCAN IT
 
 5.
-    Check if the PE bytes are executables.
+    First need to check if PE bytes are executables.
+    Then need to use Yara to detect any mention of a URL in the file.
+    Using VirusTotal API, we can pass the URL to be scanned and reported back.
 
-    Detect any URL? 
-    Then I assume we ask virustotal to have a looksie and report back if all not okay.
-
+    (Optional?) Sometimes a file may make reference to a URL without actioning it,
+    so perhaps combine above with common functions used to communicate with the URL
 
 6.
-    I have no idea what this means ngl
+    Checking a given filesystem for any mention of a specific string or pattern
+    This is a general function that could be applied to find a malicious 'string' that we input
+    
