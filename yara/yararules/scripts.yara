@@ -1,6 +1,8 @@
 import "pe"
 import "math"
 
+// YARA ENGINE TO DETECT SCRIPTS
+
 rule python_script_detect
 {
     meta:
@@ -56,14 +58,4 @@ rule script_keyword_match
         $script = "Script" nocase 
     condition:
         uint16(0) != 0x5A4D and $script
-}
-
-rule detect_hidden_file {
-    meta:
-        description = "Detects hidden files"
-        author = "23135002"  
-    condition:
-        pe.number_of_sections > 0 and
-        pe.sections[0].name == ".rsrc" and
-        pe.sections[0].characteristics & 0x20 != 0
 }
