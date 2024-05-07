@@ -65,6 +65,9 @@ ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THE
     This can pick up the use of certain dlls and if a function inside that dll is used
     https://yara.readthedocs.io/en/v4.4.0/modules/pe.html
 
+    Using ps2exec, converting a powershell script to a windows executable for testing purposes
+    https://medium.com/@vivekjainmaiet/convert-powershell-to-exe-in-two-easy-steps-21cc8cd94c13
+
     Then check for strings like this: (thx chatgpt)
     Windows Networking Functions (mpr.dll and netapi32.dll):
 

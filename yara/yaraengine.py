@@ -7,14 +7,13 @@ import stat
 
 WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
 
-yararules_dir = "yararules"
+yararules_dir = "yara/yararules"
 MALWARE_YARA = os.path.abspath(os.path.join(yararules_dir, "malware.yara"))
 SENSINFO_YARA = os.path.abspath(os.path.join(yararules_dir, "sensitiveinfo.yara"))
 SCRIPTS_YARA = os.path.abspath(os.path.join(yararules_dir, "scripts.yara"))
 NETWORK_YARA = os.path.abspath(os.path.join(yararules_dir, "netresource.yara"))
 MALURL_YARA = os.path.abspath(os.path.join(yararules_dir, "malURL.yara"))
 CUSTOMSIGN_YARA = os.path.abspath(os.path.join(yararules_dir, "customsignature.yara"))
-
 
 def check_yaras():
     flag = 0
@@ -86,7 +85,7 @@ def main():
     # Path to scan and load Yara rules
     path = args.path
 
-    # Recursively scan files if it's a directory
+    # Scan file(s)
     if os.path.isfile(path):
         # If it's a single file
         if is_hidden(path):
