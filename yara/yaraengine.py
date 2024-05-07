@@ -3,6 +3,7 @@ import argparse
 import yara
 import platform
 import ctypes
+import stat
 
 WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
 
@@ -63,9 +64,15 @@ def is_executable(file_path):
     '''Function to determine if a file is executable
     Returns 1 on executable, 0 on not-executable'''
     if platform.system() == "Windows":
-        return 1
+        try:
+            with open(file_path, 'rb') as file:
+                magic_number = file.read(2)  # Read the first 2 bytes
+                return magic_number == b'MZ'  # Check for "MZ" magic number
+        except Exception:
+            return False
     elif platform.system() == "Linux":
-        is_executable = os.access(file_path, os.X_OK)
+        file_stat = os.stat(file_path)
+        return bool(file_stat.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH))
 
 # CLI Interface
 def main():
@@ -85,7 +92,11 @@ def main():
         if is_hidden(path):
             scan_file(path, SENSINFO_YARA)
         else:
+            scan_file(path, MALWARE_YARA)
             scan_file(path, SCRIPTS_YARA)
+            scan_file(path, NETWORK_YARA)
+            scan_file(path, MALURL_YARA)
+            scan_file(path, CUSTOMSIGN_YARA)
     elif os.path.isdir(path):
         # Recursively scan all files in the directory
         for root, _, files in os.walk(path):
@@ -97,7 +108,8 @@ def main():
                     scan_file(path, MALWARE_YARA)
                     scan_file(path, SCRIPTS_YARA)
                     scan_file(path, NETWORK_YARA)
-                    scan_file(path, SCRIPTS_YARA)
+                    scan_file(path, MALURL_YARA)
+                    scan_file(path, CUSTOMSIGN_YARA)
     else:
         print("Invalid path provided. Please provide a valid file or folder path.")
 
