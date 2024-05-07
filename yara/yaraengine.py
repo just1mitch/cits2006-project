@@ -18,22 +18,22 @@ CUSTOMSIGN_YARA = os.path.abspath(os.path.join(yararules_dir, "customsignature.y
 def check_yaras():
     flag = 0
     if not os.path.isfile(MALWARE_YARA):
-        print(f"Malware yara rules file not found. Please check {MALWARE_YARA}")
+        print(f"Malware yara rules file not found. Please check {MALWARE_YARA} exists")
         flag = 1
     if not os.path.isfile(SENSINFO_YARA):
-        print(f"Sensitive Info yara rules file not found. Please check {SENSINFO_YARA}")
+        print(f"Sensitive Info yara rules file not found. Please check {SENSINFO_YARA} exists")
         flag = 1
     if not os.path.isfile(SCRIPTS_YARA):
-        print(f"Scripting yara rules file not found. Please check {SCRIPTS_YARA}")
+        print(f"Scripting yara rules file not found. Please check {SCRIPTS_YARA} exists")
         flag = 1
     if not os.path.isfile(NETWORK_YARA):
-        print(f"Network usage yara rules file not found. Please check {NETWORK_YARA}")
+        print(f"Network usage yara rules file not found. Please check {NETWORK_YARA} exists")
         flag = 1
     if not os.path.isfile(MALURL_YARA):
-        print(f"Malicious URL yara rules file not found. Please check {MALURL_YARA}")
+        print(f"Malicious URL yara rules file not found. Please check {MALURL_YARA} exists")
         flag = 1
     if not os.path.isfile(CUSTOMSIGN_YARA):
-        print(f"Custom signatures yara rules file not found. Please check {CUSTOMSIGN_YARA}")
+        print(f"Custom signatures yara rules file not found. Please check {CUSTOMSIGN_YARA} exists")
         flag = 1
     return flag
 
@@ -48,12 +48,24 @@ def scan_file(file_path, yara_rules_path):
 # Function to determine if a file is hidden
 # Returns 1 on hidden, 0 on visible
 def is_hidden(file_path):
+    '''Function to determine if a file is hidden
+    Returns 1 on hidden, 0 on visible'''
     if platform.system() == "Windows":
         attrs = ctypes.windll.kernel32.GetFileAttributesW(file_path)
         return attrs != -1 and (attrs & WIN_FILE_ATTRIBUTE_HIDDEN) != 0
     else:
         # For Unix-based systems
         return os.path.basename(file_path).startswith(".")
+    
+# Function to determine if a file is an executable or not
+# Returns 1 on executable, 0 on not-executable
+def is_executable(file_path):
+    '''Function to determine if a file is executable
+    Returns 1 on executable, 0 on not-executable'''
+    if platform.system() == "Windows":
+        return 1
+    elif platform.system() == "Linux":
+        is_executable = os.access(file_path, os.X_OK)
 
 # CLI Interface
 def main():
@@ -82,6 +94,9 @@ def main():
                 if is_hidden(path):
                     scan_file(path, SENSINFO_YARA)
                 else:
+                    scan_file(path, MALWARE_YARA)
+                    scan_file(path, SCRIPTS_YARA)
+                    scan_file(path, NETWORK_YARA)
                     scan_file(path, SCRIPTS_YARA)
     else:
         print("Invalid path provided. Please provide a valid file or folder path.")
