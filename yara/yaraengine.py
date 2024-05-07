@@ -102,14 +102,15 @@ def main():
         for root, _, files in os.walk(path):
             for file in files:
                 file_path = os.path.join(root, file)
-                if is_hidden(path):
-                    scan_file(path, SENSINFO_YARA)
+                if is_hidden(file_path):
+                    print("Hidden file found")
+                    scan_file(file_path, SENSINFO_YARA)
                 else:
-                    scan_file(path, MALWARE_YARA)
-                    scan_file(path, SCRIPTS_YARA)
-                    scan_file(path, NETWORK_YARA)
-                    scan_file(path, MALURL_YARA)
-                    scan_file(path, CUSTOMSIGN_YARA)
+                    scan_file(file_path, MALWARE_YARA)
+                    scan_file(file_path, SCRIPTS_YARA)
+                    scan_file(file_path, NETWORK_YARA)
+                    scan_file(file_path, MALURL_YARA)
+                    scan_file(file_path, CUSTOMSIGN_YARA)
     else:
         print("Invalid path provided. Please provide a valid file or folder path.")
 
