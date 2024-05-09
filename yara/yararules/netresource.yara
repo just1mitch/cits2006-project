@@ -85,13 +85,26 @@ rule Detect_Network_DLLs
 
     strings:
         $ws2_32 = "ws2_32.dll" nocase
+        $mswsock = "mswsock.dll" nocase
         $wininet = "wininet.dll" nocase
         $winhttp = "winhttp.dll" nocase
+        $dnsapi = "dnsapi.dll" nocase
+        $wship6 = "wship6.dll" nocase
+        $rpcrt4 = "rpcrt4.dll" nocase
+        $icm32 = "icm32.dll" nocase
+        $rasapi32 = "rasapi32.dll" nocase
+        $rasman = "rasman.dll" nocase
+        $iphlpapi = "iphlpapi.dll" nocase
+        $netapi32 = "netapi32.dll" nocase
+        $advapi32 = "advapi32.dll" nocase
+        $secur32 = "secur32.dll" nocase
+        $wlanapi = "wlanapi.dll" nocase
         $mpr = "mpr.dll" nocase
-        $netapi = "netapi32.dll" nocase
 
     condition:
-        any of ($ws2_32, $wininet, $winhttp, $mpr, $netapi) in (pe.imports_dll_names)
+        any of ($ws2_32, $mswsock, $wininet, $winhttp, $dnsapi, $wship6, 
+                $rpcrt4, $icm32, $rasapi32, $rasman, $iphlpapi, $netapi32,
+                $advapi32, $secur32, $wlanapi, $mpr) in (pe.imports_dll_names)
 }
 
 rule Detect_DNS
