@@ -11,7 +11,7 @@ import vt
 from pathlib import Path
 
 WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
-VIRUS_TOTAL_API = "07742de74b63fd6bce3c7ae8c21000b3d7b777d070f3872e952774d3daf88127"
+VIRUS_TOTAL_API = os.environ["VIRUS_TOTAL_API"]
 VIRUS_TOTAL_URL = "https://www.virustotal.com/api/v3/files"
 
 yararules_dir = "yara/yararules"
