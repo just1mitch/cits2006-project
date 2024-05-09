@@ -4,8 +4,11 @@ import yara
 import platform
 import ctypes
 import stat
+import requests
 
 WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
+VIRUS_TOTAL_API = "07742de74b63fd6bce3c7ae8c21000b3d7b777d070f3872e952774d3daf88127"
+VIRUS_TOTAL_URL = "https://www.virustotal.com/api/v3/files"
 
 yararules_dir = "yara/yararules"
 MALWARE_YARA = os.path.abspath(os.path.join(yararules_dir, "malware.yara"))
@@ -39,17 +42,22 @@ def check_yaras():
 
 # Function to scan a file with Yara rules
 def scan_file(file_path, yara_rules_path):
+    '''Scans a file with the specified yara rule
+    #### Returns 1 on hit, 0 on no hit'''
     rules = yara.compile(filepath=yara_rules_path)
     #print(f"Scanning {file_path}")
     matches = rules.match(filepath=file_path)
     if matches:
         print(f"Yara match found in {file_path}: {matches}")
+        return 1
+    else:
+        return 0
 
 # Function to determine if a file is hidden
 # Returns 1 on hidden, 0 on visible
 def is_hidden(file_path):
     '''Function to determine if a file is hidden
-    Returns 1 on hidden, 0 on visible'''
+    #### Returns 1 on hidden, 0 on visible'''
     if platform.system() == "Windows":
         attrs = ctypes.windll.kernel32.GetFileAttributesW(file_path)
         return attrs != -1 and (attrs & WIN_FILE_ATTRIBUTE_HIDDEN) != 0
@@ -60,8 +68,8 @@ def is_hidden(file_path):
 # Function to determine if a file is an executable or not
 # Returns 1 on executable, 0 on not-executable
 def is_executable(file_path):
-    '''Function to determine if a file is executable
-    Returns 1 on executable, 0 on not-executable'''
+    '''Function to determine if a file is executable. Only supports Windows and Linux.
+    #### Returns 1 on executable, 0 on not-executable'''
     if platform.system() == "Windows":
         try:
             with open(file_path, 'rb') as file:
@@ -75,7 +83,7 @@ def is_executable(file_path):
 
 # CLI Interface
 def main():
-    print("Current working directory:", os.getcwd())
+    # Check if we can find all yara files.
     if check_yaras():
         return
     parser = argparse.ArgumentParser(description="Scan files and folders with Yara rules.")
@@ -101,14 +109,27 @@ def main():
         for root, _, files in os.walk(path):
             for file in files:
                 file_path = os.path.join(root, file)
+                # Hidden Files
                 if is_hidden(file_path):
-                    print("Hidden file found")
                     scan_file(file_path, SENSINFO_YARA)
-                else:
-                    scan_file(file_path, MALWARE_YARA)
-                    scan_file(file_path, SCRIPTS_YARA)
+                # Executable Files
+                elif is_executable(file_path):
                     scan_file(file_path, NETWORK_YARA)
                     scan_file(file_path, MALURL_YARA)
+                # High entropy files
+                elif scan_file(file_path, MALWARE_YARA):
+                    with open(file_path, 'rb') as f:
+                        files = {'file': (file_path, f)}
+                        headers = {
+                            'x-apikey': VIRUS_TOTAL_API,
+                        }
+                        response = requests.post(VIRUS_TOTAL_URL, headers=headers, files=files)
+                        if response.status_code == 200:
+                            print(f"File '{file_path}' sent to VirusTotal.")
+                        else:
+                            print(f"Failed to send '{file_path}' to VirusTotal.")
+                else:
+                    scan_file(file_path, SCRIPTS_YARA)               
                     scan_file(file_path, CUSTOMSIGN_YARA)
     else:
         print("Invalid path provided. Please provide a valid file or folder path.")

@@ -22,4 +22,4 @@ rule personal_data
         $DOB = /\b((0[1-9]|[12][0-9]|3[01])[-\/\ ])((0[1-9]|1[0-2])[-\/\ ])\d{2,4}\b/ // Matches dob's such as 20/11/1990 or 20-11-2099
     condition:
         2 of ($first_name, $last_name, $DOB)
-}       
+}      

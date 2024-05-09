@@ -57,5 +57,5 @@ rule script_keyword_match
     strings:
         $script = "Script" nocase 
     condition:
-        uint16(0) != 0x5A4D and $script
+        $script
 }
