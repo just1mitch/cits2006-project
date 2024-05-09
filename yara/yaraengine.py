@@ -61,21 +61,23 @@ def scan_file(file_path, yara_rules_path):
     
 # Function to run all scans
 def run_scans(file_path):
+    safe = 0 # If safe is true, we won't send it to VirusTotal to check
     if scan_for_malware(file_path):
         print(f"HASH MATCH FOR MALWARE: {file_path}")
     # Hidden Files
     if is_hidden(file_path):
+        # Not sending file to be scanned if it contains sensitive information
         scan_file(file_path, SENSINFO_YARA)
     # Executable Files
     elif is_executable(file_path):
-        scan_file(file_path, NETWORK_YARA)
-        scan_file(file_path, MALURL_YARA)
+        if scan_file(file_path, NETWORK_YARA) or scan_file(file_path, MALURL_YARA):
+            safe = 1
     # High entropy files
     elif scan_file(file_path, MALWARE_YARA):
-        virus_total_scan(file_path)
-    else:
-        scan_file(file_path, SCRIPTS_YARA)               
-        scan_file(file_path, CUSTOMSIGN_YARA)
+        safe = 1
+    elif scan_file(file_path, SCRIPTS_YARA) or scan_file(file_path, CUSTOMSIGN_YARA):
+        safe = 1
+    return safe
 
 # Function to determine if a file is hidden
 # Returns 1 on hidden, 0 on visible
@@ -169,18 +171,27 @@ def main():
     # Path to scan and load Yara rules
     path = args.path
 
+    # Potentially malicious files to upload to VirusTotal
+    files_to_upload = []
+
     # Scan file(s)
     if os.path.isfile(path):
         # If it's a single file
-        run_scans(path)
+        if run_scans(path):
+            files_to_upload.append(path)
     elif os.path.isdir(path):
         # Recursively scan all files in the directory
         for root, _, files in os.walk(path):
             for file in files:
                 file_path = os.path.join(root, file)
-                run_scans(file_path)
+                if run_scans(file_path):
+                    files_to_upload.append(file_path)
     else:
         print("Invalid path provided. Please provide a valid file or folder path.")
+    
+    # For all potentially malicious files, send them to VirusTotal for scanning
+    for file_path in files_to_upload:
+        virus_total_scan(file_path)
 
 if __name__ == "__main__":
     main()
