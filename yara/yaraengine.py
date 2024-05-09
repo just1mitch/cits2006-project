@@ -52,6 +52,31 @@ def scan_file(file_path, yara_rules_path):
         return 1
     else:
         return 0
+    
+# Function to run all scans
+def run_scans(file_path):
+    # Hidden Files
+    if is_hidden(file_path):
+        scan_file(file_path, SENSINFO_YARA)
+    # Executable Files
+    elif is_executable(file_path):
+        scan_file(file_path, NETWORK_YARA)
+        scan_file(file_path, MALURL_YARA)
+    # High entropy files
+    elif scan_file(file_path, MALWARE_YARA):
+        with open(file_path, 'rb') as f:
+            files = {'file': (file_path, f)}
+            headers = {
+                'x-apikey': VIRUS_TOTAL_API,
+            }
+            response = requests.post(VIRUS_TOTAL_URL, headers=headers, files=files)
+            if response.status_code == 200:
+                print(f"File '{file_path}' sent to VirusTotal.")
+            else:
+                print(f"Failed to send '{file_path}' to VirusTotal.")
+    else:
+        scan_file(file_path, SCRIPTS_YARA)               
+        scan_file(file_path, CUSTOMSIGN_YARA)
 
 # Function to determine if a file is hidden
 # Returns 1 on hidden, 0 on visible
@@ -96,41 +121,13 @@ def main():
     # Scan file(s)
     if os.path.isfile(path):
         # If it's a single file
-        if is_hidden(path):
-            scan_file(path, SENSINFO_YARA)
-        else:
-            scan_file(path, MALWARE_YARA)
-            scan_file(path, SCRIPTS_YARA)
-            scan_file(path, NETWORK_YARA)
-            scan_file(path, MALURL_YARA)
-            scan_file(path, CUSTOMSIGN_YARA)
+        run_scans(path)
     elif os.path.isdir(path):
         # Recursively scan all files in the directory
         for root, _, files in os.walk(path):
             for file in files:
                 file_path = os.path.join(root, file)
-                # Hidden Files
-                if is_hidden(file_path):
-                    scan_file(file_path, SENSINFO_YARA)
-                # Executable Files
-                elif is_executable(file_path):
-                    scan_file(file_path, NETWORK_YARA)
-                    scan_file(file_path, MALURL_YARA)
-                # High entropy files
-                elif scan_file(file_path, MALWARE_YARA):
-                    with open(file_path, 'rb') as f:
-                        files = {'file': (file_path, f)}
-                        headers = {
-                            'x-apikey': VIRUS_TOTAL_API,
-                        }
-                        response = requests.post(VIRUS_TOTAL_URL, headers=headers, files=files)
-                        if response.status_code == 200:
-                            print(f"File '{file_path}' sent to VirusTotal.")
-                        else:
-                            print(f"Failed to send '{file_path}' to VirusTotal.")
-                else:
-                    scan_file(file_path, SCRIPTS_YARA)               
-                    scan_file(file_path, CUSTOMSIGN_YARA)
+                run_scans(file_path)
     else:
         print("Invalid path provided. Please provide a valid file or folder path.")
 

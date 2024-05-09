@@ -8,7 +8,7 @@ rule Detect_HTTP_Network_Activity
 
     strings:
         $http_methods = /GET|POST|PUT|DELETE/
-        $ip_address = /(\d{1,3}\.){3}\d{1,3}/
+        $ip_address = /[0-9]{1,3}(\.[0-9]{1,3}){3}/
         $url_pattern = /(http|https):\/\/[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}/
 
     condition:
