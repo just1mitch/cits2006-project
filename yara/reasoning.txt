@@ -28,11 +28,6 @@ ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THE
     use virustotal's own scores (will need to use this to detect false positives)
 
 2.
-    rule DetectHiddenFile {
-        condition:
-        pe.characteristics & pe.IMAGE_FILE_HIDDEN != 0
-    }
-    will detect hidden windows files
 
     hidden files in unix often have a . at the start of the filename.
 
