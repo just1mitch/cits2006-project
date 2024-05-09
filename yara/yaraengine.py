@@ -5,6 +5,7 @@ import platform
 import ctypes
 import stat
 import requests
+import hashlib
 
 WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
 VIRUS_TOTAL_API = "07742de74b63fd6bce3c7ae8c21000b3d7b777d070f3872e952774d3daf88127"
@@ -17,6 +18,8 @@ SCRIPTS_YARA = os.path.abspath(os.path.join(yararules_dir, "scripts.yara"))
 NETWORK_YARA = os.path.abspath(os.path.join(yararules_dir, "netresource.yara"))
 MALURL_YARA = os.path.abspath(os.path.join(yararules_dir, "malURL.yara"))
 CUSTOMSIGN_YARA = os.path.abspath(os.path.join(yararules_dir, "customsignature.yara"))
+
+MALWARE_HASHES_FOLDER = os.path.abspath(os.path.join(yararules_dir, "malwarehashes"))
 
 def check_yaras():
     flag = 0
@@ -55,6 +58,8 @@ def scan_file(file_path, yara_rules_path):
     
 # Function to run all scans
 def run_scans(file_path):
+    if scan_for_malware(file_path):
+        print(f"HASH MATCH FOR MALWARE: {file_path}")
     # Hidden Files
     if is_hidden(file_path):
         scan_file(file_path, SENSINFO_YARA)
@@ -105,6 +110,37 @@ def is_executable(file_path):
     elif platform.system() == "Linux":
         file_stat = os.stat(file_path)
         return bool(file_stat.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH))
+
+def md5_hash_file(file_path):
+    """Calculate the MD5 hash of a file."""
+    hasher = hashlib.md5()
+    with open(file_path, "rb") as f:
+        buf = f.read()
+        hasher.update(buf)
+    return hasher.hexdigest()
+
+def scan_for_malware(file_path):
+    """Check if the MD5 hash of the file matches any known malware hash."""
+    file_md5 = md5_hash_file(file_path)
+
+    # Iterate through all files in the malwarehashes folder
+    for root, _, files in os.walk(MALWARE_HASHES_FOLDER):
+        for filename in files:
+            file_path = os.path.join(root, filename)
+
+            with open(file_path, "r") as f:
+                # Skip the header lines
+                while f.readline().startswith("#"):
+                    continue
+
+                # Now, read the MD5 hashes from the remaining lines
+                hashes = f.read().splitlines()
+
+                # Check if the calculated MD5 is in the list of known malware hashes
+                if file_md5 in hashes:
+                    return 1
+
+    return 0
 
 # CLI Interface
 def main():
