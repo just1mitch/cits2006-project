@@ -6,6 +6,9 @@ import ctypes
 import stat
 import requests
 import hashlib
+import json
+import vt
+from pathlib import Path
 
 WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
 VIRUS_TOTAL_API = "07742de74b63fd6bce3c7ae8c21000b3d7b777d070f3872e952774d3daf88127"
@@ -69,16 +72,7 @@ def run_scans(file_path):
         scan_file(file_path, MALURL_YARA)
     # High entropy files
     elif scan_file(file_path, MALWARE_YARA):
-        with open(file_path, 'rb') as f:
-            files = {'file': (file_path, f)}
-            headers = {
-                'x-apikey': VIRUS_TOTAL_API,
-            }
-            response = requests.post(VIRUS_TOTAL_URL, headers=headers, files=files)
-            if response.status_code == 200:
-                print(f"File '{file_path}' sent to VirusTotal.")
-            else:
-                print(f"Failed to send '{file_path}' to VirusTotal.")
+        virus_total_scan(file_path)
     else:
         scan_file(file_path, SCRIPTS_YARA)               
         scan_file(file_path, CUSTOMSIGN_YARA)
@@ -141,6 +135,27 @@ def scan_for_malware(file_path):
                     return 1
 
     return 0
+
+# Uses VirusTotal API to scan a malicious file passed by file_path
+def virus_total_scan(file_path):
+    print(f"\nGetting scan results for {file_path}")
+    # See if file has been scanned recently - if so, use that info instead
+    hash = md5_hash_file(file_path)
+    with vt.Client(VIRUS_TOTAL_API) as vt_client:
+        try:
+            scan = vt_client.get_json(f"/files/{hash}")
+        except vt.error.APIError:
+            # If the file hasn't been scanned, send it for scanning
+            with open(f"{file_path}", "rb") as f:
+                vt_client.scan_file(f, wait_for_completion=True)
+            scan = vt_client.get_json(f"/files/{hash}")
+
+    attributes = scan["data"]["attributes"]
+    Path(os.path.abspath('./scan_results')).mkdir(exist_ok=True)
+    save_path = f"{os.path.abspath('./scan_results')}/{attributes['md5']}.json"
+    print(f"""Scan Results:\nName: {attributes["meaningful_name"]}\nAnalysis Stats: {attributes["last_analysis_stats"]}\nFull Analysis saved to {save_path}\n""")
+    with open(save_path, 'w') as f:
+        json.dump(scan, f, indent=4)
 
 # CLI Interface
 def main():
