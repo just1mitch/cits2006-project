@@ -70,11 +70,11 @@ if __name__ == "__main__":
             case '-o':
                 ofile = opt[1]
             case '-e':
-                perform["encrypt"] = opt[1]
+                perform["encrypt"] = opt[1].lower()
             case '-d':
-                perform["decrypt"] = opt[1]
+                perform["decrypt"] = opt[1].lower()
             case '-h':
-                perform["hash"] = opt[1]
+                perform["hash"] = opt[1].lower()
             case '-k':
                 key = opt[1]
             case "--key-file":
@@ -101,4 +101,6 @@ if __name__ == "__main__":
 
     # Perform operations
     if "encrypt" in perform:
-        encrypt.encrypt(ifile, perform["encrypt"], key)
+        if encrypt.encrypt(ifile, perform["encrypt"], key) != 0:
+            print(f"error occured while hashing\n{usage}")
+            exit(1)
