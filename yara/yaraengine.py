@@ -20,7 +20,14 @@ SENSINFO_YARA = os.path.abspath(os.path.join(yararules_dir, "sensitiveinfo.yara"
 SCRIPTS_YARA = os.path.abspath(os.path.join(yararules_dir, "scripts.yara"))
 NETWORK_YARA = os.path.abspath(os.path.join(yararules_dir, "netresource.yara"))
 MALURL_YARA = os.path.abspath(os.path.join(yararules_dir, "malURL.yara"))
-CUSTOMSIGN_YARA = os.path.abspath(os.path.join(yararules_dir, "customsignature.yara"))
+
+yararules = {
+    "MALWARE_YARA": yara.compile(filepath=MALWARE_YARA),
+    "SENSINFO_YARA": yara.compile(filepath=SENSINFO_YARA),
+    "SCRIPTS_YARA": yara.compile(filepath=SCRIPTS_YARA),
+    "NETWORK_YARA": yara.compile(filepath=NETWORK_YARA),
+    "MALURL_YARA": yara.compile(filepath=MALURL_YARA)
+}
 
 MALWARE_HASHES_FOLDER = os.path.abspath(os.path.join(yararules_dir, "malwarehashes"))
 
@@ -41,18 +48,15 @@ def check_yaras():
     if not os.path.isfile(MALURL_YARA):
         print(f"Malicious URL yara rules file not found. Please check {MALURL_YARA} exists")
         flag = 1
-    if not os.path.isfile(CUSTOMSIGN_YARA):
-        print(f"Custom signatures yara rules file not found. Please check {CUSTOMSIGN_YARA} exists")
-        flag = 1
     return flag
 
 # Function to scan a file with Yara rules
-def scan_file(file_path, yara_rules_path):
+def scan_file(file_path, yara_rule):
     '''Scans a file with the specified yara rule
     #### Returns 1 on hit, 0 on no hit'''
-    rules = yara.compile(filepath=yara_rules_path)
+    rule = yararules[yara_rule]
     #print(f"Scanning {file_path}")
-    matches = rules.match(filepath=file_path)
+    matches = rule.match(filepath=file_path)
     if matches:
         print(f"Yara match found in {file_path}: {matches}")
         return 1
@@ -67,16 +71,18 @@ def run_scans(file_path):
     # Hidden Files
     if is_hidden(file_path):
         # Not sending file to be scanned if it contains sensitive information
-        scan_file(file_path, SENSINFO_YARA)
+        scan_file(file_path, "SENSINFO_YARA")
     # Executable Files
-    elif is_executable(file_path):
-        if scan_file(file_path, NETWORK_YARA) or scan_file(file_path, MALURL_YARA):
+    if is_executable(file_path):
+        if scan_file(file_path, "NETWORK_YARA") or scan_file(file_path, "MALURL_YARA"):
             safe = 1
     # High entropy files
-    elif scan_file(file_path, MALWARE_YARA):
+    if scan_file(file_path, "MALWARE_YARA"):
         safe = 1
-    elif scan_file(file_path, SCRIPTS_YARA) or scan_file(file_path, CUSTOMSIGN_YARA):
+    if scan_file(file_path, "SCRIPTS_YARA"):
         safe = 1
+    if "CUSTOMSIG_YARA" in yararules:
+        scan_file(file_path, "CUSTOMSIG_YARA")
     return safe
 
 # Function to determine if a file is hidden
@@ -159,6 +165,25 @@ def virus_total_scan(file_path):
     with open(save_path, 'w') as f:
         json.dump(scan, f, indent=4)
 
+# Creates a custom yara rule using the strings
+# Takes a path to a newline separated list of custom strings
+# Compiles and returns the yara rules to detect these strings
+def create_custom_rule(path_to_list):
+    try:
+        with open(os.path.abspath(path_to_list), 'r') as file:
+            string_list = file.readlines()
+        string_list = [string.replace('\n', '') for string in string_list]
+        yara_string = "".join([f"$string{i} = \"{string_list[i]}\"\n" for i in range(len(string_list))])[:-1]
+        # for i in range(len(string_list)):
+        #     yara_string += f"string{i} = {string_list[i]}"
+        print(yara_string)
+        rule = f"rule custom_string {{\n\tstrings:\n{yara_string}\ncondition: any of them\n}}"
+        custom_rule = yara.compile(source=rule)
+        
+    except:
+        raise
+    return custom_rule
+
 # CLI Interface
 def main():
     # Check if we can find all yara files.
@@ -166,6 +191,7 @@ def main():
         return
     parser = argparse.ArgumentParser(description="Scan files and folders with Yara rules.")
     parser.add_argument("path", help="Path to the file or folder to scan.")
+    parser.add_argument('-c', '--custom-signatures', action='store', help="Path to a list of custom signatures to check files for (each string should be separated by a newline character \\n)")
     args = parser.parse_args()
 
     # Path to scan and load Yara rules
@@ -173,6 +199,11 @@ def main():
 
     # Potentially malicious files to upload to VirusTotal
     files_to_upload = []
+
+    # If -c flag passed, form the custom signatures yara rule
+    if args.custom_signatures is not None:
+        customsig_yara = create_custom_rule(args.custom_signatures)
+        yararules["CUSTOMSIG_YARA"] = customsig_yara
 
     # Scan file(s)
     if os.path.isfile(path):
