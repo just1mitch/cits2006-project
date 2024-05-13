@@ -1,16 +1,21 @@
-from io import BytesIO
-
-def hash_file(file, format) -> int:
+def hash_file(ifile, ofile, format) -> int:
+    hex_digest
     match (format):
         case "md5":
             state = MD5()
-            with open(file, 'rb') as fd:
+            with open(ifile, 'rb') as fd:
                 state.hash(fd)
-                print(state.digest().hex() == 'd41d8cd98f00b204e9800998ecf8427e')
-                print(state.digest().hex())
-                return 0
+                hex_digest = state.digest_50_char().hex()
         case _:
             return -1
+
+    if (ofile == "&1"):
+        print(hex_digest)
+    else:
+        with open(ofile, "w") as fd:
+            fd.write(hex_digest)
+    
+    return 0
 
 def not_32(uint_32): return 0xffffffff - uint_32
 
@@ -87,8 +92,10 @@ class MD5:
     def digest(self):
         return b''.join(s.to_bytes(length=4, byteorder='little') for s in self.state)
 
-    def digest_char_num(self, num_chars):
-        return
+    def digest_50_char(self):
+        digest = self.digest()
+        digest_25_int = (int.from_bytes(digest, byteorder='little') ** 2) % (2 << 199)
+        return digest_25_int.to_bytes(length=25, byteorder='little')
     
     def F(b, c, d): return d ^ (b & (c ^ d))
     
