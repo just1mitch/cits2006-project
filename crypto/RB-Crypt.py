@@ -102,5 +102,13 @@ if __name__ == "__main__":
     # Perform operations
     if "encrypt" in perform:
         if encrypt.encrypt(ifile, perform["encrypt"], key) != 0:
-            print(f"error occured while hashing\n{usage}")
-            exit(1)
+            print(f"error occured while encrypting\n{usage}")
+            exit(0)
+    if "hash" in perform:
+        if hash_file.hash_file(ifile, perform["hash"]) != 0:
+            # print(f"error occured while hashing\n{usage}")
+            exit(0)
+    if "decrypt" in perform:
+        if decrypt.decrypt(ifile, perform["decrypt"], key) != 0:
+            print(f"error occured while decyrpting\n{usage}")
+            exit(0)
