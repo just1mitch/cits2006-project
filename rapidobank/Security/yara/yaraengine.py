@@ -13,48 +13,14 @@ WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
 VIRUS_TOTAL_API = os.environ["VIRUS_TOTAL_API"]
 VIRUS_TOTAL_URL = "https://www.virustotal.com/api/v3/files"
 
-yararules_dir = "yara/yararules"
-MALWARE_YARA = os.path.abspath(os.path.join(yararules_dir, "malware.yara"))
-SENSINFO_YARA = os.path.abspath(os.path.join(yararules_dir, "sensitiveinfo.yara"))
-SCRIPTS_YARA = os.path.abspath(os.path.join(yararules_dir, "scripts.yara"))
-NETWORK_YARA = os.path.abspath(os.path.join(yararules_dir, "netresource.yara"))
-MALURL_YARA = os.path.abspath(os.path.join(yararules_dir, "malURL.yara"))
-
-yararules = {
-    "MALWARE_YARA": yara.compile(filepath=MALWARE_YARA),
-    "SENSINFO_YARA": yara.compile(filepath=SENSINFO_YARA),
-    "SCRIPTS_YARA": yara.compile(filepath=SCRIPTS_YARA),
-    "NETWORK_YARA": yara.compile(filepath=NETWORK_YARA),
-    "MALURL_YARA": yara.compile(filepath=MALURL_YARA)
-}
-
-MALWARE_HASHES_FOLDER = os.path.abspath(os.path.join(yararules_dir, "malwarehashes"))
-
-def check_yaras():
-    flag = 0
-    if not os.path.isfile(MALWARE_YARA):
-        print(f"Malware yara rules file not found. Please check {MALWARE_YARA} exists")
-        flag = 1
-    if not os.path.isfile(SENSINFO_YARA):
-        print(f"Sensitive Info yara rules file not found. Please check {SENSINFO_YARA} exists")
-        flag = 1
-    if not os.path.isfile(SCRIPTS_YARA):
-        print(f"Scripting yara rules file not found. Please check {SCRIPTS_YARA} exists")
-        flag = 1
-    if not os.path.isfile(NETWORK_YARA):
-        print(f"Network usage yara rules file not found. Please check {NETWORK_YARA} exists")
-        flag = 1
-    if not os.path.isfile(MALURL_YARA):
-        print(f"Malicious URL yara rules file not found. Please check {MALURL_YARA} exists")
-        flag = 1
-    return flag
+yararules = {}
+malware_hashes_folder = ""
 
 # Function to scan a file with Yara rules
 def scan_file(file_path, yara_rule):
     '''Scans a file with the specified yara rule
     #### Returns 1 on hit, 0 on no hit'''
     rule = yararules[yara_rule]
-    #print(f"Scanning {file_path}")
     matches = rule.match(filepath=file_path)
     if matches:
         print(f"Yara match found in {file_path}: {matches}")
@@ -125,7 +91,7 @@ def scan_for_malware(file_path):
     file_md5 = md5_hash_file(file_path)
 
     # Iterate through all files in the malwarehashes folder
-    for root, _, files in os.walk(MALWARE_HASHES_FOLDER):
+    for root, _, files in os.walk(malware_hashes_folder):
         for filename in files:
             file_path = os.path.join(root, filename)
 
@@ -145,7 +111,7 @@ def scan_for_malware(file_path):
 
 # Uses VirusTotal API to scan a malicious file passed by file_path
 def virus_total_scan(file_path):
-    print(f"\nGetting scan results for {file_path}")
+    print(f"\nGetting scan results for {file_path} (may take up to 5 minutes)")
     # See if file has been scanned recently - if so, use that info instead
     hash = md5_hash_file(file_path)
     with vt.Client(VIRUS_TOTAL_API) as vt_client:
@@ -173,9 +139,6 @@ def create_custom_rule(path_to_list):
             string_list = file.readlines()
         string_list = [string.replace('\n', '') for string in string_list]
         yara_string = "".join([f"$string{i} = \"{string_list[i]}\"\n" for i in range(len(string_list))])[:-1]
-        # for i in range(len(string_list)):
-        #     yara_string += f"string{i} = {string_list[i]}"
-        print(yara_string)
         rule = f"rule custom_string {{\n\tstrings:\n{yara_string}\ncondition: any of them\n}}"
         custom_rule = yara.compile(source=rule)
         
@@ -185,33 +148,54 @@ def create_custom_rule(path_to_list):
 
 # CLI Interface
 def main():
-    # Check if we can find all yara files.
-    if check_yaras():
-        return
     parser = argparse.ArgumentParser(description="Scan files and folders with Yara rules.")
-    parser.add_argument("path", help="Path to the file or folder to scan.")
+    parser.add_argument("rules", help="Directory to YARA Rules.")
+    parser.add_argument("scan_path", help="Path to the file or folder to scan.")
     parser.add_argument('-c', '--custom-signatures', action='store', help="Path to a list of custom signatures to check files for (each string should be separated by a newline character \\n)")
     args = parser.parse_args()
 
     # Path to scan and load Yara rules
-    path = args.path
+    scan_path = os.path.abspath(args.scan_path)
+    yararules_dir = os.path.abspath(args.rules)
+
+    MALWARE_YARA = os.path.join(yararules_dir, "malware.yara")
+    SENSINFO_YARA = os.path.join(yararules_dir, "sensitiveinfo.yara")
+    SCRIPTS_YARA = os.path.join(yararules_dir, "scripts.yara")
+    NETWORK_YARA = os.path.join(yararules_dir, "netresource.yara")
+    MALURL_YARA = os.path.join(yararules_dir, "malURL.yara")
+    global malware_hashes_folder
+    malware_hashes_folder = os.path.join(yararules_dir, "malwarehashes")
+    
+    global yararules
+    yararules = {
+        "MALWARE_YARA": yara.compile(filepath=MALWARE_YARA),
+        "SENSINFO_YARA": yara.compile(filepath=SENSINFO_YARA),
+        "SCRIPTS_YARA": yara.compile(filepath=SCRIPTS_YARA),
+        "NETWORK_YARA": yara.compile(filepath=NETWORK_YARA),
+        "MALURL_YARA": yara.compile(filepath=MALURL_YARA),
+    }
 
     # Potentially malicious files to upload to VirusTotal
     files_to_upload = []
 
-    # If -c flag passed, form the custom signatures yara rule
+    # If -c flag passed, compile the custom signatures yara rule
     if args.custom_signatures is not None:
         customsig_yara = create_custom_rule(args.custom_signatures)
         yararules["CUSTOMSIG_YARA"] = customsig_yara
 
     # Scan file(s)
-    if os.path.isfile(path):
+    if os.path.isfile(scan_path):
         # If it's a single file
-        if run_scans(path):
-            files_to_upload.append(path)
-    elif os.path.isdir(path):
+        if run_scans(scan_path):
+            files_to_upload.append(scan_path)
+    elif os.path.isdir(scan_path):
         # Recursively scan all files in the directory
-        for root, _, files in os.walk(path):
+        for root, dirs, files in os.walk(scan_path):
+            # Ignore the Security folder at root of rapidobank directory
+            # as our file structure has the security folder for project implementation
+            if(root.split("/")[-1] == 'rapidobank'):
+                dirs.remove("Security")
+                
             for file in files:
                 file_path = os.path.join(root, file)
                 if run_scans(file_path):
