@@ -105,7 +105,7 @@ if __name__ == "__main__":
             print(f"error occured while encrypting\n{usage}")
             exit(0)
     if "hash" in perform:
-        if hash_file.hash_file(ifile, perform["hash"]) != 0:
+        if hash_file.hash_file(ifile, ofile, perform["hash"]) != 0:
             # print(f"error occured while hashing\n{usage}")
             exit(0)
     if "decrypt" in perform:
