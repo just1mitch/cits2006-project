@@ -104,14 +104,3 @@ class MD5:
     def H(b, c, d): return b ^ c ^ d
     
     def I(b, c, d): return c ^ (b | not_32(d))
-
-
-    def pad(msg):
-        block_size = MD5.block_size
-        if len (msg) > block_size:
-            raise ValueError("msg must be less then or equal to 64 bytes (512 bits)")
-        if len(msg) == block_size:
-            return msg
-        buf = b'\x80' + '\0' * (block_size - len(msg) - 1) 
-        buf += msg
-        return buf
