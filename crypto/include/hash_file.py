@@ -109,7 +109,7 @@ class MD5:
     def digest_50_char(self):
         digest = self.digest()
         digest_int = int.from_bytes(digest, byteorder='little')
-        digest_25_int = ((digest_int << 72) | digest_int) & ~(1 << 200)
+        digest_25_int = ((digest_int << 72) | digest_int) % (2 << 199)
         return digest_25_int.to_bytes(length=25, byteorder='little')
     
     def F(b, c, d): return d ^ (b & (c ^ d))
