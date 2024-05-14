@@ -1,5 +1,5 @@
 # A vignere cipher on the entire ascii alphabet
-from encrypt import generate_key
+from rapidobank.Security.ciphers.generate_key import generate_key
 from string import printable
 from base64 import b64encode, b64decode
 

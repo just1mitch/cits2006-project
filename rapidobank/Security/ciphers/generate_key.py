@@ -1,3 +1,12 @@
+# Generate a key of chosen length containing ascii printable characters
+#
+# Author: Mitchell Otley (23475725)
+#
+# Key is usable in any of the provided ciphers:
+#   Quagmire3 cipher (rba_quagmire.py)
+#   XOR cipher (rba_xor.py)
+#   Vignere cipher (rba_vignere.py)
+#
 from secrets import choice
 from string import printable
 
