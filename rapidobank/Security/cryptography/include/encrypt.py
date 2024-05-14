@@ -14,7 +14,7 @@ def encrypt(file, format, key):
             file_content = rba_vigenere.vig_encrypt(file_content, key)
         case 'xor':
             file_content = rba_xorcipher.xor_encrypt(file_content, key)
-        case 'quagmire.py':
+        case 'quagmire':
             file_content = rba_quagmire.q3_encrypt(file_content, key)
         case _:
             return -1

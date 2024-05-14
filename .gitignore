@@ -5,3 +5,4 @@ scan_results/*
 *__pycache__
 *testfile*
 *.hash
+*.key
