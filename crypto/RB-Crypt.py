@@ -37,7 +37,7 @@ Options:
 Behaviour:
   -e          : Expects an encryption format from [ e1 | e2 | ... ]
   -d          : Expects the encryption format from [ e1 | e2 | ... ]
-  -h          : Expects a hash format from [ h1 | h2 | ... ]
+  -h          : Expects a hash format from [ md5 | h2 | ... ]
   -i          : The file to be encryped/decrypted/hashed
   -o          : The file hash will be output to
   -k          : The raw key to use in encryption/decryption

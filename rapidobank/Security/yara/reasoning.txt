@@ -1,0 +1,121 @@
+ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THEN SEND IT OFF TO VIRUSTOTAL FOR THEM TO SCAN IT
+ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THEN SEND IT OFF TO VIRUSTOTAL FOR THEM TO SCAN IT
+ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THEN SEND IT OFF TO VIRUSTOTAL FOR THEM TO SCAN IT
+
+1.
+    Detecting malware could be by using a large suite of known malware bytes.
+    Combined with the PE bytes not matching file type.
+    PE magic bytes being 0x5A4D and having suspicious commands.
+    Or just suspicous words itself.
+    Using entropy to detect if code is obfuscated or encrypted.
+    pe.has_debug_data: Checks if the PE file contains debug information.
+    pe.checksum == 0: Verifies if the PE file checksum is zero, which is unusual for legitimate files.
+    pe.number_of_exported_functions == 0: Identifies files that do not export any functions, often seen in packed or obfuscated malware.
+    $shellcode = { 31 C0 31 DB 31 C9 31 D2 B0 66 B3 01 51 6A 06 6A 01 6A 02 89 E1 CD 80 89 C6 B0 66 B3 03 68 }
+
+    known dll imports that are common with malware families: requires pe.imphash() in {}
+    "3f37137c421c1e6b2753886a4b6c2aa3",
+    "aa82183db1d3f0684a39b3d1b0a7dcb2"
+
+    known md5 hashes: requires hash.md5() in {} import "hash"
+    2d75cc1bf8e57872781f9cd04a529256
+    00f538c3d410822e241486ca061a57ee
+
+    using math.entropy() we can calculate the entropy of a given file
+    anything scoring over 7.2 'tends to be malicious'
+    https://www.schellman.com/blog/cybersecurity/penetration-testing-methods-entropy
+
+    use virustotal's own scores (will need to use this to detect false positives)
+
+2.
+
+    hidden files in unix often have a . at the start of the filename.
+
+    to detect if a file isn't encrypted just use entropy of said file.
+
+    and to detect sensitive information use regex maybe?
+    like this for email:
+    $email = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}/
+
+    and maybe just a list of keywords like:
+    First Name
+    FName
+    Last Name
+    LName
+    etc.
+
+    Need to check for sensitive information included in the title of the hidden file
+    and in the contents of the file itself (e.g a file may be called .passwords)
+
+3.
+    Detecting scripts can be done in a few different ways - and can be very difficult to detect false positives.
+    My idea is to check for the common scripting languages "magic bites" and file extensions - a proper implementation would check for all these scripting languages.
+    Also - check for some magic words that most likely won't be in legitimate software.
+    https://en.wikipedia.org/wiki/List_of_file_signatures
+
+4.
+    Check if the PE bytes are executables.
+
+    Check for the import of certain network-related dll files using pe.imports(dll_regexp,function_regexp)
+    This can pick up the use of certain dlls and if a function inside that dll is used
+    https://yara.readthedocs.io/en/v4.4.0/modules/pe.html
+
+    Using ps2exec, converting a powershell script to a windows executable for testing purposes
+    https://medium.com/@vivekjainmaiet/convert-powershell-to-exe-in-two-easy-steps-21cc8cd94c13
+
+    Then check for strings like this: (thx chatgpt)
+    Windows Networking Functions (mpr.dll and netapi32.dll):
+
+    WNetAddConnection2 - Establishes a connection to a network resource.
+    WNetCancelConnection2 - Cancels an existing network connection.
+    WNetOpenEnum - Opens a network resource enumerator for browsing network resources.
+    WNetEnumResource - Enumerates network resources or connections.
+
+    File and Directory Access over Network:
+
+        CreateFile (with FILE_FLAG_DELETE_ON_CLOSE flag) - Opens a file on a remote network location.
+        CopyFile - Copies a file from or to a network location.
+        MoveFile - Moves a file from or to a network location.
+        DeleteFile - Deletes a file located on a network share.
+        FindFirstFile and FindNextFile - Searches for files on a network share.
+
+    Network Connection Management:
+
+        NetUseAdd - Adds a connection to a shared network resource.
+        NetUseDel - Deletes a connection to a shared network resource.
+        NetUseEnum - Enumerates connections made to shared network resources.
+        NetShareEnum - Enumerates shared resources on a server.
+
+    Socket API (Winsock):
+
+        socket - Creates a socket for network communication.
+        connect - Initiates a connection on a socket.
+        send and recv - Sends and receives data over a socket.
+        bind and listen - Binds a socket to a local address and listens for incoming connections.
+
+    HTTP/HTTPS Functions (winhttp.dll and wininet.dll):
+
+        WinHttpOpen and WinHttpConnect - Establishes a connection to an HTTP server.
+        WinHttpOpenRequest and WinHttpSendRequest - Sends an HTTP request to a server.
+        InternetOpen and InternetOpenUrl - Opens an internet handle and retrieves a URL.
+        HttpOpenRequest and HttpSendRequest - Sends an HTTP request to a server.
+
+    DNS Functions (dnsapi.dll and winsock.dll):
+
+        GetHostByName and GetHostByAddr - Resolves hostnames to IP addresses and vice versa.
+        DnsQuery and DnsRecordListFree - Performs DNS queries to resolve domain names.
+
+        AGAIN ALWAYS CHECK IF THE FILE HAS HIGH ENTROPY!!! IF IT DOES SHOULD ALWAYS FLAG - THEN SEND IT OFF TO VIRUSTOTAL FOR THEM TO SCAN IT
+
+5.
+    First need to check if PE bytes are executables.
+    Then need to use Yara to detect any mention of a URL in the file.
+    Using VirusTotal API, we can pass the URL to be scanned and reported back.
+
+    (Optional?) Sometimes a file may make reference to a URL without actioning it,
+    so perhaps combine above with common functions used to communicate with the URL
+
+6.
+    Checking a given filesystem for any mention of a specific string or pattern
+    This is a general function that could be applied to find a malicious 'string' that we input
+    

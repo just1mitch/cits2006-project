@@ -1,5 +1,3 @@
-import struct
-
 def hash_file(ifile, ofile, format) -> int:
     hex_digest = ""
     match (format):
@@ -38,10 +36,11 @@ def hash_file(ifile, ofile, format) -> int:
             fd.write(hex_digest)
     
     return 0
+    return 0
 
 def not_32(uint_32): return 0xffffffff - uint_32
 
-def rotl_32(uint_32, shift): return ((uint_32 << (shift & 31)) | ((uint_32 & 0xffffffff) >> (32 - (shift & 31)))) & 0xffffffff
+def rotl_32(uint_32, shift): return ((uint_32 << shift) | (uint_32 >> (32 - shift))) & 0xffffffff
 
 class MD5:
     block_size = 64
@@ -116,7 +115,8 @@ class MD5:
 
     def digest_50_char(self):
         digest = self.digest()
-        digest_25_int = (int.from_bytes(digest, byteorder='little') ** 2) % (2 << 199)
+        digest_int = int.from_bytes(digest, byteorder='little')
+        digest_25_int = ((digest_int << 72) | digest_int) & ~(1 << 200)
         return digest_25_int.to_bytes(length=25, byteorder='little')
     
     def F(b, c, d): return d ^ (b & (c ^ d))
@@ -126,17 +126,6 @@ class MD5:
     def H(b, c, d): return b ^ c ^ d
     
     def I(b, c, d): return c ^ (b | not_32(d))
-
-
-    def pad(msg):
-        block_size = MD5.block_size
-        if len (msg) > block_size:
-            raise ValueError("msg must be less then or equal to 64 bytes (512 bits)")
-        if len(msg) == block_size:
-            return msg
-        buf = b'\x80' + '\0' * (block_size - len(msg) - 1) 
-        buf += msg
-        return buf
 
 
 class XXHASH:
