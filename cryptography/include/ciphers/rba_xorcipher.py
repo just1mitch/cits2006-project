@@ -1,7 +1,6 @@
 from secrets import choice
 from string import ascii_letters, digits
 from base64 import b64encode, b64decode
-from encrypt import generate_key
 
 # Applies the xor function between each character of the string and key
 # If the string is longer than the key, a modulo operator is used to loop
@@ -26,10 +25,3 @@ def xor_decrypt(ciphertext, key):
     ciphertext = b64decode(ciphertext).decode("ascii")
     plaintext = apply_xor(ciphertext, key)
     return plaintext
-
-if __name__ == "__main__":
-    key = generate_key(50)
-    message = "testmessage"
-    ciphertext = xor_encrypt(message, key)
-    print(ciphertext)
-    plaintext = xor_decrypt(ciphertext, key)

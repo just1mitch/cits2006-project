@@ -16,6 +16,8 @@ from include import (
     hash_file,
 )
 
+from include.ciphers.util import generate_key
+
 
 usage = """
 A way of encrypting and hashing files, designed for the Rapido Bank file
@@ -33,15 +35,19 @@ Options:
   -o          : Output File
   -k          : Key
   --key-file  : Key File
+  --key-gen   : Generate Key
 
 Behaviour:
-  -e          : Expects an encryption format from [ e1 | e2 | ... ]
-  -d          : Expects the encryption format from [ e1 | e2 | ... ]
-  -h          : Expects a hash format from [ md5 | h2 | ... ]
+  -e          : Expects an encryption format from [ vigenere | xor | quagmire ]
+  -d          : Expects the encryption format from [ vigenere | xor | quagmire ]
+  -h          : Expects a hash format from [ md5 | xxhash | murmur | sha256 ]
   -i          : The file to be encryped/decrypted/hashed
   -o          : The file hash will be output to
   -k          : The raw key to use in encryption/decryption
   --key-file  : The file that holds the encryption/decryption key
+  --key-gen   : Generates a key of length 50. If used in conjuction with -e, a
+                file with extension .key is created to store the key, otherwise
+                the key will be printed to stdout
 
 Example:
   ./RB-Crypt.py -i infile -e format -k encryption-key -h hformat outfile
@@ -49,7 +55,7 @@ Example:
 
 if __name__ == "__main__":
     # Get args
-    opts, args = getopt(argv[1:], "e:d:h:i:o:k:", ["help=", "key-file="])
+    opts, args = getopt(argv[1:], "e:d:h:i:o:k:", ["help=", "key-file=", "key-gen="])
 
     if ("--help", '',) in opts:
         print(usage)
@@ -61,6 +67,7 @@ if __name__ == "__main__":
     ifile: str = None
     ofile: str = None
     key: str = None
+    keygen: bool = False
 
     # Set options
     for opt in opts:
@@ -80,11 +87,21 @@ if __name__ == "__main__":
             case "--key-file":
                 if key is None:
                     key = opt[1]
+            case "--key-gen":
+                keygen = True
 
     # Ensure proper options
-    if ("encrypt" in perform or "decrypt" in perform) and key is None:
-        print(f"requires key for encryption or decryption\n\n{usage}")
+    if "decrypt" in perform and key is None:
+        print(f"requires key for decryption\n\n{usage}")
         exit(1)
+    
+    if "encrypt" in perform:
+        if key is None:
+            if keygen:
+                key = generate_key(50)
+            else:
+                print(f"requires key for decryption\n\n{usage}")
+                exit(1)
 
     if ifile is None:
         if len(args) < 1:
@@ -103,12 +120,12 @@ if __name__ == "__main__":
     if "encrypt" in perform:
         if encrypt.encrypt(ifile, perform["encrypt"], key) != 0:
             print(f"error occured while encrypting\n{usage}")
-            exit(0)
+            exit(1)
     if "hash" in perform:
         if hash_file.hash_file(ifile, ofile, perform["hash"]) != 0:
             # print(f"error occured while hashing\n{usage}")
-            exit(0)
+            exit(1)
     if "decrypt" in perform:
         if decrypt.decrypt(ifile, perform["decrypt"], key) != 0:
             print(f"error occured while decyrpting\n{usage}")
-            exit(0)
+            exit(1)

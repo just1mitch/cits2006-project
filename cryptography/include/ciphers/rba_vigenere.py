@@ -1,5 +1,4 @@
 # A vignere cipher on the entire ascii alphabet
-from encrypt import generate_key
 from string import printable
 from base64 import b64encode, b64decode
 
@@ -28,12 +27,3 @@ def vig_decrypt(ciphertext, key):
         plaintext += printable[(ciphertext_index - key_index) % len(printable)]
     
     return plaintext
-
-
-if __name__ == "__main__":
-    key = generate_key(50)
-    message = "testmessage"
-    ciphertext = vig_encrypt(message, key)
-    print(ciphertext)
-    plaintext = vig_decrypt(ciphertext, key)
-    print(plaintext)

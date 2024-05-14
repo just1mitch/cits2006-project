@@ -1,4 +1,4 @@
-from encrypt import generate_key
+from util import generate_key
 from string import ascii_letters, digits
 
 # In a quagmire cipher, the keyword is made from
@@ -16,7 +16,10 @@ def generate_keyed_alphabet(key):
     return keyed_alphabet
 
 def q3_encrypt(plaintext, keyed_alphabet):
-    return
+    return ""
+
+def q3_decrypt(plaintext, keyed_alphabet):
+    return ""
 
 if __name__ == "__main__":
     key = generate_key(50)

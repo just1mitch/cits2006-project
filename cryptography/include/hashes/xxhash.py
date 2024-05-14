@@ -1,5 +1,4 @@
 class XXHASH:
-
     def xxhash(self, data, seed=123123123):
         """
         Calculate the xxHash of the given data.
@@ -44,11 +43,8 @@ class XXHASH:
         h64 ^= h64 >> 32
 
         # Convert 128-bit hash to hexadecimal string
-        hash_str = h64 & int.from_bytes((b'\xff' * 32), byteorder="little") - 1
-        # Convert the 256-bit hash to bytes (3372438548945421310400603113032345769924716067099285175102
-        hash_bytes = hash_str.to_bytes(length=25, byteorder="little", signed=False)
+        hash_str = h64 & ((1 << 256) - 1)
+        # Convert the 256-bit hash to bytes (32 bytes)
+        hash_bytes = hash_str.to_bytes(length=32, byteorder="little", signed=False)
         # Convert the bytes to hexadecimal string
-        return hash_bytes.hex()
-    
-hasher = XXHASH()
-print(hasher.xxhash(data=b"1245678"))
+        return hash_bytes.hex()[:50]
