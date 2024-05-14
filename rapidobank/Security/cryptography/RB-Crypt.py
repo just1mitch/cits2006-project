@@ -55,7 +55,7 @@ Example:
 
 if __name__ == "__main__":
     # Get args
-    opts, args = getopt(argv[1:], "e:d:h:i:o:k:", ["help=", "key-file=", "key-gen"])
+    opts, args = getopt(argv[1:], "e:d:h:i:o:k:", ["help", "key-file=", "key-gen"])
 
     if ("--help", '',) in opts:
         print(usage)
@@ -69,6 +69,11 @@ if __name__ == "__main__":
     key: str = None
     keygen: bool = False
 
+    ciphers = ['vigenere', 'xor', 'quagmire']
+    hashes = ['md5', 'xxhash', 'murmur', 'sha256']
+
+    out_message: str = ""
+
     # Set options
     for opt in opts:
         match (opt[0]):
@@ -77,11 +82,23 @@ if __name__ == "__main__":
             case '-o':
                 ofile = opt[1]
             case '-e':
-                perform["encrypt"] = opt[1].lower()
+                _check = opt[1].lower()
+                if _check not in ciphers:
+                    out_message += f"avaliable encryption ciphers: {', '.join(ciphers)}\n"
+                else:
+                    perform["encrypt"] = _check
             case '-d':
-                perform["decrypt"] = opt[1].lower()
+                _check = opt[1].lower()
+                if _check not in ciphers:
+                    out_message += f"avaliable encryption ciphers: {', '.join(ciphers)}\n"
+                else:
+                    perform["decrypt"] = _check
             case '-h':
-                perform["hash"] = opt[1].lower()
+                _check = opt[1].lower()
+                if _check not in hashes:
+                    out_message += f"avaliable encryption ciphers: {', '.join(hashes)}\n"
+                else:
+                    perform["hash"] = _check
             case '-k':
                 key = opt[1]
             case "--key-file":
@@ -90,6 +107,10 @@ if __name__ == "__main__":
                         key = fd.read()
             case "--key-gen":
                 keygen = True
+    
+    if out_message != "":
+        print(out_message)
+        exit(1)
 
     # Ensure proper options
     if "decrypt" in perform and key is None:
