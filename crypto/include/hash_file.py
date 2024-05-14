@@ -18,14 +18,7 @@ def hash_file(ifile, ofile, format) -> int:
                 hex_digest = state.murmurhash3(file_contents)
         case "sha256":
             state = SHA256()
-            try:
-                with open(ifile, 'rb') as fd:
-                    file_contents = fd.read()
-                    hex_digest = state.sha256(file_contents)
-            except:
-                if ifile is not None:
-                    hex_digest = state.sha256(ifile)
-                    print(hex_digest)
+            hex_digest = state.sha256(ifile)
         case _:
             return -1
 
@@ -275,15 +268,12 @@ class MURMUR:
 
         
 class SHA256:
-    # https://en.wikipedia.org/wiki/SHA-2
-
     # Constants (first 32 bits of the fractional parts of the cube roots of the first 64 primes 2..311):
 
     def right_rotate(self, x, n):
         return ((x >> n) | (x << (32 - n))) & 0xFFFFFFFF
 
-
-    def sha256(self, message):
+    def sha256(self, ifile):
         h0 = 0x6a09e667
         h1 = 0xbb67ae85
         h2 = 0x3c6ef372
@@ -302,21 +292,22 @@ class SHA256:
             0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
             0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
             0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
-         ]
+        ]
+        
+        try:
+            with open(ifile, 'rb') as fd:
+                message = fd.read()
+        except:
+            message = ifile
+
         # Pre-processing:
-        original_length = len(message)
-        # Add a single '1' bit at the end of the message
-        message += b'\x80'
-        # Append '0' bits until the length of the message in bits is 448 (mod 512)
+        original_length = len(message) * 8
+        message += b'\x80'  # Append 1 bit by adding a single byte with 0b10000000
         while (len(message) * 8) % 512 != 448:
-            message += b'\x00'
+            message += b'\x00'  # Append 0 bits by adding a single byte with all bits set to 0
 
-        # Append the original length of the message as a 64-bit big-endian integer
-        original_length = (len(message) - 1) * 8  # Subtract 1 to exclude the appended '1' bit
-        message += original_length.to_bytes(8, 'big')
-
-        print(message)
-
+        original_length = original_length.to_bytes(8, 'big')
+        message += original_length
 
         # Process the message in successive 512-bit chunks:
         for chunk_start in range(0, len(message), 64):
@@ -327,7 +318,7 @@ class SHA256:
             for i in range(16, 64):
                 s0 = self.right_rotate(w[i-15], 7) ^ self.right_rotate(w[i-15], 18) ^ (w[i-15] >> 3)
                 s1 = self.right_rotate(w[i-2], 17) ^ self.right_rotate(w[i-2], 19) ^ (w[i-2] >> 10)
-                w[i] = (w[i-16] + s0 + w[i-7] + s1)
+                w[i] = (w[i-16] + s0 + w[i-7] + s1) & 0xFFFFFFFF
 
             # Initialize hash value for this chunk
             a = h0
@@ -343,30 +334,30 @@ class SHA256:
             for i in range(64):
                 s1 = self.right_rotate(e, 6) ^ self.right_rotate(e, 11) ^ self.right_rotate(e, 25)
                 ch = (e & f) ^ ((~e) & g)
-                temp1 = (h + s1 + ch + k[i] + w[i])
+                temp1 = (h + s1 + ch + k[i] + w[i]) & 0xFFFFFFFF
                 s0 = self.right_rotate(a, 2) ^ self.right_rotate(a, 13) ^ self.right_rotate(a, 22)
                 maj = (a & b) ^ (a & c) ^ (b & c)
-                temp2 = (s0 + maj)
+                temp2 = (s0 + maj) & 0xFFFFFFFF
 
                 h = g
                 g = f
                 f = e
-                e = (d + temp1)
+                e = (d + temp1) & 0xFFFFFFFF
                 d = c
                 c = b
                 b = a
-                a = (temp1 + temp2)
+                a = (temp1 + temp2) & 0xFFFFFFFF
 
             # Add this chunk's hash to result so far:
-            h0 = (h0 + a)
-            h1 = (h1 + b)
-            h2 = (h2 + c)
-            h3 = (h3 + d) 
-            h4 = (h4 + e)
-            h5 = (h5 + f)
-            h6 = (h6 + g) 
-            h7 = (h7 + h)
+            h0 = (h0 + a) & 0xFFFFFFFF
+            h1 = (h1 + b) & 0xFFFFFFFF
+            h2 = (h2 + c) & 0xFFFFFFFF
+            h3 = (h3 + d) & 0xFFFFFFFF
+            h4 = (h4 + e) & 0xFFFFFFFF
+            h5 = (h5 + f) & 0xFFFFFFFF
+            h6 = (h6 + g) & 0xFFFFFFFF
+            h7 = (h7 + h) & 0xFFFFFFFF
 
         # Produce the final hash value:
-        digest = '{:08x}'.format(h0) + '{:08x}'.format(h1) + '{:08x}'.format(h2) + '{:08x}'.format(h3) + '{:08x}'.format(h4) + '{:08x}'.format(h5) + '{:08x}'.format(h6) + '{:08x}'.format(h7)
+        digest = '{:08x}{:08x}{:08x}{:08x}{:08x}{:08x}{:08x}{:08x}'.format(h0, h1, h2, h3, h4, h5, h6, h7)
         return digest
