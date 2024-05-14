@@ -1,6 +1,6 @@
 from include.ciphers import (
     rba_vigenere,
-    rba_xorcipher,
+    rba_xor,
     rba_quagmire,
 )
 
@@ -13,7 +13,7 @@ def decrypt(file, format, key):
         case 'vigenere':
             file_content = rba_vigenere.vig_decrypt(file_content, key)
         case 'xor':
-            file_content = rba_xorcipher.xor_decrypt(file_content, key)
+            file_content = rba_xor.xor_decrypt(file_content, key)
         case 'quagmire':
             file_content = rba_quagmire.q3_decrypt(file_content, key)
         case _:
