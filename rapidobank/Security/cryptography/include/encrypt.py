@@ -1,4 +1,4 @@
-from ciphers import (
+from include.ciphers import (
     rba_vigenere,
     rba_xorcipher,
     rba_quagmire,
@@ -19,7 +19,7 @@ def encrypt(file, format, key):
         case _:
             return -1
     
-    with open(file, "w") as fd:
+    with open(file, "wb") as fd:
         fd.write(file_content)
     
     return 0

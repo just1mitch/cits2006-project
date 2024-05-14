@@ -1,4 +1,4 @@
-from util import generate_key
+from include.ciphers.util import generate_key
 from string import ascii_letters, digits
 
 # In a quagmire cipher, the keyword is made from

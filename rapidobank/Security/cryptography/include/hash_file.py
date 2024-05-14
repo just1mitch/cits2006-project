@@ -1,4 +1,4 @@
-from hashes import (
+from include.hashes import (
     md5,
     xxhash,
     murmur,

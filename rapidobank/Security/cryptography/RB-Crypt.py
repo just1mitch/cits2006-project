@@ -55,7 +55,7 @@ Example:
 
 if __name__ == "__main__":
     # Get args
-    opts, args = getopt(argv[1:], "e:d:h:i:o:k:", ["help=", "key-file=", "key-gen="])
+    opts, args = getopt(argv[1:], "e:d:h:i:o:k:", ["help=", "key-file=", "key-gen"])
 
     if ("--help", '',) in opts:
         print(usage)
@@ -86,7 +86,8 @@ if __name__ == "__main__":
                 key = opt[1]
             case "--key-file":
                 if key is None:
-                    key = opt[1]
+                    with open(opt[1], 'r') as fd:
+                        key = fd.read()
             case "--key-gen":
                 keygen = True
 
@@ -94,24 +95,41 @@ if __name__ == "__main__":
     if "decrypt" in perform and key is None:
         print(f"requires key for decryption\n\n{usage}")
         exit(1)
-    
-    if "encrypt" in perform:
-        if key is None:
-            if keygen:
-                key = generate_key(50)
-            else:
-                print(f"requires key for decryption\n\n{usage}")
-                exit(1)
 
+    grabbed_ifile: bool = False
     if ifile is None:
         if len(args) < 1:
             print(f"requires input file\n\n{usage}")
             exit(1)
         else:
+            grabbed_ifile = True
             ifile = args[0]
+    
+    # if "encrypt" in perform:
+    #     if key is None:
+    #         if keygen:
+    #             key = generate_key(50)
+    #             with open(f"{ifile}.key", 'w') as fd:
+    #                 fd.write(key)
+    #         else:
+    #             print(f"requires key for decryption\n\n{usage}")
+    #             exit(1)
+    if keygen:
+        if "encrypt" in perform and key is None:
+            key = generate_key(50)
+            with open(f"{ifile}.key", "w") as fd:
+                fd.write(key)
+        else:
+            print(generate_key(50))
+    
+    if "encrypt" in perform and key is None:
+        print(f"key required for encryption\n\n{usage}")
+        exit(1)
 
     if "hash" in perform and ofile is None:
-        if args == 2:
+        if args == 1 and not grabbed_ifile:
+            ofile = args[0]
+        elif args == 2:
             ofile = args[1]
         else:
             ofile = ifile + ".hash"

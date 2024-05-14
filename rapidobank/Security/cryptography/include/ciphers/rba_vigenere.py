@@ -5,7 +5,6 @@ from base64 import b64encode, b64decode
 # Adapted from https://gist.github.com/flipperbw/8c93cc6c24db1a6c72953c38c385ab36
 # and https://www.geeksforgeeks.org/vigenere-cipher/
 def vig_encrypt(message, key):
-    print(printable)
     ciphertext = ""
     for i, char in enumerate(message):
         # Get the index of the current plaintext character

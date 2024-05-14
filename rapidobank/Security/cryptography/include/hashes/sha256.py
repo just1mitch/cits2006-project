@@ -1,4 +1,4 @@
-from util import rotr_32
+from include.hashes.util import rotr_32
 
 class SHA256:
     # Constants (first 32 bits of the fractional parts of the cube roots of the first 64 primes 2..311):

@@ -1,4 +1,4 @@
-from util import rotl_32, not_32
+from include.hashes.util import rotl_32, not_32
 
 class MD5:
     block_size = 64

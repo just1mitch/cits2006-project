@@ -1,10 +1,10 @@
-from ciphers import (
+from include.ciphers import (
     rba_vigenere,
     rba_xorcipher,
     rba_quagmire,
 )
 
-def encrypt(file, format, key):
+def decrypt(file, format, key):
     file_content: str = ""
     with open(file, "r") as fd:
         file_content = fd.read()
