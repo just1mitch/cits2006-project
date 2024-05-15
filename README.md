@@ -1,2 +1,10 @@
-# cits2006-project
-Repository for the CITS2006 - Defensive Cybersecurity Project, Semester 1 2024
+## Github Repo for CITS2006 Project
+
+# Students
+| UWA ID  | Name  | Github User Name  |
+| ------------ | ------------ | ------------ |
+| 23135002  | Joel Willoughby  | Jamlons  |
+| #  | #  | #  |
+| #  | #  | #  |
+| #  | #  | #  |
+| #  | #  | #  |
