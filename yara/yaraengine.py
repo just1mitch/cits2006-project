@@ -21,6 +21,7 @@ SENSINFO_YARA = os.path.abspath(os.path.join(yararules_dir, "sensitiveinfo.yara"
 SCRIPTS_YARA = os.path.abspath(os.path.join(yararules_dir, "scripts.yara"))
 NETWORK_YARA = os.path.abspath(os.path.join(yararules_dir, "netresource.yara"))
 MALURL_YARA = os.path.abspath(os.path.join(yararules_dir, "malURL.yara"))
+MALWARE_HASHES_FOLDER = os.path.abspath(os.path.join(yararules_dir, "malwarehashes"))
 
 yararules = {
     "MALWARE_YARA": yara.compile(filepath=MALWARE_YARA),
@@ -30,7 +31,8 @@ yararules = {
     "MALURL_YARA": yara.compile(filepath=MALURL_YARA)
 }
 
-MALWARE_HASHES_FOLDER = os.path.abspath(os.path.join(yararules_dir, "malwarehashes"))
+# This is terrible
+urls_to_upload = []
 
 def check_yaras():
     flag = 0
@@ -65,14 +67,16 @@ def scan_file(file_path, yara_rule):
                 for string in match.strings:
                     for instance in string.instances:
                         plaintext = instance.plaintext()
-                        plaintext_str = plaintext.decode('utf-8')  # Assuming utf-8 encoding, adjust if necessary
-                        virus_total_url_scan(plaintext_str)
+                        plaintext_str = plaintext.decode('utf-8')
+                        #This is bad
+                        urls_to_upload.append(plaintext_str)
         return 1
     else:
         return 0
 
     
 # Function to run all scans
+# Returns 1 on yara hit
 def run_scans(file_path):
     safe = 0 # If safe is true, we won't send it to VirusTotal to check
     if scan_for_malware(file_path):
@@ -112,9 +116,7 @@ def is_hidden(file_path):
 # Returns 1 on executable, 0 on not-executable
 def is_executable(file_path):
     '''Function to determine if a file is executable. Only supports Windows and Linux.
-    #### Returns 1 on executable, 0 on not-executable'''
-    print(file_path)
-    
+    #### Returns 1 on executable, 0 on not-executable''' 
     with open(file_path, 'rb') as file:
         magic_number = file.read(2)  # Read the first 2 bytes
         if magic_number == b'MZ':  # Check for "MZ" magic number
@@ -179,17 +181,19 @@ def virus_total_scan(file_path):
         
 def virus_total_url_scan(url):
     print(f"\nScanning URL: {url}")
-    hash = md5_hash_string(url)  
     with vt.Client(VIRUS_TOTAL_API) as vt_client:
         url_id = vt.url_id(url)
         try:
-            url = vt_client.get_object("/urls/{}", url_id)
-            print("grabbed data")
+            urlstats = vt_client.get_json("/urls/{}", url_id)
         except vt.error.APIError:
-            analysis = vt_client.scan_url(url, wait_for_completion=True)
-        url = vt_client.get_object("/urls/{}", url_id)
-    print(url.last_analysis_stats)
-
+            vt_client.scan_url(url, wait_for_completion=True)
+        urlstats = vt_client.get_json("/urls/{}", url_id)
+    attributes = urlstats["data"]["attributes"]
+    save_path = f"{os.path.abspath('./scan_results')}/{md5_hash_string(url)}.json"
+    print(f"""Scan Results:\nName: {url}\nReputation: {attributes["reputation"]}\nAnalysis Stats: {attributes["last_analysis_stats"]}\nFull Analysis saved to {save_path}\n""")
+    with open(save_path, 'w') as f:
+        json.dump(urlstats, f, indent=4)
+    
 # Creates a custom yara rule using the strings
 # Takes a path to a newline separated list of custom strings
 # Compiles and returns the yara rules to detect these strings
@@ -248,6 +252,9 @@ def main():
     # For all potentially malicious files, send them to VirusTotal for scanning
     for file_path in files_to_upload:
         virus_total_scan(file_path)
+
+    for url in urls_to_upload:
+        virus_total_url_scan(url)
 
 if __name__ == "__main__":
     main()

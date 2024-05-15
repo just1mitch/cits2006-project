@@ -1,18 +1,26 @@
 {
     "data": {
-        "id": "7ba3516cf3909c3ef8f4f2d17f1e8ed4b072ce60fb544c282409174359890ec0",
+        "id": "3f9a720c6802036ff0d65a3de44b8c0497e7394b8bac65d879e4fe78eb5d90a8",
         "type": "url",
         "links": {
-            "self": "https://www.virustotal.com/api/v3/urls/7ba3516cf3909c3ef8f4f2d17f1e8ed4b072ce60fb544c282409174359890ec0"
+            "self": "https://www.virustotal.com/api/v3/urls/3f9a720c6802036ff0d65a3de44b8c0497e7394b8bac65d879e4fe78eb5d90a8"
         },
         "attributes": {
-            "times_submitted": 2128,
-            "last_modification_date": 1715386505,
-            "html_meta": {
-                "referrer": [
-                    "origin"
-                ]
+            "categories": {
+                "BitDefender": "misc",
+                "Dr.Web": "known infection source",
+                "Sophos": "information technology",
+                "Webroot": "Malware Sites",
+                "Forcepoint ThreatSeeker": "computer security"
             },
+            "last_submission_date": 1714205959,
+            "tld": "org",
+            "last_http_response_code": 200,
+            "threat_names": [
+                "Mal/HTMLGen-A"
+            ],
+            "reputation": -26,
+            "tags": [],
             "last_analysis_results": {
                 "Artists Against 419": {
                     "method": "blacklist",
@@ -77,8 +85,8 @@
                 "Antiy-AVL": {
                     "method": "blacklist",
                     "engine_name": "Antiy-AVL",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malicious"
                 },
                 "ArcSight Threat Intelligence": {
                     "method": "blacklist",
@@ -107,8 +115,8 @@
                 "BitDefender": {
                     "method": "blacklist",
                     "engine_name": "BitDefender",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malware"
                 },
                 "Bkav": {
                     "method": "blacklist",
@@ -173,8 +181,8 @@
                 "CRDF": {
                     "method": "blacklist",
                     "engine_name": "CRDF",
-                    "category": "malicious",
-                    "result": "malicious"
+                    "category": "harmless",
+                    "result": "clean"
                 },
                 "Cyan": {
                     "method": "blacklist",
@@ -191,8 +199,8 @@
                 "CyRadar": {
                     "method": "blacklist",
                     "engine_name": "CyRadar",
-                    "category": "malicious",
-                    "result": "malicious"
+                    "category": "harmless",
+                    "result": "clean"
                 },
                 "desenmascara.me": {
                     "method": "blacklist",
@@ -209,14 +217,14 @@
                 "Dr.Web": {
                     "method": "blacklist",
                     "engine_name": "Dr.Web",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malicious"
                 },
                 "Emsisoft": {
                     "method": "blacklist",
                     "engine_name": "Emsisoft",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malware"
                 },
                 "Ermes": {
                     "method": "blacklist",
@@ -227,8 +235,8 @@
                 "ESET": {
                     "method": "blacklist",
                     "engine_name": "ESET",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malware"
                 },
                 "ESTsecurity": {
                     "method": "blacklist",
@@ -251,14 +259,14 @@
                 "Fortinet": {
                     "method": "blacklist",
                     "engine_name": "Fortinet",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malware"
                 },
                 "G-Data": {
                     "method": "blacklist",
                     "engine_name": "G-Data",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malware"
                 },
                 "Google Safebrowsing": {
                     "method": "blacklist",
@@ -473,8 +481,8 @@
                 "Sucuri SiteCheck": {
                     "method": "blacklist",
                     "engine_name": "Sucuri SiteCheck",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malicious"
                 },
                 "securolytics": {
                     "method": "blacklist",
@@ -527,8 +535,8 @@
                 "VIPRE": {
                     "method": "blacklist",
                     "engine_name": "VIPRE",
-                    "category": "undetected",
-                    "result": "unrated"
+                    "category": "malicious",
+                    "result": "malware"
                 },
                 "ViriBack": {
                     "method": "blacklist",
@@ -545,8 +553,8 @@
                 "Webroot": {
                     "method": "blacklist",
                     "engine_name": "Webroot",
-                    "category": "harmless",
-                    "result": "clean"
+                    "category": "malicious",
+                    "result": "malicious"
                 },
                 "Forcepoint ThreatSeeker": {
                     "method": "blacklist",
@@ -567,60 +575,41 @@
                     "result": "clean"
                 }
             },
-            "last_analysis_date": 1715118097,
-            "categories": {
-                "Xcitium Verdict Cloud": "search engines & portals",
-                "Sophos": "search engines",
-                "Forcepoint ThreatSeeker": "search engines and portals"
+            "last_http_response_headers": {
+                "Date": "Sat, 27 Apr 2024 08:19:21 GMT",
+                "Server": "Apache",
+                "Last-Modified": "Fri, 09 Nov 2012 05:34:59 GMT",
+                "ETag": "\"81-4ce094fff46c0\"",
+                "Accept-Ranges": "bytes",
+                "Content-Type": "text/html; charset=UTF-8",
+                "Vary": "Accept-Encoding",
+                "Via": "e16",
+                "Content-Length": "129",
+                "Keep-Alive": "timeout=5, max=100",
+                "Connection": "Keep-Alive"
             },
-            "tld": "com",
-            "title": "Google",
-            "threat_names": [],
-            "reputation": -81,
+            "last_http_response_content_sha256": "3490a0d675ffaadccd935cb0f91c19aee89643d7a0df6d7b0949ee6137d283a0",
+            "redirection_chain": [
+                "http://malware.wicar.org/data/java_jre17_exec.html"
+            ],
+            "last_http_response_content_length": 129,
+            "url": "http://malware.wicar.org/data/java_jre17_exec.html",
+            "total_votes": {
+                "harmless": 1,
+                "malicious": 6
+            },
             "last_analysis_stats": {
-                "malicious": 2,
+                "malicious": 10,
                 "suspicious": 0,
-                "undetected": 22,
-                "harmless": 68,
+                "undetected": 21,
+                "harmless": 61,
                 "timeout": 0
             },
-            "last_http_response_content_length": 186263,
-            "outgoing_links": [
-                "https://about.google/?utm_source=google-ZZ&utm_medium=referral&utm_campaign=hp-footer&fg=1"
-            ],
-            "total_votes": {
-                "harmless": 13,
-                "malicious": 45
-            },
-            "last_final_url": "https://www.google.com/",
-            "last_http_response_content_sha256": "8165a3592b20490906433de27b767b0ab3a82e9c9b9a8070425b8010f2e1645e",
-            "last_http_response_code": 200,
-            "url": "http://gogle.com/",
-            "redirection_chain": [
-                "http://gogle.com/"
-            ],
-            "tags": [],
-            "first_submission_date": 1287025134,
-            "last_http_response_headers": {
-                "Date": "Tue, 07 May 2024 21:41:39 GMT",
-                "Expires": "-1",
-                "Cache-Control": "private, max-age=0",
-                "Content-Type": "text/html; charset=UTF-8",
-                "Content-Security-Policy-Report-Only": "object-src 'none';base-uri 'self';script-src 'nonce-h0o5uBmjThyreq9zXp6BNg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp",
-                "Cross-Origin-Opener-Policy": "same-origin-allow-popups; report-to=\"gws\"",
-                "Report-To": "{\"group\":\"gws\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/gws/other\"}]}",
-                "Accept-CH": "Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version, Sec-CH-UA-Arch, Sec-CH-UA-Model, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version-List, Sec-CH-UA-WoW64",
-                "Permissions-Policy": "unload=()",
-                "P3P": "CP=\"This is not a P3P policy! See g.co/p3phelp for more info.\"",
-                "Content-Encoding": "br",
-                "Server": "gws",
-                "Content-Length": "186263",
-                "X-XSS-Protection": "0",
-                "X-Frame-Options": "SAMEORIGIN",
-                "Set-Cookie": "AEC=AQTF6HyNfURsTgJS2AG0uEgC78SujHEYq6oLl-dXiC0fXIjOVnAN1iDBGw; expires=Sun, 03-Nov-2024 21:41:39 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax, NID=514=KdVaX1hq7zmEa_wiPr_Gdq7XUxzBr533NlWMNXU6gyD25qE0yWeE6P4i7HlwDFiKFhkYZIVH_5Tzgac1E0eDH3_uWs9DLMTNVmKS2qX8uAnrjeXCU_KWWeqJX_rE3_6mHoTE1sbwCUpAu8qo2HE7jPwRbLL5ns9RxpLh6cIU4xg; expires=Wed, 06-Nov-2024 21:41:39 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=none",
-                "Alt-Svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-            },
-            "last_submission_date": 1715118097
+            "last_analysis_date": 1714205959,
+            "first_submission_date": 1374149166,
+            "times_submitted": 246,
+            "last_final_url": "http://malware.wicar.org/data/java_jre17_exec.html",
+            "last_modification_date": 1714205974
         }
     }
 }

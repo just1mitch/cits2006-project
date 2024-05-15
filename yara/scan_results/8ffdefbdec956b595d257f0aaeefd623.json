@@ -1,17 +1,20 @@
 {
     "data": {
-        "id": "7ba3516cf3909c3ef8f4f2d17f1e8ed4b072ce60fb544c282409174359890ec0",
+        "id": "d0e196a0c25d35dd0a84593cbae0f38333aa58529936444ea26453eab28dfc86",
         "type": "url",
         "links": {
-            "self": "https://www.virustotal.com/api/v3/urls/7ba3516cf3909c3ef8f4f2d17f1e8ed4b072ce60fb544c282409174359890ec0"
+            "self": "https://www.virustotal.com/api/v3/urls/d0e196a0c25d35dd0a84593cbae0f38333aa58529936444ea26453eab28dfc86"
         },
         "attributes": {
-            "times_submitted": 2128,
-            "last_modification_date": 1715386505,
-            "html_meta": {
-                "referrer": [
-                    "origin"
-                ]
+            "last_submission_date": 1715757252,
+            "times_submitted": 114329,
+            "first_submission_date": 1281524160,
+            "last_analysis_stats": {
+                "malicious": 0,
+                "suspicious": 0,
+                "undetected": 18,
+                "harmless": 74,
+                "timeout": 0
             },
             "last_analysis_results": {
                 "Artists Against 419": {
@@ -83,8 +86,8 @@
                 "ArcSight Threat Intelligence": {
                     "method": "blacklist",
                     "engine_name": "ArcSight Threat Intelligence",
-                    "category": "undetected",
-                    "result": "unrated"
+                    "category": "harmless",
+                    "result": "clean"
                 },
                 "AutoShun": {
                     "method": "blacklist",
@@ -173,8 +176,8 @@
                 "CRDF": {
                     "method": "blacklist",
                     "engine_name": "CRDF",
-                    "category": "malicious",
-                    "result": "malicious"
+                    "category": "harmless",
+                    "result": "clean"
                 },
                 "Cyan": {
                     "method": "blacklist",
@@ -191,8 +194,8 @@
                 "CyRadar": {
                     "method": "blacklist",
                     "engine_name": "CyRadar",
-                    "category": "malicious",
-                    "result": "malicious"
+                    "category": "harmless",
+                    "result": "clean"
                 },
                 "desenmascara.me": {
                     "method": "blacklist",
@@ -275,8 +278,8 @@
                 "Gridinsoft": {
                     "method": "blacklist",
                     "engine_name": "Gridinsoft",
-                    "category": "undetected",
-                    "result": "unrated"
+                    "category": "harmless",
+                    "result": "clean"
                 },
                 "Heimdal Security": {
                     "method": "blacklist",
@@ -449,8 +452,8 @@
                 "SOCRadar": {
                     "method": "blacklist",
                     "engine_name": "SOCRadar",
-                    "category": "undetected",
-                    "result": "unrated"
+                    "category": "harmless",
+                    "result": "clean"
                 },
                 "Sophos": {
                     "method": "blacklist",
@@ -515,8 +518,8 @@
                 "URLQuery": {
                     "method": "blacklist",
                     "engine_name": "URLQuery",
-                    "category": "undetected",
-                    "result": "unrated"
+                    "category": "harmless",
+                    "result": "clean"
                 },
                 "Viettel Threat Intelligence": {
                     "method": "blacklist",
@@ -567,60 +570,63 @@
                     "result": "clean"
                 }
             },
-            "last_analysis_date": 1715118097,
-            "categories": {
-                "Xcitium Verdict Cloud": "search engines & portals",
-                "Sophos": "search engines",
-                "Forcepoint ThreatSeeker": "search engines and portals"
-            },
-            "tld": "com",
-            "title": "Google",
-            "threat_names": [],
-            "reputation": -81,
-            "last_analysis_stats": {
-                "malicious": 2,
-                "suspicious": 0,
-                "undetected": 22,
-                "harmless": 68,
-                "timeout": 0
-            },
-            "last_http_response_content_length": 186263,
-            "outgoing_links": [
-                "https://about.google/?utm_source=google-ZZ&utm_medium=referral&utm_campaign=hp-footer&fg=1"
-            ],
-            "total_votes": {
-                "harmless": 13,
-                "malicious": 45
-            },
             "last_final_url": "https://www.google.com/",
-            "last_http_response_content_sha256": "8165a3592b20490906433de27b767b0ab3a82e9c9b9a8070425b8010f2e1645e",
+            "last_analysis_date": 1715757252,
+            "total_votes": {
+                "harmless": 279,
+                "malicious": 119
+            },
+            "title": "Google",
+            "reputation": 386,
+            "last_modification_date": 1715757266,
             "last_http_response_code": 200,
-            "url": "http://gogle.com/",
-            "redirection_chain": [
-                "http://gogle.com/"
-            ],
-            "tags": [],
-            "first_submission_date": 1287025134,
             "last_http_response_headers": {
-                "Date": "Tue, 07 May 2024 21:41:39 GMT",
-                "Expires": "-1",
-                "Cache-Control": "private, max-age=0",
                 "Content-Type": "text/html; charset=UTF-8",
-                "Content-Security-Policy-Report-Only": "object-src 'none';base-uri 'self';script-src 'nonce-h0o5uBmjThyreq9zXp6BNg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp",
-                "Cross-Origin-Opener-Policy": "same-origin-allow-popups; report-to=\"gws\"",
-                "Report-To": "{\"group\":\"gws\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/gws/other\"}]}",
+                "Content-Security-Policy-Report-Only": "object-src 'none';base-uri 'self';script-src 'nonce-jm4RCNdVPL9Un_W_FjQpRA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp",
                 "Accept-CH": "Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version, Sec-CH-UA-Arch, Sec-CH-UA-Model, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version-List, Sec-CH-UA-WoW64",
                 "Permissions-Policy": "unload=()",
                 "P3P": "CP=\"This is not a P3P policy! See g.co/p3phelp for more info.\"",
                 "Content-Encoding": "br",
+                "Date": "Wed, 15 May 2024 07:14:13 GMT",
                 "Server": "gws",
-                "Content-Length": "186263",
+                "Content-Length": "128131",
                 "X-XSS-Protection": "0",
                 "X-Frame-Options": "SAMEORIGIN",
-                "Set-Cookie": "AEC=AQTF6HyNfURsTgJS2AG0uEgC78SujHEYq6oLl-dXiC0fXIjOVnAN1iDBGw; expires=Sun, 03-Nov-2024 21:41:39 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax, NID=514=KdVaX1hq7zmEa_wiPr_Gdq7XUxzBr533NlWMNXU6gyD25qE0yWeE6P4i7HlwDFiKFhkYZIVH_5Tzgac1E0eDH3_uWs9DLMTNVmKS2qX8uAnrjeXCU_KWWeqJX_rE3_6mHoTE1sbwCUpAu8qo2HE7jPwRbLL5ns9RxpLh6cIU4xg; expires=Wed, 06-Nov-2024 21:41:39 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=none",
+                "Expires": "Wed, 15 May 2024 07:14:13 GMT",
+                "Cache-Control": "private",
+                "Set-Cookie": "AEC=AQTF6Hwc38oit-MW8QSMdTX2XRnsyBTkLcqePy7hsegs6eUEiOLGecBPOoA; expires=Mon, 11-Nov-2024 07:14:13 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax, NID=514=USBId9pEFfG6emdZQ1Zo-7ST99tB3kb9qs7s-rFNDc4znMW433fIfbMco4cbDSn2hPEaoATaZLIBG3P1I551uQIZa66ar-UhFUuDVbNf_kKQI7HYJ1waRJJjZVL8GS57OpH4K8KoTXjuypNSpOjXBQKnuaOFMRULwnubq3M8ydk; expires=Thu, 14-Nov-2024 07:14:13 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=none",
                 "Alt-Svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
             },
-            "last_submission_date": 1715118097
+            "tld": "com",
+            "categories": {
+                "BitDefender": "searchengines",
+                "Xcitium Verdict Cloud": "search engines & portals",
+                "Sophos": "search engines",
+                "Forcepoint ThreatSeeker": "search engines and portals"
+            },
+            "tags": [],
+            "url": "https://www.google.com/",
+            "html_meta": {
+                "viewport": [
+                    "width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+                ],
+                "format-detection": [
+                    "telephone=no",
+                    "address=no"
+                ],
+                "referrer": [
+                    "origin"
+                ],
+                "google": [
+                    "notranslate"
+                ]
+            },
+            "redirection_chain": [
+                "https://www.google.com/"
+            ],
+            "last_http_response_content_sha256": "b4d3069f0fe666474cca98572248c97748596cc0f73bb70560bf8bde11b6e552",
+            "threat_names": [],
+            "last_http_response_content_length": 128131
         }
     }
 }

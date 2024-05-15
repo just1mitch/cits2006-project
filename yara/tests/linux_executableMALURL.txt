@@ -1,1 +1,3 @@
 http://gogle.com
+http://malware.wicar.org/data/java_jre17_exec.html
+http://malware.wicar.org/data/ms14_064_ole_xp.html
