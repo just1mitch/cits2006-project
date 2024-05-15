@@ -17,6 +17,8 @@ def main(monitored: List[str], sensitive: List[str]):
         return
 
 
+    VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
+
 
 
 if __name__ == "__main__":
