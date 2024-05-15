@@ -9,12 +9,13 @@ import hashlib
 import json
 import vt
 from pathlib import Path
+import re
 
 WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
 VIRUS_TOTAL_API = os.environ["VIRUS_TOTAL_API"]
 VIRUS_TOTAL_URL = "https://www.virustotal.com/api/v3/files"
 
-yararules_dir = "yara/yararules"
+yararules_dir = "yararules"
 MALWARE_YARA = os.path.abspath(os.path.join(yararules_dir, "malware.yara"))
 SENSINFO_YARA = os.path.abspath(os.path.join(yararules_dir, "sensitiveinfo.yara"))
 SCRIPTS_YARA = os.path.abspath(os.path.join(yararules_dir, "scripts.yara"))
@@ -55,13 +56,21 @@ def scan_file(file_path, yara_rule):
     '''Scans a file with the specified yara rule
     #### Returns 1 on hit, 0 on no hit'''
     rule = yararules[yara_rule]
-    #print(f"Scanning {file_path}")
+    # print(f"Scanning {file_path}")
     matches = rule.match(filepath=file_path)
     if matches:
         print(f"Yara match found in {file_path}: {matches}")
+        if (yara_rule == "MALURL_YARA"):
+            for match in matches:
+                for string in match.strings:
+                    for instance in string.instances:
+                        plaintext = instance.plaintext()
+                        plaintext_str = plaintext.decode('utf-8')  # Assuming utf-8 encoding, adjust if necessary
+                        virus_total_url_scan(plaintext_str)
         return 1
     else:
         return 0
+
     
 # Function to run all scans
 def run_scans(file_path):
@@ -75,6 +84,8 @@ def run_scans(file_path):
     # Executable Files
     if is_executable(file_path):
         if scan_file(file_path, "NETWORK_YARA") or scan_file(file_path, "MALURL_YARA"):
+            safe = 1
+        if scan_file(file_path, "MALURL_YARA"):
             safe = 1
     # High entropy files
     if scan_file(file_path, "MALWARE_YARA"):
@@ -121,6 +132,9 @@ def md5_hash_file(file_path):
         hasher.update(buf)
     return hasher.hexdigest()
 
+def md5_hash_string(string):
+    return hashlib.md5(string.encode()).hexdigest()
+
 def scan_for_malware(file_path):
     """Check if the MD5 hash of the file matches any known malware hash."""
     file_md5 = md5_hash_file(file_path)
@@ -164,6 +178,19 @@ def virus_total_scan(file_path):
     print(f"""Scan Results:\nName: {attributes["meaningful_name"]}\nAnalysis Stats: {attributes["last_analysis_stats"]}\nFull Analysis saved to {save_path}\n""")
     with open(save_path, 'w') as f:
         json.dump(scan, f, indent=4)
+        
+def virus_total_url_scan(url):
+    print(f"\nScanning URL: {url}")
+    hash = md5_hash_string(url)  
+    with vt.Client(VIRUS_TOTAL_API) as vt_client:
+        url_id = vt.url_id(url)
+        try:
+            url = vt_client.get_object("/urls/{}", url_id)
+            print("grabbed data")
+        except vt.error.APIError:
+            analysis = vt_client.scan_url(url, wait_for_completion=True)
+        url = vt_client.get_object("/urls/{}", url_id)
+    print(url.last_analysis_stats)
 
 # Creates a custom yara rule using the strings
 # Takes a path to a newline separated list of custom strings
