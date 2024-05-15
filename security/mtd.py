@@ -1,4 +1,22 @@
 import argparse
+from typing import List
+import os
+
+def check_paths(paths: List[str]):
+    for path in paths:
+        if not os.path.isdir(path):
+            print(f"Error: {path} is not a valid directory.")
+            return False
+    return [os.path.abspath(path) for path in paths]
+
+def main(monitored: List[str], sensitive: List[str]):
+    monitored = check_paths(monitored)
+    sensitive = check_paths(sensitive)
+
+    if not monitored or not sensitive:
+        return
+
+
 
 
 if __name__ == "__main__":
@@ -12,4 +30,4 @@ if __name__ == "__main__":
                         help='Sensitive directories')
     args = parser.parse_args()
 
-    
+    main(args.monitored, args.sensitive)
