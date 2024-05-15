@@ -148,6 +148,8 @@ def create_custom_rule(path_to_list):
 
 # CLI Interface
 def main():
+    global malware_hashes_folder
+    global yararules
     parser = argparse.ArgumentParser(description="Scan files and folders with Yara rules.")
     parser.add_argument("rules", help="Directory to YARA Rules.")
     parser.add_argument("scan_path", help="Path to the file or folder to scan.")
@@ -163,10 +165,8 @@ def main():
     SCRIPTS_YARA = os.path.join(yararules_dir, "scripts.yara")
     NETWORK_YARA = os.path.join(yararules_dir, "netresource.yara")
     MALURL_YARA = os.path.join(yararules_dir, "malURL.yara")
-    global malware_hashes_folder
     malware_hashes_folder = os.path.join(yararules_dir, "malwarehashes")
     
-    global yararules
     yararules = {
         "MALWARE_YARA": yara.compile(filepath=MALWARE_YARA),
         "SENSINFO_YARA": yara.compile(filepath=SENSINFO_YARA),
@@ -183,11 +183,9 @@ def main():
         customsig_yara = create_custom_rule(args.custom_signatures)
         yararules["CUSTOMSIG_YARA"] = customsig_yara
 
-    # Scan file(s)
-    if os.path.isfile(scan_path):
-        # If it's a single file
-        if run_scans(scan_path):
-            files_to_upload.append(scan_path)
+    # Check if it is of type file and it's a single file
+    if os.path.isfile(scan_path) and run_scans(scan_path):
+        files_to_upload.append(scan_path)
     elif os.path.isdir(scan_path):
         # Recursively scan all files in the directory
         for root, dirs, files in os.walk(scan_path):
