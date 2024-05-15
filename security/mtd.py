@@ -1,8 +1,11 @@
 import argparse
+import asyncio
+import signal
 from typing import List
 import os
 
 from YaraEngine import YaraEngine
+from scanner import start
 
 DEFAULT_YARA_RULES = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara/yararules/")]
 
@@ -29,12 +32,18 @@ def main(monitored: List[str], sensitive: List[str], yara_rules: List[str] = [])
 
     yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY)
 
-    for path in monitored:
-        for root, dirs, files in os.walk(path):
-            for file in files:
-                file_path = os.path.join(root, file)
-                if yara_engine.scan(file_path):
-                    print(f"Alert: {file_path} matched a YARA rule.")
+    loop = asyncio.get_event_loop()
+    loop.add_signal_handler(signal.SIGINT, loop.stop)
+
+    try:
+        loop.create_task(start(yara_engine, monitored))
+        loop.run_forever()
+    except KeyboardInterrupt:
+        tasks = asyncio.all_tasks(loop=loop)
+        for task in tasks:
+            task.cancel()
+        loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+        loop.close()
 
 
 
