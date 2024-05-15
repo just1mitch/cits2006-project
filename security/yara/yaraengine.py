@@ -192,7 +192,7 @@ def main():
             # Ignore the Security folder at root of rapidobank directory
             # as our file structure has the security folder for project implementation
             if(root.split("/")[-1] == 'rapidobank'):
-                dirs.remove("Security")
+                dirs.remove("security")
                 
             for file in files:
                 file_path = os.path.join(root, file)
