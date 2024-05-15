@@ -6,21 +6,20 @@
             "self": "https://www.virustotal.com/api/v3/urls/3f9a720c6802036ff0d65a3de44b8c0497e7394b8bac65d879e4fe78eb5d90a8"
         },
         "attributes": {
-            "categories": {
-                "BitDefender": "misc",
-                "Dr.Web": "known infection source",
-                "Sophos": "information technology",
-                "Webroot": "Malware Sites",
-                "Forcepoint ThreatSeeker": "computer security"
-            },
-            "last_submission_date": 1714205959,
-            "tld": "org",
-            "last_http_response_code": 200,
+            "url": "http://malware.wicar.org/data/java_jre17_exec.html",
             "threat_names": [
                 "Mal/HTMLGen-A"
             ],
-            "reputation": -26,
             "tags": [],
+            "last_http_response_code": 200,
+            "tld": "org",
+            "last_analysis_stats": {
+                "malicious": 10,
+                "suspicious": 0,
+                "undetected": 21,
+                "harmless": 61,
+                "timeout": 0
+            },
             "last_analysis_results": {
                 "Artists Against 419": {
                     "method": "blacklist",
@@ -588,28 +587,29 @@
                 "Keep-Alive": "timeout=5, max=100",
                 "Connection": "Keep-Alive"
             },
-            "last_http_response_content_sha256": "3490a0d675ffaadccd935cb0f91c19aee89643d7a0df6d7b0949ee6137d283a0",
+            "times_submitted": 246,
+            "first_submission_date": 1374149166,
+            "last_final_url": "http://malware.wicar.org/data/java_jre17_exec.html",
             "redirection_chain": [
                 "http://malware.wicar.org/data/java_jre17_exec.html"
             ],
-            "last_http_response_content_length": 129,
-            "url": "http://malware.wicar.org/data/java_jre17_exec.html",
+            "last_modification_date": 1714205974,
+            "last_submission_date": 1714205959,
+            "reputation": -26,
+            "categories": {
+                "BitDefender": "misc",
+                "Dr.Web": "known infection source",
+                "Sophos": "information technology",
+                "Webroot": "Malware Sites",
+                "Forcepoint ThreatSeeker": "computer security"
+            },
             "total_votes": {
                 "harmless": 1,
                 "malicious": 6
             },
-            "last_analysis_stats": {
-                "malicious": 10,
-                "suspicious": 0,
-                "undetected": 21,
-                "harmless": 61,
-                "timeout": 0
-            },
+            "last_http_response_content_length": 129,
             "last_analysis_date": 1714205959,
-            "first_submission_date": 1374149166,
-            "times_submitted": 246,
-            "last_final_url": "http://malware.wicar.org/data/java_jre17_exec.html",
-            "last_modification_date": 1714205974
+            "last_http_response_content_sha256": "3490a0d675ffaadccd935cb0f91c19aee89643d7a0df6d7b0949ee6137d283a0"
         }
     }
 }

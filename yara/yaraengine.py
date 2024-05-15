@@ -166,33 +166,39 @@ def virus_total_scan(file_path):
     with vt.Client(VIRUS_TOTAL_API) as vt_client:
         try:
             scan = vt_client.get_json(f"/files/{hash}")
-        except vt.error.APIError:
-            # If the file hasn't been scanned, send it for scanning
-            with open(f"{file_path}", "rb") as f:
-                vt_client.scan_file(f, wait_for_completion=True)
-            scan = vt_client.get_json(f"/files/{hash}")
+        except vt.error.APIError as e:
+            error_code, _ = e.args
+            if error_code == 'QuotaExceededError':
+                print("API quota exceeded. Please try again later.")
+                return
+            else:
+                raise e  # Re-raise other API errors
+        else:
+            attributes = scan["data"]["attributes"]
+            save_path = f"{os.path.abspath('./scan_results')}/{attributes['md5']}.json"
+            print(f"""Scan Results:\nName: {attributes["meaningful_name"]}\nAnalysis Stats: {attributes["last_analysis_stats"]}\nFull Analysis saved to {save_path}\n""")
+            with open(save_path, 'w') as f:
+                json.dump(scan, f, indent=4)
 
-    attributes = scan["data"]["attributes"]
-    Path(os.path.abspath('./scan_results')).mkdir(exist_ok=True)
-    save_path = f"{os.path.abspath('./scan_results')}/{attributes['md5']}.json"
-    print(f"""Scan Results:\nName: {attributes["meaningful_name"]}\nAnalysis Stats: {attributes["last_analysis_stats"]}\nFull Analysis saved to {save_path}\n""")
-    with open(save_path, 'w') as f:
-        json.dump(scan, f, indent=4)
-        
 def virus_total_url_scan(url):
     print(f"\nScanning URL: {url}")
     with vt.Client(VIRUS_TOTAL_API) as vt_client:
         url_id = vt.url_id(url)
         try:
             urlstats = vt_client.get_json("/urls/{}", url_id)
-        except vt.error.APIError:
-            vt_client.scan_url(url, wait_for_completion=True)
-        urlstats = vt_client.get_json("/urls/{}", url_id)
-    attributes = urlstats["data"]["attributes"]
-    save_path = f"{os.path.abspath('./scan_results')}/{md5_hash_string(url)}.json"
-    print(f"""Scan Results:\nName: {url}\nReputation: {attributes["reputation"]}\nAnalysis Stats: {attributes["last_analysis_stats"]}\nFull Analysis saved to {save_path}\n""")
-    with open(save_path, 'w') as f:
-        json.dump(urlstats, f, indent=4)
+        except vt.error.APIError as e:
+            error_code, _ = e.args
+            if error_code == 'QuotaExceededError':
+                print("API quota exceeded. Please try again later.")
+                return
+            else:
+                raise e  # Re-raise other API errors
+        else:
+            attributes = urlstats["data"]["attributes"]
+            save_path = f"{os.path.abspath('./scan_results')}/{md5_hash_string(url)}.json"
+            print(f"""Scan Results:\nName: {url}\nReputation: {attributes["reputation"]}\nAnalysis Stats: {attributes["last_analysis_stats"]}\nFull Analysis saved to {save_path}\n""")
+            with open(save_path, 'w') as f:
+                json.dump(urlstats, f, indent=4)
     
 # Creates a custom yara rule using the strings
 # Takes a path to a newline separated list of custom strings

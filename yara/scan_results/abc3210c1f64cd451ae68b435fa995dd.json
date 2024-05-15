@@ -1,13 +1,15 @@
 {
     "data": {
-        "id": "7c63827964c5327b1b7dd6a7dc70eeb2c407f7aaca42b9fbc401fe6e6f95d492",
+        "id": "f06a358e34b4bb84ae9f8d1535959c046b41ec29b9f466ed692e1222eddfa829",
         "type": "file",
         "links": {
-            "self": "https://www.virustotal.com/api/v3/files/7c63827964c5327b1b7dd6a7dc70eeb2c407f7aaca42b9fbc401fe6e6f95d492"
+            "self": "https://www.virustotal.com/api/v3/files/f06a358e34b4bb84ae9f8d1535959c046b41ec29b9f466ed692e1222eddfa829"
         },
         "attributes": {
+            "unique_sources": 1,
+            "last_modification_date": 1715758276,
+            "tlsh": "T1FDC012CA313186062A00CCA570E0C89CA52338F220D0CE8DC72ADF31B20190CBE00FAA",
             "type_description": "JavaScript",
-            "sha1": "0d6dabe983c5e45f69df3bfaf3afe53862be1777",
             "last_analysis_results": {
                 "Bkav": {
                     "method": "blacklist",
@@ -57,11 +59,19 @@
                     "category": "undetected",
                     "result": null
                 },
-                "ALYac": {
+                "Skyhigh": {
                     "method": "blacklist",
-                    "engine_name": "ALYac",
-                    "engine_version": "2.0.0.10",
-                    "engine_update": "20240515",
+                    "engine_name": "Skyhigh",
+                    "engine_version": "v2021.2.0+4045",
+                    "engine_update": "20240514",
+                    "category": "undetected",
+                    "result": null
+                },
+                "McAfee": {
+                    "method": "blacklist",
+                    "engine_name": "McAfee",
+                    "engine_version": "6.0.6.653",
+                    "engine_update": "20240514",
                     "category": "undetected",
                     "result": null
                 },
@@ -73,11 +83,11 @@
                     "category": "undetected",
                     "result": null
                 },
-                "Zillya": {
+                "VIPRE": {
                     "method": "blacklist",
-                    "engine_name": "Zillya",
-                    "engine_version": "2.0.0.5111",
-                    "engine_update": "20240513",
+                    "engine_name": "VIPRE",
+                    "engine_version": "6.0.0.35",
+                    "engine_update": "20240514",
                     "category": "undetected",
                     "result": null
                 },
@@ -113,19 +123,11 @@
                     "category": "undetected",
                     "result": null
                 },
-                "BitDefenderTheta": {
+                "Baidu": {
                     "method": "blacklist",
-                    "engine_name": "BitDefenderTheta",
-                    "engine_version": "7.2.37796.0",
-                    "engine_update": "20240422",
-                    "category": "undetected",
-                    "result": null
-                },
-                "VirIT": {
-                    "method": "blacklist",
-                    "engine_name": "VirIT",
-                    "engine_version": "9.5.701",
-                    "engine_update": "20240514",
+                    "engine_name": "Baidu",
+                    "engine_version": "1.0.0.2",
+                    "engine_update": "20190318",
                     "category": "undetected",
                     "result": null
                 },
@@ -140,7 +142,15 @@
                 "ESET-NOD32": {
                     "method": "blacklist",
                     "engine_name": "ESET-NOD32",
-                    "engine_version": "29228",
+                    "engine_version": "29227",
+                    "engine_update": "20240515",
+                    "category": "undetected",
+                    "result": null
+                },
+                "Cynet": {
+                    "method": "blacklist",
+                    "engine_name": "Cynet",
+                    "engine_version": "4.0.1.1",
                     "engine_update": "20240515",
                     "category": "undetected",
                     "result": null
@@ -217,14 +227,6 @@
                     "category": "undetected",
                     "result": null
                 },
-                "Baidu": {
-                    "method": "blacklist",
-                    "engine_name": "Baidu",
-                    "engine_version": "1.0.0.2",
-                    "engine_update": "20190318",
-                    "category": "undetected",
-                    "result": null
-                },
                 "F-Secure": {
                     "method": "blacklist",
                     "engine_name": "F-Secure",
@@ -241,11 +243,11 @@
                     "category": "undetected",
                     "result": null
                 },
-                "VIPRE": {
+                "Zillya": {
                     "method": "blacklist",
-                    "engine_name": "VIPRE",
-                    "engine_version": "6.0.0.35",
-                    "engine_update": "20240514",
+                    "engine_name": "Zillya",
+                    "engine_version": "2.0.0.5111",
+                    "engine_update": "20240513",
                     "category": "undetected",
                     "result": null
                 },
@@ -273,14 +275,6 @@
                     "category": "undetected",
                     "result": null
                 },
-                "GData": {
-                    "method": "blacklist",
-                    "engine_name": "GData",
-                    "engine_version": "A:25.37991B:27.36001",
-                    "engine_update": "20240515",
-                    "category": "undetected",
-                    "result": null
-                },
                 "Jiangmin": {
                     "method": "blacklist",
                     "engine_name": "Jiangmin",
@@ -289,13 +283,13 @@
                     "category": "undetected",
                     "result": null
                 },
-                "Varist": {
+                "Google": {
                     "method": "blacklist",
-                    "engine_name": "Varist",
-                    "engine_version": "6.5.1.2",
+                    "engine_name": "Google",
+                    "engine_version": "1715751041",
                     "engine_update": "20240515",
                     "category": "malicious",
-                    "result": "Phish1.B"
+                    "result": "Detected"
                 },
                 "Avira": {
                     "method": "blacklist",
@@ -329,6 +323,14 @@
                     "category": "undetected",
                     "result": null
                 },
+                "Microsoft": {
+                    "method": "blacklist",
+                    "engine_name": "Microsoft",
+                    "engine_version": "1.1.24040.1",
+                    "engine_update": "20240515",
+                    "category": "undetected",
+                    "result": null
+                },
                 "Gridinsoft": {
                     "method": "blacklist",
                     "engine_name": "Gridinsoft",
@@ -340,8 +342,8 @@
                 "Xcitium": {
                     "method": "blacklist",
                     "engine_name": "Xcitium",
-                    "engine_version": "36702",
-                    "engine_update": "20240515",
+                    "engine_version": "36701",
+                    "engine_update": "20240514",
                     "category": "undetected",
                     "result": null
                 },
@@ -369,21 +371,21 @@
                     "category": "undetected",
                     "result": null
                 },
-                "Microsoft": {
+                "GData": {
                     "method": "blacklist",
-                    "engine_name": "Microsoft",
-                    "engine_version": "1.1.24040.1",
+                    "engine_name": "GData",
+                    "engine_version": "A:25.37991B:27.36001",
                     "engine_update": "20240515",
                     "category": "undetected",
                     "result": null
                 },
-                "Cynet": {
+                "Varist": {
                     "method": "blacklist",
-                    "engine_name": "Cynet",
-                    "engine_version": "4.0.1.1",
+                    "engine_name": "Varist",
+                    "engine_version": "6.5.1.2",
                     "engine_update": "20240515",
-                    "category": "undetected",
-                    "result": null
+                    "category": "malicious",
+                    "result": "Phish1.B"
                 },
                 "AhnLab-V3": {
                     "method": "blacklist",
@@ -401,11 +403,19 @@
                     "category": "undetected",
                     "result": null
                 },
-                "McAfee": {
+                "BitDefenderTheta": {
                     "method": "blacklist",
-                    "engine_name": "McAfee",
-                    "engine_version": "6.0.6.653",
-                    "engine_update": "20240514",
+                    "engine_name": "BitDefenderTheta",
+                    "engine_version": "7.2.37796.0",
+                    "engine_update": "20240422",
+                    "category": "undetected",
+                    "result": null
+                },
+                "ALYac": {
+                    "method": "blacklist",
+                    "engine_name": "ALYac",
+                    "engine_version": "2.0.0.10",
+                    "engine_update": "20240515",
                     "category": "undetected",
                     "result": null
                 },
@@ -445,7 +455,7 @@
                     "method": "blacklist",
                     "engine_name": "Yandex",
                     "engine_version": "5.5.2.24",
-                    "engine_update": "20240515",
+                    "engine_update": "20240514",
                     "category": "undetected",
                     "result": null
                 },
@@ -505,17 +515,9 @@
                     "category": "undetected",
                     "result": null
                 },
-                "Google": {
+                "VirIT": {
                     "method": "blacklist",
-                    "engine_name": "Google",
-                    "engine_version": null,
-                    "engine_update": "20240515",
-                    "category": "timeout",
-                    "result": null
-                },
-                "Skyhigh": {
-                    "method": "blacklist",
-                    "engine_name": "Skyhigh",
+                    "engine_name": "VirIT",
                     "engine_version": null,
                     "engine_update": "20240514",
                     "category": "failure",
@@ -626,53 +628,52 @@
                     "result": null
                 }
             },
-            "meaningful_name": "linux_executableMALURL.txt",
-            "sha256": "7c63827964c5327b1b7dd6a7dc70eeb2c407f7aaca42b9fbc401fe6e6f95d492",
-            "tags": [
-                "javascript"
-            ],
-            "ssdeep": "3:N1KZKexFKTTTXoPMDpw1zKTTTXoPAUk4SfdV8:C0Mwmo5mxk4Sfs",
-            "last_submission_date": 1715757753,
-            "last_modification_date": 1715757947,
+            "md5": "abc3210c1f64cd451ae68b435fa995dd",
             "total_votes": {
                 "harmless": 0,
                 "malicious": 0
             },
-            "md5": "a3e8a760be4d6735bdbb9e4e682cb2b5",
-            "javascript_info": {
-                "tags": [
-                    "malformed"
-                ]
-            },
-            "vhash": "7596fdd04dba990373ab2f3da0c7dd3f",
-            "names": [
-                "linux_executableMALURL.txt"
-            ],
-            "last_analysis_date": 1715757753,
-            "type_extension": "js",
-            "reputation": 0,
-            "size": 118,
-            "tlsh": "T12CB092CA313182152600CC6575E0C46CA52738F225D0CE8DC62ADF32B20590CBE00F6A",
-            "times_submitted": 1,
+            "size": 173,
             "type_tag": "javascript",
-            "unique_sources": 1,
+            "reputation": 0,
+            "first_submission_date": 1715758237,
+            "last_analysis_stats": {
+                "malicious": 2,
+                "suspicious": 0,
+                "undetected": 61,
+                "harmless": 0,
+                "timeout": 0,
+                "confirmed-timeout": 0,
+                "failure": 1,
+                "type-unsupported": 13
+            },
             "type_tags": [
                 "source",
                 "javascript",
                 "js"
             ],
+            "last_analysis_date": 1715758237,
+            "javascript_info": {
+                "tags": [
+                    "malformed"
+                ]
+            },
             "magic": "ASCII text",
-            "first_submission_date": 1715757753,
-            "last_analysis_stats": {
-                "malicious": 1,
-                "suspicious": 0,
-                "undetected": 61,
-                "harmless": 0,
-                "timeout": 1,
-                "confirmed-timeout": 0,
-                "failure": 1,
-                "type-unsupported": 13
-            }
+            "tags": [
+                "javascript"
+            ],
+            "names": [
+                "linux_executableMALURL.txt"
+            ],
+            "vhash": "7596fdd04dba990373ab2f3da0c7dd3f",
+            "ssdeep": "3:N1KZKexFKTTTXoPMDpw1zKTTTXoPAUk4SfdVCzKTTTXoPAUk4SfLhdhQ:C0Mwmo5mxk4Sfnmxk4SfXK",
+            "meaningful_name": "linux_executableMALURL.txt",
+            "times_submitted": 1,
+            "sha1": "dea311ae0f196ca6bbcebad1a5289a0de20f6eb4",
+            "magika": "CT_TXT",
+            "sha256": "f06a358e34b4bb84ae9f8d1535959c046b41ec29b9f466ed692e1222eddfa829",
+            "type_extension": "js",
+            "last_submission_date": 1715758237
         }
     }
 }
