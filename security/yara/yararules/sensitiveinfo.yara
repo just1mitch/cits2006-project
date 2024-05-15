@@ -3,7 +3,7 @@
 rule financial_data
 {
     meta:
-        description = "Detects financialdata"
+        description = "Detects financial data"
         author = "23135002"
     strings:
         $IBAN = /\b[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\b/ // International Bank Number
