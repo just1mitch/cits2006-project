@@ -17,7 +17,7 @@ This report is separated into each section of the project specification:
 
 ## Yara Engine (Designed by Joel and Mitchell)
 
-## Cipher System and Hashing Algorithm (Designed by Elijah)\
+## Cipher System and Hashing Algorithm (Designed by Elijah, Joel and Mitchell)
 
 ### Brief
 The RB-Cyrpt.py script is designed to be a diverse command line tool to
