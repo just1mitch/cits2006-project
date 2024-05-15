@@ -6,45 +6,9 @@
             "self": "https://www.virustotal.com/api/v3/files/88c47178895c62335f2d0118045627835b30eb325df4baef285721d0573f55a1"
         },
         "attributes": {
-            "type_extension": "exe",
-            "meaningful_name": "networkpe.exe",
-            "tags": [
-                "long-sleeps",
-                "peexe",
-                "detect-debug-environment",
-                "assembly"
-            ],
-            "sandbox_verdicts": {
-                "C2AE": {
-                    "category": "undetected",
-                    "malware_classification": [
-                        "UNKNOWN_VERDICT"
-                    ],
-                    "sandbox_name": "C2AE"
-                }
-            },
-            "trid": [
-                {
-                    "file_type": "Generic CIL Executable (.NET, Mono, etc.)",
-                    "probability": 67.7
-                },
-                {
-                    "file_type": "Win64 Executable (generic)",
-                    "probability": 9.7
-                },
-                {
-                    "file_type": "Win32 Dynamic Link Library (generic)",
-                    "probability": 6.0
-                },
-                {
-                    "file_type": "Win16 NE executable (generic)",
-                    "probability": 4.6
-                },
-                {
-                    "file_type": "Win32 Executable (generic)",
-                    "probability": 4.1
-                }
-            ],
+            "authentihash": "d83ee89ee3245846d7b0b3538a9b5fcd54cdd48033be8390a1b3eb57c9ea59b3",
+            "sha256": "88c47178895c62335f2d0118045627835b30eb325df4baef285721d0573f55a1",
+            "last_analysis_date": 1715254707,
             "dot_net_assembly": {
                 "entry_point_rva": 15288,
                 "metadata_header_rva": 15360,
@@ -345,11 +309,313 @@
                     }
                 ]
             },
+            "first_submission_date": 1715248161,
+            "sha1": "078f7252a1b9cf25dfe45a75684105e366c038a7",
+            "times_submitted": 1,
+            "type_tags": [
+                "executable",
+                "windows",
+                "win32",
+                "pe",
+                "peexe"
+            ],
+            "vhash": "224036551511007251243085",
+            "reputation": 0,
+            "type_extension": "exe",
+            "ssdeep": "384:zgJo2hYvWMUMol8WTVj94OV8y/AMTW4g1CwL1jb+/iGJViaD0m3HrtveH:zEHP88pKOV8y4M41v1jbVvagm3Hrdk",
+            "size": 25600,
+            "sigma_analysis_results": [
+                {
+                    "rule_level": "medium",
+                    "rule_id": "309cda68f6a1f23a3de3d6604cd71d89098ca2472c6cfaae572a5d4375389247",
+                    "rule_source": "Sigma Integrated Rule Set (GitHub)",
+                    "rule_title": "PowerShell Core DLL Loaded By Non PowerShell Process",
+                    "rule_description": "Detects loading of essential DLLs used by PowerShell by non-PowerShell process.\nDetects behavior similar to meterpreter's \"load powershell\" extension.\n",
+                    "rule_author": "Tom Kern, oscd.community, Natalia Shornikova, Tim Shelton, Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
+                    "match_context": [
+                        {
+                            "values": {
+                                "Hashes": "SHA1=DF508599024DDDEAA208DA411EC65B5D37C851DC,MD5=62114A0F0D9FE053D8D274F4E5FB9EBD,SHA256=114BA0076882EFCD4B6C52CBCB49B1BB006A36A062E2114637D54B28627D5A82,IMPHASH=00000000000000000000000000000000",
+                                "Product": "Microsoft (R) Windows (R) Operating System",
+                                "OriginalFileName": "System.Management.Automation.dll",
+                                "ImageLoaded": "C:\\Windows\\assembly\\NativeImages_v4.0.30319_64\\System.Manaa57fc8cc#\\f02732d562721457afde5c189a906d17\\System.Management.Automation.ni.dll",
+                                "Description": "System.Management.Automation",
+                                "SignatureStatus": "Unavailable",
+                                "FileVersion": "10.0.17134.858",
+                                "EventID": "7",
+                                "Signed": "false",
+                                "Image": "C:\\Users\\george\\Desktop\\networkpe.exe",
+                                "Company": "Microsoft Corporation"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "rule_level": "medium",
+                    "rule_id": "33e7351552f382831af6bf73d86054bced055e64df091f572c94e9fc9e9a2a97",
+                    "rule_source": "Sigma Integrated Rule Set (GitHub)",
+                    "rule_title": "Suspicious WSMAN Provider Image Loads",
+                    "rule_description": "Detects signs of potential use of the WSMAN provider from uncommon processes locally and remote execution.",
+                    "rule_author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
+                    "match_context": [
+                        {
+                            "values": {
+                                "Product": "Microsoft (R) Windows (R) Operating System",
+                                "Hashes": "SHA1=673778E82E53EF272265FD1709E1A7A4D8EC1993,MD5=67604580314B7F0C3C72C44F186CABDA,SHA256=09BF91BD6DB6E2B7C419AB1FF2DAC68CB013811C3B8A776091F25285A4955EDB,IMPHASH=00000000000000000000000000000000",
+                                "SignatureStatus": "Unavailable",
+                                "ImageLoaded": "C:\\Windows\\assembly\\NativeImages_v4.0.30319_64\\Microsoft.We0722664#\\a2e162c411e7960d3320a700179232fc\\Microsoft.WSMan.Management.ni.dll",
+                                "Description": " ",
+                                "OriginalFileName": "Microsoft.WSMan.Management.dll",
+                                "FileVersion": "10.0.17134.619",
+                                "EventID": "7",
+                                "Signed": "false",
+                                "Image": "C:\\Users\\george\\Desktop\\networkpe.exe",
+                                "Company": "Microsoft Corporation"
+                            }
+                        },
+                        {
+                            "values": {
+                                "ImageLoaded": "C:\\Windows\\assembly\\NativeImages_v4.0.30319_64\\Microsoft.We0722664#\\9e6d0a240ae868163a9c0bf5bdf3d0fe\\Microsoft.WSMan.Management.ni.dll"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "rule_level": "medium",
+                    "rule_id": "6291f85314c7d9966be831c56d3cdfb30f42c84f599273e73dac5c95e1122abf",
+                    "rule_source": "Sigma Integrated Rule Set (GitHub)",
+                    "rule_title": "Usage Of Web Request Commands And Cmdlets - ScriptBlock",
+                    "rule_description": "Detects the use of various web request commands with commandline tools and Windows PowerShell cmdlets (including aliases) via PowerShell scriptblock logs",
+                    "rule_author": "James Pemberton / @4A616D6573",
+                    "match_context": [
+                        {
+                            "values": {
+                                "ScriptBlockText": "$var = Invoke-WebRequest \"https://www.google.com\"\r\n\r\nWrite-Host $var",
+                                "MessageTotal": "1",
+                                "ScriptBlockId": "a18d91ed-cd1c-4780-a572-99143520b56b",
+                                "Path": "",
+                                "EventID": "4104",
+                                "MessageNumber": "1"
+                            }
+                        },
+                        {
+                            "values": {
+                                "ScriptBlockText": "$var = Invoke-WebRequest \"https://www.google.com\"\r\n\r\nWrite-Host $var",
+                                "Path": "",
+                                "ScriptBlockId": "6d2d68ec-770f-43d8-802e-699e66d5e0c1",
+                                "MessageTotal": "1",
+                                "EventID": "4104",
+                                "MessageNumber": "1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "rule_level": "medium",
+                    "rule_id": "d6ff8dca8c8ea9fa750972dd032542746369179e3aaceccc1c3f2cc2a35f5d25",
+                    "rule_source": "Sigma Integrated Rule Set (GitHub)",
+                    "rule_title": "PSScriptPolicyTest Creation By Uncommon Process",
+                    "rule_description": "Detects the creation of the \"PSScriptPolicyTest\" PowerShell script by an uncommon process. This file is usually generated by Microsoft Powershell to test against Applocker.",
+                    "rule_author": "Nasreddine Bencherchali (Nextron Systems)",
+                    "match_context": [
+                        {
+                            "values": {
+                                "Image": "C:\\Users\\Bruno\\AppData\\Local\\Temp\\networkpe.exe",
+                                "TargetFilename": "C:\\Users\\Bruno\\AppData\\Local\\Temp\\__PSScriptPolicyTest_zgbadqex.3nl.ps1",
+                                "EventID": "11"
+                            }
+                        },
+                        {
+                            "values": {
+                                "Image": "C:\\Users\\george\\Desktop\\networkpe.exe",
+                                "EventID": "11",
+                                "TargetFilename": "C:\\Users\\george\\AppData\\Local\\Temp\\__PSScriptPolicyTest_ijfftzqm.zkc.ps1"
+                            }
+                        },
+                        {
+                            "values": {
+                                "Image": "C:\\Users\\george\\Desktop\\networkpe.exe",
+                                "EventID": "11",
+                                "TargetFilename": "C:\\Users\\george\\AppData\\Local\\Temp\\__PSScriptPolicyTest_sp5qwjzw.10j.psm1"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "last_submission_date": 1715248161,
+            "sandbox_verdicts": {
+                "C2AE": {
+                    "category": "undetected",
+                    "malware_classification": [
+                        "UNKNOWN_VERDICT"
+                    ],
+                    "sandbox_name": "C2AE"
+                }
+            },
+            "pe_info": {
+                "timestamp": 1715091296,
+                "imphash": "f34d5f2d4577ed6d9ceec516c1f5a744",
+                "machine_type": 332,
+                "entry_point": 30718,
+                "resource_details": [
+                    {
+                        "lang": "NEUTRAL",
+                        "chi2": 50224.48,
+                        "filetype": "unknown",
+                        "entropy": 3.173597812652588,
+                        "sha256": "d97d07cf979822a6671a9a7c657768cb75f0f831c3c82626a85d5ef2077a51a1",
+                        "type": "RT_VERSION"
+                    },
+                    {
+                        "lang": "NEUTRAL",
+                        "chi2": 4719.86,
+                        "filetype": "unknown",
+                        "entropy": 5.00111722946167,
+                        "sha256": "c0085eb467d2fc9c9f395047e057183b3cd1503a4087d0db565161c13527a76f",
+                        "type": "RT_MANIFEST"
+                    }
+                ],
+                "resource_langs": {
+                    "NEUTRAL": 2
+                },
+                "resource_types": {
+                    "RT_MANIFEST": 1,
+                    "RT_VERSION": 1
+                },
+                "sections": [
+                    {
+                        "name": ".text",
+                        "chi2": 420597.75,
+                        "virtual_address": 8192,
+                        "entropy": 5.74,
+                        "raw_size": 23040,
+                        "flags": "rx",
+                        "virtual_size": 22532,
+                        "md5": "d51480482e9e497b291c4135449ef702"
+                    },
+                    {
+                        "name": ".rsrc",
+                        "chi2": 100227.84,
+                        "virtual_address": 32768,
+                        "entropy": 3.72,
+                        "raw_size": 1536,
+                        "flags": "r",
+                        "virtual_size": 1248,
+                        "md5": "9f74d8b6c9cd4e6eddb526bfa9a56832"
+                    },
+                    {
+                        "name": ".reloc",
+                        "chi2": 129030.0,
+                        "virtual_address": 40960,
+                        "entropy": 0.06,
+                        "raw_size": 512,
+                        "flags": "r",
+                        "virtual_size": 12,
+                        "md5": "795e030c4bdeea4b82270df1b2a4364b"
+                    }
+                ],
+                "import_list": [
+                    {
+                        "library_name": "mscoree.dll",
+                        "imported_functions": [
+                            "_CorExeMain"
+                        ]
+                    }
+                ]
+            },
+            "total_votes": {
+                "harmless": 0,
+                "malicious": 0
+            },
+            "meaningful_name": "networkpe.exe",
+            "type_description": "Win32 EXE",
+            "trid": [
+                {
+                    "file_type": "Generic CIL Executable (.NET, Mono, etc.)",
+                    "probability": 67.7
+                },
+                {
+                    "file_type": "Win64 Executable (generic)",
+                    "probability": 9.7
+                },
+                {
+                    "file_type": "Win32 Dynamic Link Library (generic)",
+                    "probability": 6.0
+                },
+                {
+                    "file_type": "Win16 NE executable (generic)",
+                    "probability": 4.6
+                },
+                {
+                    "file_type": "Win32 Executable (generic)",
+                    "probability": 4.1
+                }
+            ],
+            "last_analysis_stats": {
+                "malicious": 8,
+                "suspicious": 0,
+                "undetected": 64,
+                "harmless": 0,
+                "timeout": 0,
+                "confirmed-timeout": 0,
+                "failure": 1,
+                "type-unsupported": 4
+            },
+            "magic": "PE32 executable (console) Intel 80386 Mono/.Net assembly, for MS Windows",
+            "md5": "18c5140c131ad057b35ef4ba1fc8b7f9",
+            "unique_sources": 1,
+            "tlsh": "T15AB2095DAADCC62ADA6F4FBC7CB316200371B3425956EF866D8899AF2C6330444213E7",
+            "last_modification_date": 1715371221,
             "names": [
                 "networkpe.exe"
             ],
+            "type_tag": "peexe",
+            "packers": {
+                "PEiD": ".NET executable"
+            },
             "dot_net_guids": {
                 "mvid": "9f2a68a3-4689-4b0c-bb28-928c420c7fa0"
+            },
+            "creation_date": 1715091296,
+            "tags": [
+                "long-sleeps",
+                "peexe",
+                "detect-debug-environment",
+                "assembly"
+            ],
+            "detectiteasy": {
+                "filetype": "PE32",
+                "values": [
+                    {
+                        "version": "v4.0.30319",
+                        "type": "Library",
+                        "name": ".NET"
+                    },
+                    {
+                        "version": "11.0",
+                        "type": "Linker",
+                        "name": "Microsoft Linker"
+                    }
+                ]
+            },
+            "signature_info": {
+                "internal name": "networkpe.exe",
+                "file version": "0.0.0.0",
+                "original name": "networkpe.exe"
+            },
+            "sigma_analysis_stats": {
+                "critical": 0,
+                "high": 0,
+                "medium": 4,
+                "low": 0
+            },
+            "sigma_analysis_summary": {
+                "Sigma Integrated Rule Set (GitHub)": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 4,
+                    "low": 0
+                }
             },
             "last_analysis_results": {
                 "Bkav": {
@@ -968,273 +1234,7 @@
                     "category": "type-unsupported",
                     "result": null
                 }
-            },
-            "type_tags": [
-                "executable",
-                "windows",
-                "win32",
-                "pe",
-                "peexe"
-            ],
-            "last_submission_date": 1715248161,
-            "last_analysis_date": 1715254707,
-            "last_modification_date": 1715371221,
-            "sigma_analysis_results": [
-                {
-                    "rule_level": "medium",
-                    "rule_id": "309cda68f6a1f23a3de3d6604cd71d89098ca2472c6cfaae572a5d4375389247",
-                    "rule_source": "Sigma Integrated Rule Set (GitHub)",
-                    "rule_title": "PowerShell Core DLL Loaded By Non PowerShell Process",
-                    "rule_description": "Detects loading of essential DLLs used by PowerShell by non-PowerShell process.\nDetects behavior similar to meterpreter's \"load powershell\" extension.\n",
-                    "rule_author": "Tom Kern, oscd.community, Natalia Shornikova, Tim Shelton, Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
-                    "match_context": [
-                        {
-                            "values": {
-                                "Hashes": "SHA1=DF508599024DDDEAA208DA411EC65B5D37C851DC,MD5=62114A0F0D9FE053D8D274F4E5FB9EBD,SHA256=114BA0076882EFCD4B6C52CBCB49B1BB006A36A062E2114637D54B28627D5A82,IMPHASH=00000000000000000000000000000000",
-                                "Product": "Microsoft (R) Windows (R) Operating System",
-                                "OriginalFileName": "System.Management.Automation.dll",
-                                "ImageLoaded": "C:\\Windows\\assembly\\NativeImages_v4.0.30319_64\\System.Manaa57fc8cc#\\f02732d562721457afde5c189a906d17\\System.Management.Automation.ni.dll",
-                                "Description": "System.Management.Automation",
-                                "SignatureStatus": "Unavailable",
-                                "FileVersion": "10.0.17134.858",
-                                "EventID": "7",
-                                "Signed": "false",
-                                "Image": "C:\\Users\\george\\Desktop\\networkpe.exe",
-                                "Company": "Microsoft Corporation"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "rule_level": "medium",
-                    "rule_id": "33e7351552f382831af6bf73d86054bced055e64df091f572c94e9fc9e9a2a97",
-                    "rule_source": "Sigma Integrated Rule Set (GitHub)",
-                    "rule_title": "Suspicious WSMAN Provider Image Loads",
-                    "rule_description": "Detects signs of potential use of the WSMAN provider from uncommon processes locally and remote execution.",
-                    "rule_author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
-                    "match_context": [
-                        {
-                            "values": {
-                                "Product": "Microsoft (R) Windows (R) Operating System",
-                                "Hashes": "SHA1=673778E82E53EF272265FD1709E1A7A4D8EC1993,MD5=67604580314B7F0C3C72C44F186CABDA,SHA256=09BF91BD6DB6E2B7C419AB1FF2DAC68CB013811C3B8A776091F25285A4955EDB,IMPHASH=00000000000000000000000000000000",
-                                "SignatureStatus": "Unavailable",
-                                "ImageLoaded": "C:\\Windows\\assembly\\NativeImages_v4.0.30319_64\\Microsoft.We0722664#\\a2e162c411e7960d3320a700179232fc\\Microsoft.WSMan.Management.ni.dll",
-                                "Description": " ",
-                                "OriginalFileName": "Microsoft.WSMan.Management.dll",
-                                "FileVersion": "10.0.17134.619",
-                                "EventID": "7",
-                                "Signed": "false",
-                                "Image": "C:\\Users\\george\\Desktop\\networkpe.exe",
-                                "Company": "Microsoft Corporation"
-                            }
-                        },
-                        {
-                            "values": {
-                                "ImageLoaded": "C:\\Windows\\assembly\\NativeImages_v4.0.30319_64\\Microsoft.We0722664#\\9e6d0a240ae868163a9c0bf5bdf3d0fe\\Microsoft.WSMan.Management.ni.dll"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "rule_level": "medium",
-                    "rule_id": "6291f85314c7d9966be831c56d3cdfb30f42c84f599273e73dac5c95e1122abf",
-                    "rule_source": "Sigma Integrated Rule Set (GitHub)",
-                    "rule_title": "Usage Of Web Request Commands And Cmdlets - ScriptBlock",
-                    "rule_description": "Detects the use of various web request commands with commandline tools and Windows PowerShell cmdlets (including aliases) via PowerShell scriptblock logs",
-                    "rule_author": "James Pemberton / @4A616D6573",
-                    "match_context": [
-                        {
-                            "values": {
-                                "ScriptBlockText": "$var = Invoke-WebRequest \"https://www.google.com\"\r\n\r\nWrite-Host $var",
-                                "MessageTotal": "1",
-                                "ScriptBlockId": "a18d91ed-cd1c-4780-a572-99143520b56b",
-                                "Path": "",
-                                "EventID": "4104",
-                                "MessageNumber": "1"
-                            }
-                        },
-                        {
-                            "values": {
-                                "ScriptBlockText": "$var = Invoke-WebRequest \"https://www.google.com\"\r\n\r\nWrite-Host $var",
-                                "Path": "",
-                                "ScriptBlockId": "6d2d68ec-770f-43d8-802e-699e66d5e0c1",
-                                "MessageTotal": "1",
-                                "EventID": "4104",
-                                "MessageNumber": "1"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "rule_level": "medium",
-                    "rule_id": "d6ff8dca8c8ea9fa750972dd032542746369179e3aaceccc1c3f2cc2a35f5d25",
-                    "rule_source": "Sigma Integrated Rule Set (GitHub)",
-                    "rule_title": "PSScriptPolicyTest Creation By Uncommon Process",
-                    "rule_description": "Detects the creation of the \"PSScriptPolicyTest\" PowerShell script by an uncommon process. This file is usually generated by Microsoft Powershell to test against Applocker.",
-                    "rule_author": "Nasreddine Bencherchali (Nextron Systems)",
-                    "match_context": [
-                        {
-                            "values": {
-                                "Image": "C:\\Users\\Bruno\\AppData\\Local\\Temp\\networkpe.exe",
-                                "TargetFilename": "C:\\Users\\Bruno\\AppData\\Local\\Temp\\__PSScriptPolicyTest_zgbadqex.3nl.ps1",
-                                "EventID": "11"
-                            }
-                        },
-                        {
-                            "values": {
-                                "Image": "C:\\Users\\george\\Desktop\\networkpe.exe",
-                                "EventID": "11",
-                                "TargetFilename": "C:\\Users\\george\\AppData\\Local\\Temp\\__PSScriptPolicyTest_ijfftzqm.zkc.ps1"
-                            }
-                        },
-                        {
-                            "values": {
-                                "Image": "C:\\Users\\george\\Desktop\\networkpe.exe",
-                                "EventID": "11",
-                                "TargetFilename": "C:\\Users\\george\\AppData\\Local\\Temp\\__PSScriptPolicyTest_sp5qwjzw.10j.psm1"
-                            }
-                        }
-                    ]
-                }
-            ],
-            "unique_sources": 1,
-            "pe_info": {
-                "timestamp": 1715091296,
-                "imphash": "f34d5f2d4577ed6d9ceec516c1f5a744",
-                "machine_type": 332,
-                "entry_point": 30718,
-                "resource_details": [
-                    {
-                        "lang": "NEUTRAL",
-                        "chi2": 50224.48,
-                        "filetype": "unknown",
-                        "entropy": 3.173597812652588,
-                        "sha256": "d97d07cf979822a6671a9a7c657768cb75f0f831c3c82626a85d5ef2077a51a1",
-                        "type": "RT_VERSION"
-                    },
-                    {
-                        "lang": "NEUTRAL",
-                        "chi2": 4719.86,
-                        "filetype": "unknown",
-                        "entropy": 5.00111722946167,
-                        "sha256": "c0085eb467d2fc9c9f395047e057183b3cd1503a4087d0db565161c13527a76f",
-                        "type": "RT_MANIFEST"
-                    }
-                ],
-                "resource_langs": {
-                    "NEUTRAL": 2
-                },
-                "resource_types": {
-                    "RT_MANIFEST": 1,
-                    "RT_VERSION": 1
-                },
-                "sections": [
-                    {
-                        "name": ".text",
-                        "chi2": 420597.75,
-                        "virtual_address": 8192,
-                        "entropy": 5.74,
-                        "raw_size": 23040,
-                        "flags": "rx",
-                        "virtual_size": 22532,
-                        "md5": "d51480482e9e497b291c4135449ef702"
-                    },
-                    {
-                        "name": ".rsrc",
-                        "chi2": 100227.84,
-                        "virtual_address": 32768,
-                        "entropy": 3.72,
-                        "raw_size": 1536,
-                        "flags": "r",
-                        "virtual_size": 1248,
-                        "md5": "9f74d8b6c9cd4e6eddb526bfa9a56832"
-                    },
-                    {
-                        "name": ".reloc",
-                        "chi2": 129030.0,
-                        "virtual_address": 40960,
-                        "entropy": 0.06,
-                        "raw_size": 512,
-                        "flags": "r",
-                        "virtual_size": 12,
-                        "md5": "795e030c4bdeea4b82270df1b2a4364b"
-                    }
-                ],
-                "import_list": [
-                    {
-                        "library_name": "mscoree.dll",
-                        "imported_functions": [
-                            "_CorExeMain"
-                        ]
-                    }
-                ]
-            },
-            "size": 25600,
-            "vhash": "224036551511007251243085",
-            "sigma_analysis_stats": {
-                "critical": 0,
-                "high": 0,
-                "medium": 4,
-                "low": 0
-            },
-            "first_submission_date": 1715248161,
-            "packers": {
-                "PEiD": ".NET executable"
-            },
-            "sha1": "078f7252a1b9cf25dfe45a75684105e366c038a7",
-            "md5": "18c5140c131ad057b35ef4ba1fc8b7f9",
-            "sha256": "88c47178895c62335f2d0118045627835b30eb325df4baef285721d0573f55a1",
-            "last_analysis_stats": {
-                "malicious": 8,
-                "suspicious": 0,
-                "undetected": 64,
-                "harmless": 0,
-                "timeout": 0,
-                "confirmed-timeout": 0,
-                "failure": 1,
-                "type-unsupported": 4
-            },
-            "tlsh": "T15AB2095DAADCC62ADA6F4FBC7CB316200371B3425956EF866D8899AF2C6330444213E7",
-            "type_description": "Win32 EXE",
-            "authentihash": "d83ee89ee3245846d7b0b3538a9b5fcd54cdd48033be8390a1b3eb57c9ea59b3",
-            "creation_date": 1715091296,
-            "signature_info": {
-                "internal name": "networkpe.exe",
-                "file version": "0.0.0.0",
-                "original name": "networkpe.exe"
-            },
-            "detectiteasy": {
-                "filetype": "PE32",
-                "values": [
-                    {
-                        "version": "v4.0.30319",
-                        "type": "Library",
-                        "name": ".NET"
-                    },
-                    {
-                        "version": "11.0",
-                        "type": "Linker",
-                        "name": "Microsoft Linker"
-                    }
-                ]
-            },
-            "sigma_analysis_summary": {
-                "Sigma Integrated Rule Set (GitHub)": {
-                    "critical": 0,
-                    "high": 0,
-                    "medium": 4,
-                    "low": 0
-                }
-            },
-            "total_votes": {
-                "harmless": 0,
-                "malicious": 0
-            },
-            "magic": "PE32 executable (console) Intel 80386 Mono/.Net assembly, for MS Windows",
-            "ssdeep": "384:zgJo2hYvWMUMol8WTVj94OV8y/AMTW4g1CwL1jb+/iGJViaD0m3HrtveH:zEHP88pKOV8y4M41v1jbVvagm3Hrdk",
-            "reputation": 0,
-            "type_tag": "peexe",
-            "times_submitted": 1
+            }
         }
     }
 }

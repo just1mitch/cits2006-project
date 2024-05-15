@@ -6,54 +6,29 @@
             "self": "https://www.virustotal.com/api/v3/files/be8e24683f4d0115048d8be2248eb634ecd9eb5f9f7272ebc592d8c41c9e99ae"
         },
         "attributes": {
-            "size": 2583,
-            "last_modification_date": 1715377404,
-            "magic": "ASCII text, with CRLF, CR line terminators",
-            "first_submission_date": 1715253930,
-            "type_tag": "vba",
+            "vhash": "99f8972b2007aec27817ad3064165d2f",
             "total_votes": {
                 "harmless": 0,
                 "malicious": 0
             },
-            "meaningful_name": "vbscript.vbs",
-            "last_analysis_date": 1715253930,
-            "tlsh": "T19E511DEB3E0AC11547E0D1B01578DE71962EF13D4B729034CE565298281E2CA4FF9DF6",
-            "sha1": "2e51960e2dcb4fd4c0c46a695933f1c462b99e07",
-            "sandbox_verdicts": {
-                "Zenbox": {
-                    "category": "harmless",
-                    "malware_classification": [
-                        "CLEAN"
-                    ],
-                    "sandbox_name": "Zenbox",
-                    "confidence": 99
-                },
-                "C2AE": {
-                    "category": "undetected",
-                    "malware_classification": [
-                        "UNKNOWN_VERDICT"
-                    ],
-                    "sandbox_name": "C2AE"
-                }
-            },
-            "ssdeep": "48:tE5Pc8JTMoi9Sq4vKK81tB+Qy0pf0+Mk44CMMhvv44m0MnjIFRCS:CxneoAGvKKgBFy0CocFRh",
-            "tags": [
-                "vba",
-                "idle",
-                "long-sleeps"
-            ],
+            "first_submission_date": 1715253930,
+            "last_submission_date": 1715253930,
             "type_description": "VBA",
-            "names": [
-                "vbscript.vbs"
-            ],
-            "type_extension": "vbs",
-            "type_tags": [
-                "source",
-                "vba",
-                "vbs",
-                "VBScript"
-            ],
-            "vhash": "99f8972b2007aec27817ad3064165d2f",
+            "tlsh": "T19E511DEB3E0AC11547E0D1B01578DE71962EF13D4B729034CE565298281E2CA4FF9DF6",
+            "times_submitted": 1,
+            "reputation": 0,
+            "type_tag": "vba",
+            "md5": "bba7b2d00455c00e9310979cac2d3532",
+            "last_analysis_stats": {
+                "malicious": 0,
+                "suspicious": 0,
+                "undetected": 64,
+                "harmless": 0,
+                "timeout": 1,
+                "confirmed-timeout": 0,
+                "failure": 0,
+                "type-unsupported": 12
+            },
             "last_analysis_results": {
                 "Bkav": {
                     "method": "blacklist",
@@ -672,7 +647,23 @@
                     "result": null
                 }
             },
-            "times_submitted": 1,
+            "sandbox_verdicts": {
+                "Zenbox": {
+                    "category": "harmless",
+                    "malware_classification": [
+                        "CLEAN"
+                    ],
+                    "sandbox_name": "Zenbox",
+                    "confidence": 99
+                },
+                "C2AE": {
+                    "category": "undetected",
+                    "malware_classification": [
+                        "UNKNOWN_VERDICT"
+                    ],
+                    "sandbox_name": "C2AE"
+                }
+            },
             "vba_info": {
                 "strings": [
                     "EchoviewCOM.EvApplication",
@@ -688,21 +679,30 @@
                     "Scripting.FileSystemObject"
                 ]
             },
-            "sha256": "be8e24683f4d0115048d8be2248eb634ecd9eb5f9f7272ebc592d8c41c9e99ae",
-            "last_submission_date": 1715253930,
-            "last_analysis_stats": {
-                "malicious": 0,
-                "suspicious": 0,
-                "undetected": 64,
-                "harmless": 0,
-                "timeout": 1,
-                "confirmed-timeout": 0,
-                "failure": 0,
-                "type-unsupported": 12
-            },
+            "ssdeep": "48:tE5Pc8JTMoi9Sq4vKK81tB+Qy0pf0+Mk44CMMhvv44m0MnjIFRCS:CxneoAGvKKgBFy0CocFRh",
+            "last_modification_date": 1715377404,
+            "tags": [
+                "vba",
+                "idle",
+                "long-sleeps"
+            ],
             "unique_sources": 1,
-            "reputation": 0,
-            "md5": "bba7b2d00455c00e9310979cac2d3532",
+            "sha1": "2e51960e2dcb4fd4c0c46a695933f1c462b99e07",
+            "size": 2583,
+            "type_tags": [
+                "source",
+                "vba",
+                "vbs",
+                "VBScript"
+            ],
+            "type_extension": "vbs",
+            "magic": "ASCII text, with CRLF, CR line terminators",
+            "meaningful_name": "vbscript.vbs",
+            "last_analysis_date": 1715253930,
+            "sha256": "be8e24683f4d0115048d8be2248eb634ecd9eb5f9f7272ebc592d8c41c9e99ae",
+            "names": [
+                "vbscript.vbs"
+            ],
             "crowdsourced_ai_results": [
                 {
                     "analysis": "The script is designed to update '.EV' files within specified folders and their subfolders. It achieves this by iterating through the folders and updating each '.EV' file it encounters. Here's a summary of its functions and capabilities:\n\n- It uses the FileSystemObject to navigate through the file system and the EchoviewCOM object to manipulate '.EV' files.\n\n- It starts at a specified base folder (ExampleDataFolder) and recursively checks subfolders up to four levels deep.\n\n- For each '.EV' file found, it performs the following actions:\n  - Checks if the file name ends with '.EV' (ignoring backup files and '.EVI' files).\n  - Opens the '.EV' file using the EchoviewCOM object.\n  - Pre-reads any associated data files.\n  - Saves the '.EV' file.\n  - Closes the '.EV' file.\n\n- It keeps track of the number of '.EV' files updated and displays a message box indicating the count upon completion.\n\n- The script does not perform any remote file downloads or contain any obfuscated code.",
