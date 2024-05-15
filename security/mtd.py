@@ -18,6 +18,10 @@ def main(monitored: List[str], sensitive: List[str]):
 
 
     VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
+    if not VIRUS_TOTAL_API_KEY:
+        print("Alert: No VirusTotal API key found. Will not submit file hashes to VirusTotal.")
+
+    
 
 
 
