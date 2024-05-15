@@ -8,7 +8,8 @@ rule pe_url_detect
         description = "Uses regex to detect a URL, and the pe module to detect a windows executable"
         author = "23475725"
     strings:
-        $url = /(http(s)?:\/\/)?[-a-zA-Z0-9@:%._+~#?&\/=]{2,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%._+~#?&\/=]*)/
+        $url_pattern = /https?:\/\/[^\s<>"\[\]\{\}\|\\^`]+/
+
     condition:
-        $url and pe.is_pe
+        $url_pattern
 }
