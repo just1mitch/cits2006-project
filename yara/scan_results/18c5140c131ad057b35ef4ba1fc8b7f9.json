@@ -6,111 +6,18 @@
             "self": "https://www.virustotal.com/api/v3/files/88c47178895c62335f2d0118045627835b30eb325df4baef285721d0573f55a1"
         },
         "attributes": {
-            "tlsh": "T15AB2095DAADCC62ADA6F4FBC7CB316200371B3425956EF866D8899AF2C6330444213E7",
-            "vhash": "224036551511007251243085",
-            "pe_info": {
-                "timestamp": 1715091296,
-                "imphash": "f34d5f2d4577ed6d9ceec516c1f5a744",
-                "machine_type": 332,
-                "entry_point": 30718,
-                "resource_details": [
-                    {
-                        "lang": "NEUTRAL",
-                        "chi2": 50224.48,
-                        "filetype": "unknown",
-                        "entropy": 3.173597812652588,
-                        "sha256": "d97d07cf979822a6671a9a7c657768cb75f0f831c3c82626a85d5ef2077a51a1",
-                        "type": "RT_VERSION"
-                    },
-                    {
-                        "lang": "NEUTRAL",
-                        "chi2": 4719.86,
-                        "filetype": "unknown",
-                        "entropy": 5.00111722946167,
-                        "sha256": "c0085eb467d2fc9c9f395047e057183b3cd1503a4087d0db565161c13527a76f",
-                        "type": "RT_MANIFEST"
-                    }
-                ],
-                "resource_langs": {
-                    "NEUTRAL": 2
-                },
-                "resource_types": {
-                    "RT_MANIFEST": 1,
-                    "RT_VERSION": 1
-                },
-                "sections": [
-                    {
-                        "name": ".text",
-                        "chi2": 420597.75,
-                        "virtual_address": 8192,
-                        "entropy": 5.74,
-                        "raw_size": 23040,
-                        "flags": "rx",
-                        "virtual_size": 22532,
-                        "md5": "d51480482e9e497b291c4135449ef702"
-                    },
-                    {
-                        "name": ".rsrc",
-                        "chi2": 100227.84,
-                        "virtual_address": 32768,
-                        "entropy": 3.72,
-                        "raw_size": 1536,
-                        "flags": "r",
-                        "virtual_size": 1248,
-                        "md5": "9f74d8b6c9cd4e6eddb526bfa9a56832"
-                    },
-                    {
-                        "name": ".reloc",
-                        "chi2": 129030.0,
-                        "virtual_address": 40960,
-                        "entropy": 0.06,
-                        "raw_size": 512,
-                        "flags": "r",
-                        "virtual_size": 12,
-                        "md5": "795e030c4bdeea4b82270df1b2a4364b"
-                    }
-                ],
-                "import_list": [
-                    {
-                        "library_name": "mscoree.dll",
-                        "imported_functions": [
-                            "_CorExeMain"
-                        ]
-                    }
-                ]
-            },
-            "sigma_analysis_stats": {
-                "critical": 0,
-                "high": 0,
-                "medium": 4,
-                "low": 0
-            },
-            "detectiteasy": {
-                "filetype": "PE32",
-                "values": [
-                    {
-                        "version": "v4.0.30319",
-                        "type": "Library",
-                        "name": ".NET"
-                    },
-                    {
-                        "version": "11.0",
-                        "type": "Linker",
-                        "name": "Microsoft Linker"
-                    }
-                ]
-            },
-            "type_tag": "peexe",
-            "type_extension": "exe",
-            "authentihash": "d83ee89ee3245846d7b0b3538a9b5fcd54cdd48033be8390a1b3eb57c9ea59b3",
-            "meaningful_name": "networkpe.exe",
             "signature_info": {
                 "internal name": "networkpe.exe",
                 "file version": "0.0.0.0",
                 "original name": "networkpe.exe"
             },
-            "ssdeep": "384:zgJo2hYvWMUMol8WTVj94OV8y/AMTW4g1CwL1jb+/iGJViaD0m3HrtveH:zEHP88pKOV8y4M41v1jbVvagm3Hrdk",
-            "reputation": 0,
+            "creation_date": 1715091296,
+            "total_votes": {
+                "harmless": 0,
+                "malicious": 0
+            },
+            "type_tag": "peexe",
+            "last_submission_date": 1715248161,
             "sigma_analysis_results": [
                 {
                     "rule_level": "medium",
@@ -229,20 +136,22 @@
                     ]
                 }
             ],
-            "names": [
-                "networkpe.exe"
-            ],
-            "size": 25600,
-            "last_modification_date": 1715371221,
-            "magic": "PE32 executable (console) Intel 80386 Mono/.Net assembly, for MS Windows",
+            "packers": {
+                "PEiD": ".NET executable"
+            },
+            "sigma_analysis_stats": {
+                "critical": 0,
+                "high": 0,
+                "medium": 4,
+                "low": 0
+            },
             "type_description": "Win32 EXE",
-            "tags": [
-                "long-sleeps",
-                "peexe",
-                "detect-debug-environment",
-                "assembly"
-            ],
-            "sha1": "078f7252a1b9cf25dfe45a75684105e366c038a7",
+            "dot_net_guids": {
+                "mvid": "9f2a68a3-4689-4b0c-bb28-928c420c7fa0"
+            },
+            "unique_sources": 1,
+            "sha256": "88c47178895c62335f2d0118045627835b30eb325df4baef285721d0573f55a1",
+            "size": 25600,
             "type_tags": [
                 "executable",
                 "windows",
@@ -250,6 +159,128 @@
                 "pe",
                 "peexe"
             ],
+            "names": [
+                "networkpe.exe"
+            ],
+            "sigma_analysis_summary": {
+                "Sigma Integrated Rule Set (GitHub)": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 4,
+                    "low": 0
+                }
+            },
+            "reputation": 0,
+            "sandbox_verdicts": {
+                "C2AE": {
+                    "category": "undetected",
+                    "malware_classification": [
+                        "UNKNOWN_VERDICT"
+                    ],
+                    "sandbox_name": "C2AE"
+                }
+            },
+            "detectiteasy": {
+                "filetype": "PE32",
+                "values": [
+                    {
+                        "version": "v4.0.30319",
+                        "type": "Library",
+                        "name": ".NET"
+                    },
+                    {
+                        "version": "11.0",
+                        "type": "Linker",
+                        "name": "Microsoft Linker"
+                    }
+                ]
+            },
+            "md5": "18c5140c131ad057b35ef4ba1fc8b7f9",
+            "last_analysis_stats": {
+                "malicious": 8,
+                "suspicious": 0,
+                "undetected": 64,
+                "harmless": 0,
+                "timeout": 0,
+                "confirmed-timeout": 0,
+                "failure": 1,
+                "type-unsupported": 4
+            },
+            "times_submitted": 1,
+            "first_submission_date": 1715248161,
+            "authentihash": "d83ee89ee3245846d7b0b3538a9b5fcd54cdd48033be8390a1b3eb57c9ea59b3",
+            "pe_info": {
+                "timestamp": 1715091296,
+                "imphash": "f34d5f2d4577ed6d9ceec516c1f5a744",
+                "machine_type": 332,
+                "entry_point": 30718,
+                "resource_details": [
+                    {
+                        "lang": "NEUTRAL",
+                        "chi2": 50224.48,
+                        "filetype": "unknown",
+                        "entropy": 3.173597812652588,
+                        "sha256": "d97d07cf979822a6671a9a7c657768cb75f0f831c3c82626a85d5ef2077a51a1",
+                        "type": "RT_VERSION"
+                    },
+                    {
+                        "lang": "NEUTRAL",
+                        "chi2": 4719.86,
+                        "filetype": "unknown",
+                        "entropy": 5.00111722946167,
+                        "sha256": "c0085eb467d2fc9c9f395047e057183b3cd1503a4087d0db565161c13527a76f",
+                        "type": "RT_MANIFEST"
+                    }
+                ],
+                "resource_langs": {
+                    "NEUTRAL": 2
+                },
+                "resource_types": {
+                    "RT_MANIFEST": 1,
+                    "RT_VERSION": 1
+                },
+                "sections": [
+                    {
+                        "name": ".text",
+                        "chi2": 420597.75,
+                        "virtual_address": 8192,
+                        "entropy": 5.74,
+                        "raw_size": 23040,
+                        "flags": "rx",
+                        "virtual_size": 22532,
+                        "md5": "d51480482e9e497b291c4135449ef702"
+                    },
+                    {
+                        "name": ".rsrc",
+                        "chi2": 100227.84,
+                        "virtual_address": 32768,
+                        "entropy": 3.72,
+                        "raw_size": 1536,
+                        "flags": "r",
+                        "virtual_size": 1248,
+                        "md5": "9f74d8b6c9cd4e6eddb526bfa9a56832"
+                    },
+                    {
+                        "name": ".reloc",
+                        "chi2": 129030.0,
+                        "virtual_address": 40960,
+                        "entropy": 0.06,
+                        "raw_size": 512,
+                        "flags": "r",
+                        "virtual_size": 12,
+                        "md5": "795e030c4bdeea4b82270df1b2a4364b"
+                    }
+                ],
+                "import_list": [
+                    {
+                        "library_name": "mscoree.dll",
+                        "imported_functions": [
+                            "_CorExeMain"
+                        ]
+                    }
+                ]
+            },
+            "last_analysis_date": 1715254707,
             "dot_net_assembly": {
                 "entry_point_rva": 15288,
                 "metadata_header_rva": 15360,
@@ -550,25 +581,34 @@
                     }
                 ]
             },
-            "unique_sources": 1,
-            "sigma_analysis_summary": {
-                "Sigma Integrated Rule Set (GitHub)": {
-                    "critical": 0,
-                    "high": 0,
-                    "medium": 4,
-                    "low": 0
+            "magic": "PE32 executable (console) Intel 80386 Mono/.Net assembly, for MS Windows",
+            "trid": [
+                {
+                    "file_type": "Generic CIL Executable (.NET, Mono, etc.)",
+                    "probability": 67.7
+                },
+                {
+                    "file_type": "Win64 Executable (generic)",
+                    "probability": 9.7
+                },
+                {
+                    "file_type": "Win32 Dynamic Link Library (generic)",
+                    "probability": 6.0
+                },
+                {
+                    "file_type": "Win16 NE executable (generic)",
+                    "probability": 4.6
+                },
+                {
+                    "file_type": "Win32 Executable (generic)",
+                    "probability": 4.1
                 }
-            },
-            "last_analysis_stats": {
-                "malicious": 8,
-                "suspicious": 0,
-                "undetected": 64,
-                "harmless": 0,
-                "timeout": 0,
-                "confirmed-timeout": 0,
-                "failure": 1,
-                "type-unsupported": 4
-            },
+            ],
+            "type_extension": "exe",
+            "last_modification_date": 1715371221,
+            "tlsh": "T15AB2095DAADCC62ADA6F4FBC7CB316200371B3425956EF866D8899AF2C6330444213E7",
+            "ssdeep": "384:zgJo2hYvWMUMol8WTVj94OV8y/AMTW4g1CwL1jb+/iGJViaD0m3HrtveH:zEHP88pKOV8y4M41v1jbVvagm3Hrdk",
+            "vhash": "224036551511007251243085",
             "last_analysis_results": {
                 "Bkav": {
                     "method": "blacklist",
@@ -1187,54 +1227,14 @@
                     "result": null
                 }
             },
-            "last_submission_date": 1715248161,
-            "last_analysis_date": 1715254707,
-            "first_submission_date": 1715248161,
-            "dot_net_guids": {
-                "mvid": "9f2a68a3-4689-4b0c-bb28-928c420c7fa0"
-            },
-            "sandbox_verdicts": {
-                "C2AE": {
-                    "category": "undetected",
-                    "malware_classification": [
-                        "UNKNOWN_VERDICT"
-                    ],
-                    "sandbox_name": "C2AE"
-                }
-            },
-            "creation_date": 1715091296,
-            "md5": "18c5140c131ad057b35ef4ba1fc8b7f9",
-            "total_votes": {
-                "harmless": 0,
-                "malicious": 0
-            },
-            "times_submitted": 1,
-            "packers": {
-                "PEiD": ".NET executable"
-            },
-            "trid": [
-                {
-                    "file_type": "Generic CIL Executable (.NET, Mono, etc.)",
-                    "probability": 67.7
-                },
-                {
-                    "file_type": "Win64 Executable (generic)",
-                    "probability": 9.7
-                },
-                {
-                    "file_type": "Win32 Dynamic Link Library (generic)",
-                    "probability": 6.0
-                },
-                {
-                    "file_type": "Win16 NE executable (generic)",
-                    "probability": 4.6
-                },
-                {
-                    "file_type": "Win32 Executable (generic)",
-                    "probability": 4.1
-                }
+            "tags": [
+                "long-sleeps",
+                "peexe",
+                "detect-debug-environment",
+                "assembly"
             ],
-            "sha256": "88c47178895c62335f2d0118045627835b30eb325df4baef285721d0573f55a1"
+            "meaningful_name": "networkpe.exe",
+            "sha1": "078f7252a1b9cf25dfe45a75684105e366c038a7"
         }
     }
 }

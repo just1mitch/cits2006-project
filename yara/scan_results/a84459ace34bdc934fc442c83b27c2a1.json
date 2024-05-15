@@ -6,13 +6,16 @@
             "self": "https://www.virustotal.com/api/v3/files/6e3f8ad15c36a7d1757a728174ebf44439d32de4e21b7bbaa93fc3a8a3dbe59e"
         },
         "attributes": {
-            "last_modification_date": 1715261304,
-            "tlsh": "T10F511100881A5EC553F97965329D8A00ED54712B8F77313471ECF61C3F70A49ABFA0E5",
+            "meaningful_name": "pythonscript.py",
+            "sha1": "a228aed7403fbdc3f525277d96fe96bdbc001e59",
             "size": 2648,
-            "total_votes": {
-                "harmless": 0,
-                "malicious": 0
-            },
+            "type_extension": "py",
+            "reputation": 0,
+            "type_tag": "python",
+            "type_description": "Python",
+            "names": [
+                "pythonscript.py"
+            ],
             "last_analysis_stats": {
                 "malicious": 0,
                 "suspicious": 0,
@@ -23,29 +26,28 @@
                 "failure": 0,
                 "type-unsupported": 12
             },
-            "type_extension": "py",
+            "last_analysis_date": 1715254059,
+            "sha256": "6e3f8ad15c36a7d1757a728174ebf44439d32de4e21b7bbaa93fc3a8a3dbe59e",
             "unique_sources": 1,
+            "magic": "ASCII text, with CRLF, CR line terminators",
+            "total_votes": {
+                "harmless": 0,
+                "malicious": 0
+            },
+            "last_modification_date": 1715261304,
             "last_submission_date": 1715254059,
+            "ssdeep": "48:NsB+aebmEHG7l7EK0IFpKU/rsqm7aaAwBzLmXE3ADSkT77EhquuB1tTkG3rDeAyX:NswPbvmBYI7KUjsL8wB3n36H9ty/x0Q",
+            "tags": [
+                "python"
+            ],
+            "md5": "a84459ace34bdc934fc442c83b27c2a1",
             "type_tags": [
                 "source",
                 "python"
             ],
-            "sha256": "6e3f8ad15c36a7d1757a728174ebf44439d32de4e21b7bbaa93fc3a8a3dbe59e",
-            "md5": "a84459ace34bdc934fc442c83b27c2a1",
-            "magic": "ASCII text, with CRLF, CR line terminators",
-            "last_analysis_date": 1715254059,
-            "names": [
-                "pythonscript.py"
-            ],
-            "reputation": 0,
-            "tags": [
-                "python"
-            ],
-            "times_submitted": 1,
-            "type_description": "Python",
             "first_submission_date": 1715254059,
-            "type_tag": "python",
-            "ssdeep": "48:NsB+aebmEHG7l7EK0IFpKU/rsqm7aaAwBzLmXE3ADSkT77EhquuB1tTkG3rDeAyX:NswPbvmBYI7KUjsL8wB3n36H9ty/x0Q",
+            "tlsh": "T10F511100881A5EC553F97965329D8A00ED54712B8F77313471ECF61C3F70A49ABFA0E5",
+            "times_submitted": 1,
             "last_analysis_results": {
                 "Bkav": {
                     "method": "blacklist",
@@ -664,12 +666,10 @@
                     "result": null
                 }
             },
-            "meaningful_name": "pythonscript.py",
-            "sha1": "a228aed7403fbdc3f525277d96fe96bdbc001e59",
             "crowdsourced_ai_results": [
                 {
-                    "category": "code_insight",
                     "analysis": "The code is a function called 'data_setup' that takes a filename as an argument. It creates a new Echoview (.EV) file using a specified template, adds data files with a specific extension (.dt4) from a specified directory, creates three lines (SurfaceExclude, 100m, and Bottom) based on depth and data filtering criteria, and saves the new .EV file in the specified directory.\n\n1. **Function**: 'data_setup'\r\r\n   - Creates a new Echoview file using a specified template.\r\r\n   - Adds all .dt4 files from a specified directory to the new file.\r\r\n   - Creates three lines (SurfaceExclude, 100m, and Bottom) based on depth and data filtering criteria.\r\r\n   - Saves the new .EV file in the specified directory.\r\r\n\r\r\n2. **Remote File Downloads**: None.\r\r\n\r\r\n3. **Obfuscated Code**: None.",
+                    "category": "code_insight",
                     "source": "palm",
                     "id": "6e3f8ad15c36a7d1757a728174ebf44439d32de4e21b7bbaa93fc3a8a3dbe59e-file-palm"
                 }

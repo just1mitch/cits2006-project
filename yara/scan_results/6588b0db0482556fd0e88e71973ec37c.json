@@ -6,11 +6,37 @@
             "self": "https://www.virustotal.com/api/v3/files/738e261ffda59993edc7ed65c1fda5518b310ed7560cafbdf72bf4312a64c480"
         },
         "attributes": {
+            "names": [
+                "shellscript.ps1"
+            ],
             "unique_sources": 1,
-            "times_submitted": 1,
-            "type_description": "Powershell",
+            "type_extension": "ps1",
+            "sandbox_verdicts": {
+                "Zenbox": {
+                    "category": "harmless",
+                    "malware_classification": [
+                        "CLEAN"
+                    ],
+                    "sandbox_name": "Zenbox",
+                    "confidence": 98
+                },
+                "C2AE": {
+                    "category": "undetected",
+                    "malware_classification": [
+                        "UNKNOWN_VERDICT"
+                    ],
+                    "sandbox_name": "C2AE"
+                }
+            },
+            "tlsh": "T17C119E2139052759265253B1E5DF909594341373F5CE052DB86CC1D28FA7626F2F2ECC",
+            "sha1": "0b1f3f40fe136b41018883be1d4e25044a9ceb8c",
+            "reputation": 0,
             "meaningful_name": "shellscript.ps1",
-            "size": 1003,
+            "type_tag": "powershell",
+            "total_votes": {
+                "harmless": 0,
+                "malicious": 0
+            },
             "last_analysis_stats": {
                 "malicious": 0,
                 "suspicious": 0,
@@ -21,8 +47,8 @@
                 "failure": 0,
                 "type-unsupported": 13
             },
-            "last_analysis_date": 1715254125,
-            "sha1": "0b1f3f40fe136b41018883be1d4e25044a9ceb8c",
+            "md5": "6588b0db0482556fd0e88e71973ec37c",
+            "last_submission_date": 1715254125,
             "powershell_info": {
                 "cmdlets": [
                     "read-host",
@@ -33,8 +59,17 @@
                     "PerformAddition"
                 ]
             },
+            "type_description": "Powershell",
+            "sha256": "738e261ffda59993edc7ed65c1fda5518b310ed7560cafbdf72bf4312a64c480",
+            "tags": [
+                "powershell",
+                "checks-network-adapters",
+                "detect-debug-environment",
+                "long-sleeps"
+            ],
+            "magic": "ASCII text",
             "last_modification_date": 1715345320,
-            "type_tag": "powershell",
+            "vhash": "09bb6faa982a3011d9a2215d68d188b3",
             "last_analysis_results": {
                 "Bkav": {
                     "method": "blacklist",
@@ -653,46 +688,11 @@
                     "result": null
                 }
             },
-            "tags": [
-                "powershell",
-                "checks-network-adapters",
-                "detect-debug-environment",
-                "long-sleeps"
-            ],
-            "total_votes": {
-                "harmless": 0,
-                "malicious": 0
-            },
-            "vhash": "09bb6faa982a3011d9a2215d68d188b3",
-            "names": [
-                "shellscript.ps1"
-            ],
-            "sandbox_verdicts": {
-                "Zenbox": {
-                    "category": "harmless",
-                    "malware_classification": [
-                        "CLEAN"
-                    ],
-                    "sandbox_name": "Zenbox",
-                    "confidence": 98
-                },
-                "C2AE": {
-                    "category": "undetected",
-                    "malware_classification": [
-                        "UNKNOWN_VERDICT"
-                    ],
-                    "sandbox_name": "C2AE"
-                }
-            },
-            "reputation": 0,
-            "magic": "ASCII text",
-            "tlsh": "T17C119E2139052759265253B1E5DF909594341373F5CE052DB86CC1D28FA7626F2F2ECC",
+            "last_analysis_date": 1715254125,
             "first_submission_date": 1715254125,
-            "last_submission_date": 1715254125,
-            "md5": "6588b0db0482556fd0e88e71973ec37c",
-            "type_extension": "ps1",
+            "times_submitted": 1,
+            "size": 1003,
             "ssdeep": "24:fdydvS8vS3rIBdzFE22n2/1LpAq1AAwhRwdb7HFfH:fgSgS3CdpE22n25whCtlH",
-            "sha256": "738e261ffda59993edc7ed65c1fda5518b310ed7560cafbdf72bf4312a64c480",
             "type_tags": [
                 "source",
                 "powershell",
@@ -701,16 +701,16 @@
             ],
             "crowdsourced_ai_results": [
                 {
-                    "category": "code_insight",
-                    "source": "uma",
                     "verdict": "benign",
+                    "category": "code_insight",
                     "analysis": "The provided PowerShell code is classified as benign. It consists of two functions: Add-Numbers and PerformAddition. The Add-Numbers function takes two integer parameters, calculates their sum, and returns the result. The PerformAddition function prompts the user to enter two numbers, converts the input to integers, calls the Add-Numbers function to perform addition, and then displays the result to the user. Overall, the code is designed to facilitate basic arithmetic operations by allowing users to input two numbers and obtain their sum.",
+                    "source": "uma",
                     "id": "738e261ffda59993edc7ed65c1fda5518b310ed7560cafbdf72bf4312a64c480-file-uma"
                 },
                 {
                     "category": "code_insight",
-                    "source": "palm",
                     "analysis": "The code defines two functions: Add-Numbers and PerformAddition.\n\nThe Add-Numbers function takes two integer parameters, Number1 and Number2, calculates their sum, and returns the result.\n\nThe PerformAddition function prompts the user for two numbers, converts them to integers, calls the Add-Numbers function to perform addition, and displays the result.\n\nThere are no remote file downloads or obfuscated code in the provided code snippet.",
+                    "source": "palm",
                     "id": "738e261ffda59993edc7ed65c1fda5518b310ed7560cafbdf72bf4312a64c480-file-palm"
                 }
             ]

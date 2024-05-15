@@ -9,7 +9,7 @@ import hashlib
 import json
 import vt
 from pathlib import Path
-import re
+import magic
 
 WIN_FILE_ATTRIBUTE_HIDDEN = 0x02
 VIRUS_TOTAL_API = os.environ["VIRUS_TOTAL_API"]
@@ -83,7 +83,7 @@ def run_scans(file_path):
         scan_file(file_path, "SENSINFO_YARA")
     # Executable Files
     if is_executable(file_path):
-        if scan_file(file_path, "NETWORK_YARA") or scan_file(file_path, "MALURL_YARA"):
+        if scan_file(file_path, "NETWORK_YARA"):
             safe = 1
         if scan_file(file_path, "MALURL_YARA"):
             safe = 1
@@ -113,16 +113,14 @@ def is_hidden(file_path):
 def is_executable(file_path):
     '''Function to determine if a file is executable. Only supports Windows and Linux.
     #### Returns 1 on executable, 0 on not-executable'''
-    if platform.system() == "Windows":
-        try:
-            with open(file_path, 'rb') as file:
-                magic_number = file.read(2)  # Read the first 2 bytes
-                return magic_number == b'MZ'  # Check for "MZ" magic number
-        except Exception:
-            return False
-    elif platform.system() == "Linux":
-        file_stat = os.stat(file_path)
-        return bool(file_stat.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH))
+    print(file_path)
+    
+    with open(file_path, 'rb') as file:
+        magic_number = file.read(2)  # Read the first 2 bytes
+        if magic_number == b'MZ':  # Check for "MZ" magic number
+            return 1
+    file_stat = os.stat(file_path)
+    return bool(file_stat.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH))
 
 def md5_hash_file(file_path):
     """Calculate the MD5 hash of a file."""
