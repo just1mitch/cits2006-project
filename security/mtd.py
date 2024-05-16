@@ -9,7 +9,7 @@ import json
 import hashlib
 
 
-from security.yara.YaraEngine_new import YaraEngine
+from YaraEngine import YaraEngine
 from scanner import start
 
 DEFAULT_YARA_RULES = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara/yararules/")]
@@ -52,6 +52,7 @@ def virus_total_scan(file_path):
         json.dump(scan, f, indent=4)
 
 def main(monitored: List[str], sensitive: List[str], yara_rules: List[str] = []):
+    files_to_upload = []
     monitored = check_paths(monitored)
     sensitive = check_paths(sensitive)
     yara_rules = check_paths((yara_rules if yara_rules else []) + DEFAULT_YARA_RULES)
