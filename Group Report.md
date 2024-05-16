@@ -91,4 +91,12 @@ Files in the monitored directory are presented to the yara engine for scanning. 
 Any files that now come under the exempt list will be catergorised as safe. As a files hash will change as it is modifed or a new hash will be created when a file is added these will not be within the `whitelist`, therefore will be included in the next continous scan done by the MTD assessed by the previous criteria of the YARA rules or operator specified threshold.
 #### Passing of Time Interval
 As per the project brief the MTD system will change the security settings of the filesystem after a predefined period of time. This results in <b>\<insert what happens here></b>
+#### Quarantiner Mode
+The following command is apart of the mtd model which allows the operator to interact with the files that are moved and held in the quarantine directory.
+`python security/mtd.py quarantiner`
+When you enter into this mode there are clearly labeled actions that you can perform upon the files within this directory. 
+- `List` the contents of the directory
+- `Delete` a quarantined file by its hash
+- `Restore` a quarantined file by its hash
+- `Quit` the quarantine menu (exit you out of this mode)
 ## Dynamic Security Recommendations
