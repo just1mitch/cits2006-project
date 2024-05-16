@@ -30,10 +30,10 @@ class YaraEngine:
         return matching_rules
     
     
-    # Uses VirusTotal API to scan a malicious file passed by file_path
-    async def virus_total_scan(self, file_path) -> bool:
+    # Query VirusTotal for scan results. If the file malicious threshold is met, return True
+    async def virus_total_scan(self, file_path) -> tuple[bool, int]:
         if not self.virus_total_key:
-            return False
+            return (False, 0)
         print(f"Getting scan results for {file_path} from VirusTotal. This may take up to 5 minutes")
         hash = md5_hash_file(file_path)
         client = vt.Client(self.virus_total_key)
@@ -44,7 +44,7 @@ class YaraEngine:
                 with open(file_path, "rb") as f:
                     scan = client.scan_file(f, wait_for_completion=True)
         await client.close_async()
-        return scan.last_analysis_stats['malicious'] >= self.malicious_threshold
+        return (scan.last_analysis_stats['malicious'] >= self.malicious_threshold, scan.last_analysis_stats['malicious'])
 
 
 def md5_hash_file(file_path):

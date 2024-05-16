@@ -8,3 +8,5 @@ scan_results/*
 *.key
 .DS_STORE
 /rapidobank/Security/yara/scan_results
+.whitelist
+.quarantine
