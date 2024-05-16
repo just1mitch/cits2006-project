@@ -1,5 +1,4 @@
 // YARA ENGINE TO DETECT NETWORK RESOURCE USAGE
-import "pe"
 
 rule Detect_HTTP_Network_Activity
 {
@@ -77,44 +76,39 @@ rule Detect_File_Access
         any of them
 }
 
-// TEMPORARILY COMMENTED OUT TO TEST OTHER CODE
-// FEEL FREE TO UNCOMMENT - MITCH 12/05/24
+rule Detect_Network_DLLs
+{
+    meta:
+        description = "Detect executables importing common network-related DLLs"
+        author = "ChatGPT"
 
-// rule Detect_Network_DLLs
-// {
-//     meta:
-//         description = "Detect executables importing common network-related DLLs"
-//         author = "ChatGPT"
+    strings:
+        $ws2_32 = "ws2_32.dll" nocase
+        $mswsock = "mswsock.dll" nocase
+        $wininet = "wininet.dll" nocase
+        $winhttp = "winhttp.dll" nocase
+        $dnsapi = "dnsapi.dll" nocase
+        $wship6 = "wship6.dll" nocase
+        $rpcrt4 = "rpcrt4.dll" nocase
+        $icm32 = "icm32.dll" nocase
+        $rasapi32 = "rasapi32.dll" nocase
+        $rasman = "rasman.dll" nocase        
+        $iphlpapi = "iphlpapi.dll" nocase
+        $netapi32 = "netapi32.dll" nocase
+        $advapi32 = "advapi32.dll" nocase
+        $secur32 = "secur32.dll" nocase
+        $wlanapi = "wlanapi.dll" nocase
+        $mpr = "mpr.dll" nocase
 
-//     strings:
-//         $ws2_32 = "ws2_32.dll" nocase
-//         $mswsock = "mswsock.dll" nocase
-//         $wininet = "wininet.dll" nocase
-//         $winhttp = "winhttp.dll" nocase
-//         $dnsapi = "dnsapi.dll" nocase
-//         $wship6 = "wship6.dll" nocase
-//         $rpcrt4 = "rpcrt4.dll" nocase
-//         $icm32 = "icm32.dll" nocase
-//         $rasapi32 = "rasapi32.dll" nocase
-//         $rasman = "rasman.dll" nocase
-//         $iphlpapi = "iphlpapi.dll" nocase
-//         $netapi32 = "netapi32.dll" nocase
-//         $advapi32 = "advapi32.dll" nocase
-//         $secur32 = "secur32.dll" nocase
-//         $wlanapi = "wlanapi.dll" nocase
-//         $mpr = "mpr.dll" nocase
+    condition:
+        any of them
+}
 
-//     condition:
-//         any of ($ws2_32, $mswsock, $wininet, $winhttp, $dnsapi, $wship6, 
-//                 $rpcrt4, $icm32, $rasapi32, $rasman, $iphlpapi, $netapi32,
-//                 $advapi32, $secur32, $wlanapi, $mpr) in (pe.imports_dll_names)
-// }
-
-// rule Detect_DNS
-// {
-//     strings:
-//         $GetHostByName = "GetHostByName" ascii
-//         $GetHostByAddr = "GetHostByAddr" ascii
-//         $DnsQuery = "DnsQuery" ascii
-//         $DnsRecordListFree = "DnsRecordListFree" ascii
-// }
+rule Detect_DNS
+{
+    strings:
+        $GetHostByName = "GetHostByName" ascii
+        $GetHostByAddr = "GetHostByAddr" ascii
+        $DnsQuery = "DnsQuery" ascii
+        $DnsRecordListFree = "DnsRecordListFree" ascii
+}
