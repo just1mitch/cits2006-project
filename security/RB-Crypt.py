@@ -10,13 +10,13 @@ Date: Semester 1, 2024
 from sys import argv
 from getopt import getopt
 
-from include import (
+from cryptography.include import (
     encrypt,
     decrypt,
     hash_file,
 )
 
-from include.ciphers.util import generate_key
+from cryptography.include.ciphers.util import generate_key
 
 
 usage = """

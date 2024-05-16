@@ -1,4 +1,4 @@
-from include.hashes import (
+from cryptography.include.hashes import (
     md5,
     xxhash,
     murmur,

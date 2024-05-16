@@ -11,7 +11,6 @@
 #
 from string import printable
 from base64 import b64encode, b64decode
-from secrets import choice
 
 
 # The keyword length determines the number of keyed alphabets used
