@@ -87,8 +87,12 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY)
     encryptor = Encryptor(quarantine)
 
-    encryptor.encrypt(sensitive[0] + "/super secret file!!!")
-    encryptor.decrypt(sensitive[0] + "/super secret file!!!")
+    test_cipher = Cipher(newkeysize=50)
+    test_cipher.encrypt(sensitive[0] + "/super secret file!!!", cipher="xor")
+    test_cipher.decrypt(sensitive[0] + "/super secret file!!!", cipher="xor")
+
+    #encryptor.encrypt(sensitive[0] + "/super secret file!!!")
+    #encryptor.decrypt(sensitive[0] + "/super secret file!!!")
     #Cipher(newkeysize=50).encrypt(sensitive[0] + "/super secret file!!!", cipher=Ciphers.XOR)
     return 0
 
