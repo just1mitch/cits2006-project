@@ -21,7 +21,7 @@ from util import generate_key
 KEYWORD = "CIPHER" 
 
 # The indicator is character that determines the period and alignment
-# of the keyed alphabets generated usig the KEYWORD
+# of the keyed alphabets generated using the KEYWORD
 INDICATOR = "A"
 
 # In a quagmire cipher, the keyed alphabet is made from
