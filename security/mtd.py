@@ -9,10 +9,10 @@ import json
 import hashlib
 
 
-from YaraEngine import YaraEngine
+from yara_engine.YaraEngine_new import YaraEngine
 from scanner import start
 
-DEFAULT_YARA_RULES = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara/yararules/")]
+DEFAULT_YARA_RULES = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara_engine/yararules/")]
 VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
 
 def check_paths(paths: List[str]):
