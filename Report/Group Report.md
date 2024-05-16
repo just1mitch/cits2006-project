@@ -62,17 +62,17 @@ key-gen is called without any other args it will output the random key to
 
 Each cipher is encoded in ascii encoding, followed by base64 encoding, before being returned. Likewise, the decryption algorithms reverse this process before decrypting to plaintext. This design implementation was chosen such that the encrypted plaintext could be stored or transferred in environments that are restricted to ASCII data, as per [RFC4648](https://datatracker.ietf.org/doc/html/rfc4648). This practice ensures no data is lost in the event that the encrypted data were needed to be transferred to a legacy system.
 
-#### Vignére Cipher:
+#### Vigenére Cipher:
 
-The implemented Vignére cipher is a polyalphabetic cipher. Our implementation uses all ASCII printable characters, as opposed to a traditional Vignére cipher that uses the A-Z uppercase alphabet. This decision was made to increase ciphertext obscurity and to ensure plaintext maintains it's formatting when decrypted. <br>(e.g. `a` won't get changed to `A`)
-
-
-![Vignere Cipher Example](image-8.png)<br>
-<i>Vignére Cipher example with an alphabet of A-Z [(source)](https://www.britannica.com/topic/cryptology/Vigenere-ciphers)</i><br>
+The implemented Vigenére cipher is a polyalphabetic cipher. Our implementation uses all ASCII printable characters, as opposed to a traditional Vigenére cipher that uses the A-Z uppercase alphabet. This decision was made to increase ciphertext obscurity and to ensure plaintext maintains it's formatting when decrypted. <br>(e.g. `a` won't get changed to `A`)
 
 
-![Vignére Cipher implementation](image-2.png)<br>
-<i>Example of our Vignére Cipher Implementation</i>
+![Vigenére Cipher Example](image-8.png)<br>
+<i>Vigenére Cipher example with an alphabet of A-Z [(source)](https://www.britannica.com/topic/cryptology/Vigenere-ciphers)</i><br>
+
+
+![Vigenére Cipher implementation](image-2.png)<br>
+<i>Example of our Vigenére Cipher Implementation</i>
 
 #### XOR Cipher:
 

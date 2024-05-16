@@ -26,7 +26,7 @@ class Cipher:
     # Encrypt file with given cipher
     # Cipher is one of the following: 
     # 'xor': XOR Cipher
-    # 'vigenere': Vignere Cipher
+    # 'vigenere': vigenere Cipher
     # 'quagmire': Quagmire 3 Cipher
     def encrypt(self, file, cipher: encrypt_lib.Ciphers):
         encrypt_lib.encrypt(file, cipher, self.key)
@@ -34,7 +34,7 @@ class Cipher:
     # Decrypt file with given cipher
     # Cipher is one of the following: 
     # 'xor': XOR Cipher
-    # 'vigenere': Vignere Cipher
+    # 'vigenere': vigenere Cipher
     # 'quagmire': Quagmire 3 Cipher
     def decrypt(self, file, cipher: encrypt_lib.Ciphers):
         decrypt.decrypt(file, cipher, self.key)

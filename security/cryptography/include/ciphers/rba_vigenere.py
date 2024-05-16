@@ -1,4 +1,4 @@
-# A vignere cipher on the ASCII printable alphabet
+# A vigenere cipher on the ASCII printable alphabet
 from string import printable
 from base64 import b64encode, b64decode
 
