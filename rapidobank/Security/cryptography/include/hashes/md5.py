@@ -45,7 +45,7 @@ class MD5:
         m = [int.from_bytes(bytestring[i:i + 4], byteorder='little') for i in range(0, MD5.block_size, 4)]
         funcs = [MD5.F for _ in range(16)] + [MD5.G for _ in range(16)] + [MD5.H for _ in range(16)] + [MD5.I for _ in range(16)]
         a, b, c, d = self.state
-        mod = 2 << 31
+        mod = 0xffffffff
         for i in range(MD5.block_size):
             a = (funcs[i](b, c, d) + a + MD5.k[i] + m[MD5.g[i]]) % mod
             a = (rotl_32(a, MD5.s[i]) + b) % mod
@@ -74,7 +74,7 @@ class MD5:
     def digest_50_char(self):
         digest = self.digest()
         digest_int = int.from_bytes(digest, byteorder='little')
-        digest_25_int = ((digest_int << 72) | digest_int) % (2 << 199)
+        digest_25_int = ((digest_int << 72) | digest_int) %  ((1 << 200) - 1)
         return digest_25_int.to_bytes(length=25, byteorder='little')
     
     @staticmethod
