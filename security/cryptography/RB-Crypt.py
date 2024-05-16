@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
 """
 Author 1: Elijah Mullens (23335907)
