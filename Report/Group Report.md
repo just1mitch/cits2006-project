@@ -137,6 +137,17 @@ being:
 3. <b>MurmurHash</b>: called with `murmur`
 4. <b>SHA256</b>: called with `sha256`
 
+To stop unneeded repeated information, I will outline the following:
+Due to these hashes only running to detect file changes, we typically do not need a cryptographically sound hash.
+With that in mind:
+xxhash was chosen due to it's incredibly fast speed - it is one of the fastest hashing algorithms available currently - whilst also having a relatively low collision rate.
+murmurhash was chosen as it is also relatively incredibly fast - outpaced by xxhash - however faster than traditional cryptographically secure hashing algorithms.
+SHA256 was included as a safe guard - it is heavy to run compared to the above two - however unlike the above two is cryptographically secure. This hash was included as a safe guard incase the MTD would run into potentially malicious files.
+
+Speed for all of these can be found here:
+
+https://github.com/Cyan4973/xxHash/blob/dev/README.md#benchmarks
+
 Again the strings are case agnostic and the called with part describes that it
 should follow the -h.
 
