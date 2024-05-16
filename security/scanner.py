@@ -3,8 +3,6 @@ import hashlib
 import os
 import time
 from typing import Dict, List
-
-from numpy import delete
 from yara_engine.YaraEngine_new import YaraEngine
 import datetime
 
