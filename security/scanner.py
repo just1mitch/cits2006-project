@@ -3,6 +3,7 @@ import hashlib
 import os
 import time
 from typing import Dict, List
+from encryptor import Encryptor
 from yara_engine.YaraEngine_new import YaraEngine
 import datetime
 
@@ -90,7 +91,7 @@ class Quarantiner:
                 return_list.append((line.split(" ", maxsplit=1)[0], line.split(" ", maxsplit=1)[1]))
         return return_list
 
-async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, quarantine: str):
+async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, quarantine: str, encryptor: Encryptor):
     while True:
         try:
             for_quarantine = await scanner(engine, monitored, whitelist)

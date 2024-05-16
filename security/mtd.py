@@ -85,11 +85,13 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY)
     encryptor = Encryptor(quarantine)
 
+    encryptor.encrypt(sensitive[0] + "/super secret file!!!")
+
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, loop.stop)
 
     try:
-        loop.create_task(start(yara_engine, monitored, whitelist, quarantine))
+        loop.create_task(start(yara_engine, monitored, whitelist, quarantine, encryptor))
         loop.run_forever()
     except KeyboardInterrupt:
         tasks = asyncio.all_tasks(loop=loop)
@@ -163,5 +165,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if (args.mode == 'quarantiner'):
         quarantiner(args.quarantine)
-    else:
+    elif (args.mode == 'normal'):
         main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold, args.whitelist)
+    else:
+        #Show help
+        parser.print_help()
