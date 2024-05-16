@@ -3,6 +3,7 @@ import asyncio
 import signal
 from typing import List
 import os
+from pathlib import Path
 
 
 from yara_engine.YaraEngine_new import YaraEngine
