@@ -159,7 +159,7 @@ def main():
     # Path to scan and load Yara rules
     scan_path = os.path.abspath(args.scan_path)
     yararules_dir = os.path.abspath(args.rules)
-
+    
     MALWARE_YARA = os.path.join(yararules_dir, "malware.yara")
     SENSINFO_YARA = os.path.join(yararules_dir, "sensitiveinfo.yara")
     SCRIPTS_YARA = os.path.join(yararules_dir, "scripts.yara")
@@ -184,24 +184,22 @@ def main():
         yararules["CUSTOMSIG_YARA"] = customsig_yara
 
     # Check if it is of type file and it's a single file
-    if os.path.isfile(scan_path) and run_scans(scan_path):
-        files_to_upload.append(scan_path)
+     # Scan file(s)
+    if os.path.isfile(scan_path):
+        # If it's a single file
+        if run_scans(scan_path):
+            files_to_upload.append(scan_path)
     elif os.path.isdir(scan_path):
         # Recursively scan all files in the directory
         for root, dirs, files in os.walk(scan_path):
-            # Ignore the Security folder at root of rapidobank directory
-            # as our file structure has the security folder for project implementation
-            if(root.split("/")[-1] == 'rapidobank'):
-                dirs.remove("security")
-                
             for file in files:
                 file_path = os.path.join(root, file)
                 if run_scans(file_path):
-                    files_to_upload.append(file_path)
+                        files_to_upload.append(file_path)
     else:
         print("Invalid path provided. Please provide a valid file or folder path.")
     
-    # For all potentially malicious files, send them to VirusTotal for scanning
+    # For all potentially malicious files, send them to VirusTotal for scanning 
     for file_path in files_to_upload:
         virus_total_scan(file_path)
 
