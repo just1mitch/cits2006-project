@@ -1,5 +1,5 @@
 from cryptography.include import (
-    encrypt, 
+    encrypt as encrypt_lib, 
     decrypt, 
     hash_file
 )
@@ -27,7 +27,7 @@ class Cipher:
     # 'xor': XOR Cipher
     # 'vigenere': Vignere Cipher
     # 'quagmire': Quagmire 3 Cipher
-    def encrypt(self, file, cipher):
+    def encrypt(self, file, cipher: encrypt_lib.Ciphers):
         encrypt.encrypt(file, cipher, self.key)
 
     # Decrypt file with given cipher
@@ -35,7 +35,7 @@ class Cipher:
     # 'xor': XOR Cipher
     # 'vigenere': Vignere Cipher
     # 'quagmire': Quagmire 3 Cipher
-    def decrypt(self, file, cipher):
+    def decrypt(self, file, cipher: encrypt_lib.Ciphers):
         decrypt.decrypt(file, cipher, self.key)
 
 # Hash class to allow MTD to interact with hashing algorithms
