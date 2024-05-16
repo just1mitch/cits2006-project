@@ -7,6 +7,7 @@ from pathlib import Path
 import cmd
 
 
+from encryptor import Encryptor
 from yara_engine.YaraEngine_new import YaraEngine
 from scanner import Quarantiner, Whitelist, start
 
@@ -82,6 +83,7 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
 
     whitelist = Whitelist(whitelist + '/.whitelist')
     yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY)
+    encryptor = Encryptor(quarantine)
 
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, loop.stop)
