@@ -17,7 +17,7 @@ This report is separated into each section of the project specification:
 
 ## Yara Engine (Designed by Joel and Mitchell)
 
-## Cipher System and Hashing Algorithm (Designed by Elijah)\
+## Cipher System and Hashing Algorithm (Designed by Elijah)
 
 ### Brief
 The RB-Cyrpt.py script is designed to be a diverse command line tool to
@@ -83,5 +83,12 @@ overall the format for calling RB-Crypt, as specified by the `--help` flag is
 
 
 ## MTD System (Designed by Izzy and Daniel)
-
+The MTD system we have impliment will run in a continuous loop that scans every 5 seconds once started until the operator stops the program. We believed this was best to achieve a safer filesystem, as it will be constantly scanning for the following dangers and making the changes necessary to maintain integrity within the filesystem.
+#### Yara Alert Raised
+Files in the monitored directory are presented to the yara engine for scanning. Files which trigger an alert macthing one or mone of the specified yara ruels are hashed, this hash is then queried against VirusTotal's API to find any previously matched file uploads. If any of these files have never been seen before we upload the file present on our system for scanning. The results from either the hash search or the file upload are checked for vulnerability ratings meeting or exceeding the specifications of the operator. Such files are then moved to a quarantine directory that only the MTD has access and is denied permission to execute. Files which trigger a Yara alert but do not return as meeting or excceeding the threshold, have their hashes added to an exempt list (`whitelist`) so further alerts wont trigger a query against VirusTotal's API. 
+- should a scan result in one or more q if a q is triggered the sens directed encrypted ...
+#### Changes to the Filesystem
+Any files that now come under the exempt list will be catergorised as safe. As a files hash will change as it is modifed or a new hash will be created when a file is added these will not be within the `whitelist`, therefore will be included in the next continous scan done by the MTD assessed by the previous criteria of the YARA rules or operator specified threshold.
+#### Passing of Time Interval
+As per the project brief the MTD system will change the security settings of the filesystem after a predefined period of time. This results in <b>\<insert what happens here></b>
 ## Dynamic Security Recommendations
