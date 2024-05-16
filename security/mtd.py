@@ -52,7 +52,6 @@ def virus_total_scan(file_path):
         json.dump(scan, f, indent=4)
 
 def main(monitored: List[str], sensitive: List[str], yara_rules: List[str] = []):
-    files_to_upload = []
     monitored = check_paths(monitored)
     sensitive = check_paths(sensitive)
     yara_rules = check_paths((yara_rules if yara_rules else []) + DEFAULT_YARA_RULES)
