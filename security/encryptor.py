@@ -1,3 +1,4 @@
+import base64
 import math
 import random
 from cryptography.cryptoclasses import Cipher
@@ -14,11 +15,18 @@ class Encryptor:
             else:
                 self.stored_cipher, stored_key = random.choice(list(Ciphers)), None
 
-        self.cipher_handler = Cipher(newkeysize=50) if stored_key is None else Cipher(assignkey=stored_key)
+        print(f"Stored cipher: {self.stored_cipher}")
+        print(f"Stored key: {stored_key}")
+        if stored_key:
+            print("Using stored cipher key...")
+            self.cipher_handler = Cipher(assignkey=base64.b64decode(stored_key.encode('ascii')).decode('ascii'))
+        else:
+            print("Generating new cipher key...")
+            self.cipher_handler = Cipher(newkeysize=50)
         self.stored_key = self.cipher_handler.key
 
         with open(self.key_file, 'w') as f:
-            f.write(f"{self.stored_cipher} {self.stored_key}")
+            f.write(f"{self.stored_cipher} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
 
     def encrypt(self, file_path):
         #Check if file is already encrypted
@@ -27,7 +35,7 @@ class Encryptor:
         for line in lines:
             if file_path in line:
                 return
-        self.cipher_handler.encrypt(file_path, self.stored_cipher)
+        self.cipher_handler.encrypt(file_path, cipher=Ciphers.XOR)
         self.mark_file_as_encrypted(file_path)
 
     def decrypt(self, file_path):
@@ -40,9 +48,10 @@ class Encryptor:
                 can_decrypt = True
                 break
         if not can_decrypt:
+            print(f"File {file_path} is not encrypted")
             return
-        
-        self.cipher_handler.decrypt(file_path, self.stored_cipher)
+        print(f"Decrypting {file_path}")
+        self.cipher_handler.decrypt(file_path, cipher=Ciphers.XOR)
         self.unmark_file_as_encrypted(file_path)
     
     def mark_file_as_encrypted(self, file_path):

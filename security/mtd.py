@@ -8,6 +8,8 @@ import cmd
 
 
 from encryptor import Encryptor
+from cryptography.cryptoclasses import Cipher
+from cryptography.include.encrypt import Ciphers
 from yara_engine.YaraEngine_new import YaraEngine
 from scanner import Quarantiner, Whitelist, start
 
@@ -86,6 +88,9 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     encryptor = Encryptor(quarantine)
 
     encryptor.encrypt(sensitive[0] + "/super secret file!!!")
+    encryptor.decrypt(sensitive[0] + "/super secret file!!!")
+    #Cipher(newkeysize=50).encrypt(sensitive[0] + "/super secret file!!!", cipher=Ciphers.XOR)
+    return 0
 
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, loop.stop)
