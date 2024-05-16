@@ -3,6 +3,8 @@ import hashlib
 import os
 import time
 from typing import Dict, List
+
+from numpy import delete
 from yara_engine.YaraEngine_new import YaraEngine
 import datetime
 
@@ -34,41 +36,61 @@ class Whitelist:
 
 class Quarantiner:
     def __init__(self, quarantine: str):
-        self.quarantine = quarantine
+        self.quarantine_dir = quarantine
 
     def quarantine(self, file_path: str):
         hash = hashlib.md5(file_path.encode()).hexdigest()
-        new_path = os.path.join(self.quarantine, f"{hash}-" + os.path.basename(file_path))
+        new_path = os.path.join(self.quarantine_dir, f"{hash}-" + os.path.basename(file_path))
         print(f"Quarantining {file_path}. Moving from {file_path} to {new_path}")
         os.rename(file_path, new_path)
         #change the file permissions to read-only
-        os.chmod(os.path.join(self.quarantine, new_path), 0o400)
+        os.chmod(os.path.join(self.quarantine_dir, new_path), 0o400)
         self.add_to_quarantine_file(hash, file_path)
 
     def unquarantine(self, hash: str):
-        with open(self.quarantine, "r") as f:
+        with open(self.quarantine_dir + "/.quarantine", "r") as f:
             lines = f.readlines()
         for line in lines:
             if hash in line:
-                original_file_path = line.split(" ")[1]
-                new_path = os.path.join(os.path.dirname(original_file_path), os.path.basename(original_file_path).split("-")[1])
-                os.rename(original_file_path, new_path)
-                os.chmod(new_path, 0o600)
+                original_file_path = line.split(" ", maxsplit=1)[1].replace("\n", "")
+                print(f"{hash}-" + os.path.basename(original_file_path))
+                current_file_path = os.path.join(self.quarantine_dir, f"{hash}-" + os.path.basename(original_file_path))
+                os.rename(current_file_path, original_file_path)
+                os.chmod(original_file_path, 0o600)
+                self.remove_from_quarantine_file(hash)
+                return
+        print(f"Error: {hash} not found in quarantine file")
+
+    def delete(self, hash: str):
+        with open(self.quarantine_dir + "/.quarantine", "r") as f:
+            lines = f.readlines()
+        for line in lines:
+            if hash in line:
+                original_file_path = line.split(" ", maxsplit=1)[1].replace("\n", "")
+                current_file_path = os.path.join(self.quarantine_dir, f"{hash}-" + os.path.basename(original_file_path))
+                os.remove(current_file_path)
                 self.remove_from_quarantine_file(hash)
                 return
         print(f"Error: {hash} not found in quarantine file")
 
     def add_to_quarantine_file(self, hash: str, original_file_path: str):
-        with open(self.quarantine, "a") as f:
+        with open(self.quarantine_dir + "/.quarantine", "a") as f:
             f.write(hash + " " + original_file_path + "\n")
 
     def remove_from_quarantine_file(self, hash: str):
-        with open(self.quarantine, "r") as f:
+        with open(self.quarantine_dir + "/.quarantine", "r") as f:
             lines = f.readlines()
-        with open(self.quarantine, "w") as f:
+        with open(self.quarantine_dir + "/.quarantine", "w") as f:
             for line in lines:
                 if hash not in line:
                     f.write(line)
+    
+    def get_quarantined_files(self):
+        return_list = []
+        with open(self.quarantine_dir + "/.quarantine", "r") as f:
+            for line in f:
+                return_list.append((line.split(" ")[0], line.split(" ")[1]))
+        return return_list
 
 async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, quarantine: str):
     while True:

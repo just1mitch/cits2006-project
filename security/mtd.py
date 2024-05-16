@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 from yara_engine.YaraEngine_new import YaraEngine
-from scanner import Whitelist, start
+from scanner import Quarantiner, Whitelist, start
 
 VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
 
@@ -63,6 +63,7 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     yara_rules = check_paths(yara_rules)
     whitelist = check_path(whitelist)
     Path(whitelist + '/.whitelist').touch(exist_ok=True)
+    Path(quarantine + '/.quarantine').touch(exist_ok=True)
 
 
     if not monitored or not sensitive or not yara_rules or not quarantine or not whitelist:
@@ -71,7 +72,7 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     if not check_quarantine_directory(quarantine):
         return
     
-    if not check_paths_rwx(monitored) or not check_paths_rwx(sensitive) or not check_paths_rwx([whitelist]):
+    if not check_paths_rwx(monitored) or not check_paths_rwx(sensitive):
         return
 
     if not VIRUS_TOTAL_API_KEY:
@@ -93,20 +94,72 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
         loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
         loop.close()
 
+import os
+import cmd
 
+class QuarantineMenu(cmd.Cmd):
+    prompt = '(quarantine)'
+
+    def __init__(self, quarantiner: Quarantiner):
+        super().__init__()
+        self.quarantiner = quarantiner
+        self.do_help(None)
+
+    def do_list(self, args):
+        """List quarantined files."""
+        for hash, directory in self.quarantiner.get_quarantined_files():
+            print(f'{hash}: {directory}')
+
+    def do_delete(self, hash):
+        """Delete a quarantined file by its hash."""
+        if len(hash) != 32:
+            print('Invalid hash')
+            return
+        
+        self.quarantiner.delete(hash)
+        print('File deleted')
+
+    def do_restore(self, hash):
+        """Restore a quarantined file by its hash."""
+        if len(hash) != 32:
+            print('Invalid hash')
+            return
+        self.quarantiner.unquarantine(hash)
+        print("File restored")
+    
+    def do_quit(self, args):
+        """Quit the quarantine menu."""
+        return True
+
+def quarantiner(quarantine: str):
+    quarantiner_obj = Quarantiner(quarantine)
+    QuarantineMenu(quarantiner_obj).cmdloop()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-                    prog='RapidoBank MTD System',
-                    description='Entrypoint for the RapidoBank MTD System',
-                    epilog='Created by Daniel Jennings (23064976), Isobelle Scott (23105336)... ')
-    parser.add_argument('-m', '--monitored', nargs='+', required=True,
-                        help='Monitored directories')
-    parser.add_argument('-s', '--sensitive', nargs='+', required=True,
-                        help='Sensitive directories')
-    parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
-    parser.add_argument('-y', '--yara-rules', nargs='+', default=[os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara_engine/yararules")], help='Path to additional YARA files directories')
-    parser.add_argument('--whitelist', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__))), help='Path to directory where .whitelist file will be stored.')
-    parser.add_argument('--malicious-threshold', type=int, default=5, help='Threshold for the number of VirusTotal providers that must flag a file as malicious before quarantining action is taken.')
+        prog='RapidoBank MTD System',
+        description='Entrypoint for the RapidoBank MTD System',
+        epilog='Created by Daniel Jennings (23064976), Isobelle Scott (23105336)... ')
+
+    subparsers = parser.add_subparsers(dest='mode')
+
+    # Normal mode parser
+    normal_parser = subparsers.add_parser('normal')
+    normal_parser.add_argument('-m', '--monitored', nargs='+', required=True,
+                               help='Monitored directories')
+    normal_parser.add_argument('-s', '--sensitive', nargs='+', required=True,
+                               help='Sensitive directories')
+    normal_parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
+    normal_parser.add_argument('-y', '--yara-rules', nargs='+', default=[os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara_engine/yararules")], help='Path to additional YARA files directories')
+    normal_parser.add_argument('--whitelist', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__))), help='Path to directory where .whitelist file will be stored.')
+    normal_parser.add_argument('--malicious-threshold', type=int, default=5, help='Threshold for the number of VirusTotal providers that must flag a file as malicious before quarantining action is taken.')
+
+    # Quarantiner mode parser
+    quarantiner_parser = subparsers.add_parser('quarantiner')
+    quarantiner_parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
+
     args = parser.parse_args()
-    main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold, args.whitelist)
+    if (args.mode == 'quarantiner'):
+        quarantiner(args.quarantine)
+    else:
+        main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold, args.whitelist)
