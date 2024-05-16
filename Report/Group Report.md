@@ -18,7 +18,69 @@ This report is separated into each section of the project specification:
 - [Dynamic Security Recommendations](#dynamic-security-recommendations)
 
 ## Yara Engine
+### Brief
+The Yara Engine was designed to be as verbose as necessary mainly due to the fact that false positives are always easier to handle than false negatives. It runs over each Yara rule for each file as required, and if a Yara file returns a hit, it will send the required data to VirusTotal for a malicious report. Printing out the needed information to decide if the file is malicious or not.
 
+#### File scanning
+As mentioned before files are scanned as required, designed according to the Project sheet. We will run through an example below:   
+File name: .hiddensensitivefile.txt
+```First Name: Joel
+Last Name: Willoughby
+Phone Number: 0496496496
+Bank Number: 1234567
+```
+Due to this file being hidden on linux, it will be discovered as such by our is_hidden function:
+```Python
+#inside yaraengine.py -> is_hidden
+return os.path.basename(file_path).startswith(".")
+```
+Once a hidden file is detected our sensitive information Yara Rule runs over it:
+```Bash
+#inside sensitiveinfo.yara -> personal_data
+$first_name = {(46 | 66) 69 72 73 74 ?? (4e | 6e) 61 6d 65} 
+$last_name = {(4c | 6c) 61 73 74 ?? (4e | 6e) 61 6d 65}
+```
+This will return true - however due to the file containing sensitive information it will not be sent for scanning.
+```Python
+#inside yaraengine.py -> run_scans
+if is_hidden(file_path):
+        # Not sending file to be scanned if it contains sensitive information
+        scan_file(file_path, "SENSINFO_YARA")
+```
+Note: If the document is  then caught on another Yara Rule - it will infact be sent for scanning. This is to stop attackers from hiding malicious files as sensitive data.
+
+#### Yara Rules
+In this section we will run over every Yara rule.   
+- _malURL.yara_  
+Very simple yara rule - detects a URL - that is its only functionality  
+`$url_pattern = /(http(s)?:\/\/)?[-a-zA-Z0-9@:%._+~#?&\/=]{2,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%._+~#?&\/=]*)/`
+- _malware.yara_   
+Has two checks; does it have high entropy, and does it contain base64 content.   
+The reasoning behind this is: encrypted files tend to be _very_ random leading to high entropy.   
+Entropy _could_ be used to detect ciphered files, however detecting the cipher itself is a more robust method - we chose base64 as an example.   
+- _netresource.yara_   
+This yara rule is too large to mention everything - however it does check the following:   
+HTTP Requests   
+Network System Calls   
+Basic File Access Calls   
+Network DLL's   
+DNS Calls   
+The reasoning behind these is that quite often scripts will be accessing one of these network resources - and as per project requirements we MUST detect network activity.   
+We did have a look at a Yara import called `cuckoo` however that has since been deprecated.   
+- _scripts.yara_   
+This yara rule looks for common scripting languages and their structure, for example:   
+```Powershell
+$ps_function = /function\s+\w+\s*{/ // Powershell function
+```
+This detects the common function structure of a powershell file - which is almost required in any complex powershell script.   
+- _sensitiveinfo.yara_   
+This detects common sensitive information to be found in a banking files - which was explained above. For example:
+```Bash
+#inside sensitiveinfo.yara -> personal_data
+$first_name = {(46 | 66) 69 72 73 74 ?? (4e | 6e) 61 6d 65} 
+$last_name = {(4c | 6c) 61 73 74 ?? (4e | 6e) 61 6d 65}
+```
+This regex detects the string "first name" within a file - with F and N and the space all being non-determinate (f and be capatial or non-capital). 
 ## Cipher System and Hashing Algorithm
 
 ### Brief
