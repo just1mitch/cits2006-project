@@ -3,10 +3,7 @@ import asyncio
 import signal
 from typing import List
 import os
-import vt
 from pathlib import Path
-import json
-import hashlib
 
 
 from yara_engine.YaraEngine_new import YaraEngine
