@@ -65,6 +65,7 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     whitelist = check_path(whitelist)
     Path(whitelist + '/.whitelist').touch(exist_ok=True)
     Path(quarantine + '/.quarantine').touch(exist_ok=True)
+    Path(quarantine + '/.encryption').touch(exist_ok=True)
 
 
     if not monitored or not sensitive or not yara_rules or not quarantine or not whitelist:
