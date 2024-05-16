@@ -78,4 +78,4 @@ class Encryptor:
         self.stored_cipher = random.choice(list(Ciphers))
 
         with open(self.key_file, 'w') as f:
-            f.write(f"{self.stored_cipher} {self.stored_key}")
+            f.write(f"{self.stored_cipher} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
