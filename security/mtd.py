@@ -4,6 +4,7 @@ import signal
 from typing import List
 import os
 from pathlib import Path
+import cmd
 
 
 from yara_engine.YaraEngine_new import YaraEngine
@@ -94,8 +95,6 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
         loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
         loop.close()
 
-import os
-import cmd
 
 class QuarantineMenu(cmd.Cmd):
     prompt = '(quarantine)'
@@ -139,7 +138,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog='RapidoBank MTD System',
         description='Entrypoint for the RapidoBank MTD System',
-        epilog='Created by Daniel Jennings (23064976), Isobelle Scott (23105336)... ')
+        epilog='Created by Daniel Jennings (23064976) and Isobelle Scott (23105336). ')
 
     subparsers = parser.add_subparsers(dest='mode')
 
