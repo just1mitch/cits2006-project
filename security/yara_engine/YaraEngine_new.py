@@ -25,8 +25,8 @@ class YaraEngine:
         for i, rule in enumerate(self.rules):
             matches = self.rules[rule].match(filepath=path)
             if matches:
-                return True
-        return False
+                matching_rules.append(matches)
+        return matching_rules
     
     
     # Uses VirusTotal API to scan a malicious file passed by file_path
