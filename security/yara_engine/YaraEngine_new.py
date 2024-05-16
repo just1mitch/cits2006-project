@@ -13,9 +13,10 @@ class YaraEngine:
 
         self.virus_total_key = virus_total_key
     
-    def scan(self, path: str) -> bool:
+    def scan(self, path: str) -> list:
+        matching_rules = []
         for i, rule in enumerate(self.rules):
             matches = self.rules[rule].match(filepath=path)
             if matches:
-                return True
-        return False
+                matching_rules.append(rule)
+        return matching_rules
