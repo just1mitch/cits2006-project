@@ -31,6 +31,24 @@ def check_quarantine_directory(quarantine: str) -> bool:
 
     return True
 
+def check_paths_rwx(paths: List[str]) -> bool:
+    for path in paths:
+        if not os.path.isdir(path):
+            print(f"Error: {path} is not a valid directory.")
+            return False
+        for root, dirs, files in os.walk(path):
+            for dir in dirs:
+                dir_path = os.path.join(root, dir)
+                if not os.access(dir_path, os.R_OK | os.W_OK | os.X_OK):
+                    print(f"Error: {dir_path} does not have rwx permissions for the current user.")
+                    return False
+            for file in files:
+                file_path = os.path.join(root, file)
+                if not os.access(file_path, os.R_OK | os.W_OK):
+                    print(f"Error: {file_path} does not have rw permissions for the current user.")
+                    return False
+    return True
+
 def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules: List[str] = [], malicious_threshold: int = 5):
     Path(quarantine).mkdir(parents=False, exist_ok=True)
     monitored = check_paths(monitored)
@@ -41,6 +59,12 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     if not monitored or not sensitive or not yara_rules or not quarantine:
         return
     
+    if not check_quarantine_directory(quarantine[0]):
+        return
+    
+    if not check_paths_rwx(monitored) or not check_paths_rwx(sensitive):
+        return
+
     if not VIRUS_TOTAL_API_KEY:
         print("Alert: No VirusTotal API key found. Will not submit file hashes to VirusTotal.")
 
