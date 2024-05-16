@@ -1,10 +1,16 @@
 import argparse
 from typing import List
 import os
+import vt
+from pathlib import Path
+import json
+import hashlib
+
 
 from YaraEngine import YaraEngine
 
 DEFAULT_YARA_RULES = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara/yararules/")]
+VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
 
 def check_paths(paths: List[str]):
     for path in paths:
@@ -13,19 +19,46 @@ def check_paths(paths: List[str]):
             return False
     return [os.path.abspath(path) for path in paths]
 
+def md5_hash_file(file_path):
+    """Calculate the MD5 hash of a file."""
+    hasher = hashlib.md5()
+    with open(file_path, "rb") as f:
+        buf = f.read()
+        hasher.update(buf)
+    return hasher.hexdigest()
+
+# Uses VirusTotal API to scan a malicious file passed by file_path
+def virus_total_scan(file_path):
+    print(f"\nGetting scan results for {file_path} (may take up to 5 minutes)")
+    # See if file has been scanned recently - if so, use that info instead
+    hash = md5_hash_file(file_path)
+    with vt.Client(VIRUS_TOTAL_API_KEY) as vt_client:
+        try:
+            scan = vt_client.get_json(f"/files/{hash}")
+        except vt.error.APIError:
+            # If the file hasn't been scanned, send it for scanning
+            with open(f"{file_path}", "rb") as f:
+                vt_client.scan_file(f, wait_for_completion=True)
+            scan = vt_client.get_json(f"/files/{hash}")
+
+    attributes = scan["data"]["attributes"]
+    Path(os.path.abspath('./scan_results')).mkdir(exist_ok=True)
+    save_path = f"{os.path.abspath('./scan_results')}/{attributes['md5']}.json"
+    print(f"""Scan Results:\nName: {attributes["meaningful_name"]}\nAnalysis Stats: {attributes["last_analysis_stats"]}\nFull Analysis saved to {save_path}\n""")
+    with open(save_path, 'w') as f:
+        json.dump(scan, f, indent=4)
+
 def main(monitored: List[str], sensitive: List[str], yara_rules: List[str] = []):
+    files_to_upload = []
     monitored = check_paths(monitored)
     sensitive = check_paths(sensitive)
     yara_rules = check_paths((yara_rules if yara_rules else []) + DEFAULT_YARA_RULES)
 
     if not monitored or not sensitive or not yara_rules:
         return
-
-
-    VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
+    
     if not VIRUS_TOTAL_API_KEY:
         print("Alert: No VirusTotal API key found. Will not submit file hashes to VirusTotal.")
-
 
     yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY)
 
@@ -34,7 +67,11 @@ def main(monitored: List[str], sensitive: List[str], yara_rules: List[str] = [])
             for file in files:
                 file_path = os.path.join(root, file)
                 if yara_engine.scan(file_path):
+                    files_to_upload.append(file_path)
                     print(f"Alert: {file_path} matched a YARA rule.")
+    
+    for file_path in files_to_upload:
+        virus_total_scan(file_path)
 
 
 
