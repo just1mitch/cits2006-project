@@ -101,13 +101,3 @@ async def scanner(engine: YaraEngine, monitored: List[str], whitelist: Whitelist
             else:
                 whitelist.add_hash(file_hash, should_quarantine[1])
     return for_quarantine
-
-async def quarantiner(dangerous_files: Dict[str, List[str]], quarantine: str):
-    for file_path in dangerous_files:
-        hash = hashlib.md5(file_path.encode()).hexdigest()
-        new_path = os.path.join(quarantine, f"{hash}-" + os.path.basename(file_path))
-        print(f"Quarantining {file_path}. Moving from {file_path} to {new_path}")
-        #os.rename(file_path, new_path)
-        #change the file permissions to read-only
-        #os.chmod(os.path.join(quarantine, new_path), 0o400)
-
