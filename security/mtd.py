@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 from yara_engine.YaraEngine_new import YaraEngine
-from scanner import start
+from scanner import Whitelist, start
 
 VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
 
@@ -17,6 +17,12 @@ def check_paths(paths: List[str]) -> List[str] | bool:
             print(f"Error: {path} is not a valid directory.")
             return False
     return [os.path.abspath(path) for path in paths]
+
+def check_path(path: str) -> str | bool:
+    if not os.path.isdir(path):
+        print(f"Error: {path} is not a valid directory.")
+        return False
+    return os.path.abspath(path)
 
 def check_quarantine_directory(quarantine: str) -> bool:
     # Check if the quarantine directory is owned by the current user
@@ -49,32 +55,36 @@ def check_paths_rwx(paths: List[str]) -> bool:
                     return False
     return True
 
-def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules: List[str] = [], malicious_threshold: int = 5):
+def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules: List[str], malicious_threshold: int, whitelist: str):
     Path(quarantine).mkdir(parents=False, exist_ok=True)
     monitored = check_paths(monitored)
     sensitive = check_paths(sensitive)
-    quarantine = check_paths([quarantine])
+    quarantine = check_path(quarantine)
     yara_rules = check_paths(yara_rules)
+    whitelist = check_path(whitelist)
+    Path(whitelist + '/.whitelist').touch(exist_ok=True)
 
-    if not monitored or not sensitive or not yara_rules or not quarantine:
+
+    if not monitored or not sensitive or not yara_rules or not quarantine or not whitelist:
         return
     
-    if not check_quarantine_directory(quarantine[0]):
+    if not check_quarantine_directory(quarantine):
         return
     
-    if not check_paths_rwx(monitored) or not check_paths_rwx(sensitive):
+    if not check_paths_rwx(monitored) or not check_paths_rwx(sensitive) or not check_paths_rwx([whitelist]):
         return
 
     if not VIRUS_TOTAL_API_KEY:
         print("Alert: No VirusTotal API key found. Will not submit file hashes to VirusTotal.")
 
+    whitelist = Whitelist(whitelist + '/.whitelist')
     yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY)
 
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, loop.stop)
 
     try:
-        loop.create_task(start(yara_engine, monitored))
+        loop.create_task(start(yara_engine, monitored, whitelist, quarantine))
         loop.run_forever()
     except KeyboardInterrupt:
         tasks = asyncio.all_tasks(loop=loop)
@@ -96,6 +106,7 @@ if __name__ == "__main__":
                         help='Sensitive directories')
     parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
     parser.add_argument('-y', '--yara-rules', nargs='+', default=[os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara_engine/yararules")], help='Path to additional YARA files directories')
+    parser.add_argument('--whitelist', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__))), help='Path to directory where .whitelist file will be stored.')
     parser.add_argument('--malicious-threshold', type=int, default=5, help='Threshold for the number of VirusTotal providers that must flag a file as malicious before quarantining action is taken.')
     args = parser.parse_args()
-    main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold)
+    main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold, args.whitelist)
