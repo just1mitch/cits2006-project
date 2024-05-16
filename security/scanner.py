@@ -1,7 +1,7 @@
 import asyncio
 import os
 from typing import List
-from YaraEngine import YaraEngine
+from security.yara.YaraEngine_new import YaraEngine
 
 async def start(engine: YaraEngine, monitored: List[str]):
     while True:
