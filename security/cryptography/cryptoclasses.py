@@ -28,7 +28,7 @@ class Cipher:
     # 'vigenere': Vignere Cipher
     # 'quagmire': Quagmire 3 Cipher
     def encrypt(self, file, cipher: encrypt_lib.Ciphers):
-        encrypt.encrypt(file, cipher, self.key)
+        encrypt_lib.encrypt(file, cipher, self.key)
 
     # Decrypt file with given cipher
     # Cipher is one of the following: 
