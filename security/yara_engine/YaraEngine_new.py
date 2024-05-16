@@ -9,7 +9,7 @@ from cryptography.include.hashes.md5 import MD5
 
 
 class YaraEngine:
-    def __init__(self, rule_directories: list[str], virus_total_key=None):
+    def __init__(self, rule_directories: list[str], virus_total_key=None, malicious_threshold=5):
         self.rules = {}
 
         for directory in rule_directories:
@@ -19,26 +19,32 @@ class YaraEngine:
                 self.rules[yara_file] = yara.compile(filepath=file_path)
 
         self.virus_total_key = virus_total_key
+        self.malicious_threshold = malicious_threshold
     
     def scan(self, path: str) -> list:
         matching_rules = []
         for i, rule in enumerate(self.rules):
             matches = self.rules[rule].match(filepath=path)
             if matches:
-                return True
-        return False
+                matching_rules.append(matches)
+        return matching_rules
     
     
     # Uses VirusTotal API to scan a malicious file passed by file_path
-    async def virus_total_scan(self, file_path):
-        print(f"\nGetting scan results for {file_path} (may take up to 5 minutes)")
-        # See if file has been scanned recently - if so, use that info instead
-        #hash = md5_hash_file(file_path)
+    async def virus_total_scan(self, file_path) -> bool:
+        if not self.virus_total_key:
+            return False
+        print(f"Getting scan results for {file_path} from VirusTotal. This may take up to 5 minutes")
+        hash = md5_hash_file(file_path)
         client = vt.Client(self.virus_total_key)
         with open(file_path, "rb") as f:
-            result = await client.scan_file_async(f)
-            print(result)
-        return 1
+            try:
+                scan = await client.get_object_async(f"/files/{hash}")
+            except vt.error.APIError:
+                with open(file_path, "rb") as f:
+                    scan = client.scan_file(f, wait_for_completion=True)
+        await client.close_async()
+        return scan.last_analysis_stats['malicious'] >= self.malicious_threshold
 
 
 def md5_hash_file(file_path):

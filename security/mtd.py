@@ -9,24 +9,62 @@ from pathlib import Path
 from yara_engine.YaraEngine_new import YaraEngine
 from scanner import start
 
-DEFAULT_YARA_RULES = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara_engine/yararules/")]
 VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
 
-def check_paths(paths: List[str]):
+def check_paths(paths: List[str]) -> List[str] | bool:
     for path in paths:
         if not os.path.isdir(path):
             print(f"Error: {path} is not a valid directory.")
             return False
     return [os.path.abspath(path) for path in paths]
 
-def main(monitored: List[str], sensitive: List[str], yara_rules: List[str] = []):
+def check_quarantine_directory(quarantine: str) -> bool:
+    # Check if the quarantine directory is owned by the current user
+    if os.stat(quarantine).st_uid != os.getuid():
+        print(f"Error: {quarantine} is not owned by the current user.")
+        return False
+
+    # Check if only the current user can write, access and execute it
+    if os.stat(quarantine).st_mode & 0o777 != 0o700:
+        print(f"Error: {quarantine} permissions are not set to 700.")
+        return False
+
+    return True
+
+def check_paths_rwx(paths: List[str]) -> bool:
+    for path in paths:
+        if not os.path.isdir(path):
+            print(f"Error: {path} is not a valid directory.")
+            return False
+        for root, dirs, files in os.walk(path):
+            for dir in dirs:
+                dir_path = os.path.join(root, dir)
+                if not os.access(dir_path, os.R_OK | os.W_OK | os.X_OK):
+                    print(f"Error: {dir_path} does not have rwx permissions for the current user.")
+                    return False
+            for file in files:
+                file_path = os.path.join(root, file)
+                if not os.access(file_path, os.R_OK | os.W_OK):
+                    print(f"Error: {file_path} does not have rw permissions for the current user.")
+                    return False
+    return True
+
+def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules: List[str] = [], malicious_threshold: int = 5):
+    Path(quarantine).mkdir(parents=False, exist_ok=True)
     monitored = check_paths(monitored)
     sensitive = check_paths(sensitive)
-    yara_rules = check_paths((yara_rules if yara_rules else []) + DEFAULT_YARA_RULES)
+    quarantine = check_paths([quarantine])
+    yara_rules = check_paths(yara_rules)
 
-    if not monitored or not sensitive or not yara_rules:
+    if not monitored or not sensitive or not yara_rules or not quarantine:
         return
     
+    if not check_quarantine_directory(quarantine[0]):
+        return
+    
+    if not check_paths_rwx(monitored) or not check_paths_rwx(sensitive):
+        return
+
     if not VIRUS_TOTAL_API_KEY:
         print("Alert: No VirusTotal API key found. Will not submit file hashes to VirusTotal.")
 
@@ -56,7 +94,8 @@ if __name__ == "__main__":
                         help='Monitored directories')
     parser.add_argument('-s', '--sensitive', nargs='+', required=True,
                         help='Sensitive directories')
-    parser.add_argument('-y', '--yara-rules', nargs='+', help='Path to additional YARA files directories')
+    parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
+    parser.add_argument('-y', '--yara-rules', nargs='+', default=[os.path.join(os.path.dirname(os.path.abspath(__file__)), "yara_engine/yararules")], help='Path to additional YARA files directories')
+    parser.add_argument('--malicious-threshold', type=int, default=5, help='Threshold for the number of VirusTotal providers that must flag a file as malicious before quarantining action is taken.')
     args = parser.parse_args()
-
-    main(args.monitored, args.sensitive, args.yara_rules)
+    main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold)
