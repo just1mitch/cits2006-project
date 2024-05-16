@@ -80,7 +80,7 @@ This detects common sensitive information to be found in a banking files - which
 $first_name = {(46 | 66) 69 72 73 74 ?? (4e | 6e) 61 6d 65} 
 $last_name = {(4c | 6c) 61 73 74 ?? (4e | 6e) 61 6d 65}
 ```
-This regex detects the string "first name" within a file - with F and N and the space all being non-determinate (f and be capatial or non-capital). 
+For example this regex detects the string "first name" within a file - with F and N and the space all being non-determinate (f and be capatial or non-capital). Sensitive information also detects Australian bank details, IBAN number and Date of Birth. 
 ## Cipher System and Hashing Algorithm
 
 ### Brief
