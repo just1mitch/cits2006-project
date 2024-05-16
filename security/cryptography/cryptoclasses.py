@@ -1,9 +1,10 @@
+from os import remove
+from tempfile import mkstemp
 from cryptography.include import (
     encrypt, 
     decrypt, 
     hash_file
 )
-
 from cryptography.include.ciphers.util import generate_key
 
 # Cipher class to allow MTD to interact with cipher algorithms
@@ -41,7 +42,22 @@ class Cipher:
 # Hash class to allow MTD to interact with hashing algorithms
 class Hash:
 
-    # Hashes the input file and stores
-    def hash(input, output, format):
-        return hash_file(input, output, format)
+    # Hashes the input file and returns the hashed output as a string
+    # If the hash fails for any reason, returns None
+    # If successful, returns a bytes object containing the hash
+    # Input is a file path, format is one of the following hash algorithms:
+    # 'md5': MD5
+    # 'xxhash': xxHash
+    # 'murmur': MurmurHash
+    # 'sha256': SHA256
+    def hash(self, input, format) -> bytes:
+        temp = mkstemp(prefix="hash")[1]
+        if hash_file.hash_file(input, temp, format) != 0:
+            return None
+        with open(temp, 'r+b') as file:
+            content = file.read()
+        remove(temp)
+        return(content)
+        
+    
     

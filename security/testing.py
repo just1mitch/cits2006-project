@@ -1,4 +1,4 @@
-from cryptography.cryptoclasses import Cipher
+from cryptography.cryptoclasses import Cipher, Hash
 import os
 
 # Generates new key of size 50 (i.e. for encrypting)
@@ -18,3 +18,7 @@ newcipher = Cipher(assignkey=keystore)
 # Decrypt file with assigned key
 cipher.decrypt(path, 'xor')
 print('decrypted')
+
+hasher = Hash()
+hash = hasher.hash(path, 'murmur')
+print(hash)
