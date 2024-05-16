@@ -1,6 +1,7 @@
-# A vignere cipher on the entire ascii alphabet
+# A vigenere cipher on the ASCII printable alphabet
 from string import printable
 from base64 import b64encode, b64decode
+
 
 # Adapted from https://gist.github.com/flipperbw/8c93cc6c24db1a6c72953c38c385ab36
 # and https://www.geeksforgeeks.org/vigenere-cipher/

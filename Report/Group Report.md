@@ -1,3 +1,5 @@
+<meta charset="UTF-8" />
+
 # CITS2006 Group Report
 ## Authors
 - Daniel Jennings (23064976)
@@ -15,9 +17,9 @@ This report is separated into each section of the project specification:
 - [MTD System](#mtd-system-designed-by-izzy-and-daniel)
 - [Dynamic Security Recommendations](#dynamic-security-recommendations)
 
-## Yara Engine (Designed by Joel and Mitchell)
+## Yara Engine
 
-## Cipher System and Hashing Algorithm (Designed by Elijah)
+## Cipher System and Hashing Algorithm
 
 ### Brief
 The RB-Cyrpt.py script is designed to be a diverse command line tool to
@@ -43,6 +45,8 @@ absolute path accordingly</b>
 
 A `--help` flag is available to describe how to use the CLI tool.
 
+Additionally, the MTD interfaces with the Cipher and Hashing systems through the classes outlined in cryptoclasses.py, which allows for the creation of `Cipher` or `Hash` instances. As each cipher implemented can use the same key for encryption, each instance of `Cipher` has an allocated key that can be used for symmetric encryption or decryption of files.
+
 ### Ciphers
 There are 3 ciphers available for the RB-Crypt.py script, which follow the the
 `-e` or `-d` flags. The text which follows the flags is case agnostic, however
@@ -54,8 +58,69 @@ it must be one of the provided ciphers specified below:
 the `--key-gen` flag is also available to randomly generate a cipher key of
 length 50 and store it in a file called `<filename>.key`. Alternatively, if
 key-gen is called without any other args it will output the random key to
-`stdout`.
+`stdout`. The content of the key can include any character considered to be printable ASCII by Python's string module. This ensures that the generated key can be displayed properly to the user if necessary.
 
+Each cipher is encoded in ascii encoding, followed by base64 encoding, before being returned. Likewise, the decryption algorithms reverse this process before decrypting to plaintext. This design implementation was chosen such that the encrypted plaintext could be stored or transferred in environments that are restricted to ASCII data, as per [RFC4648](https://datatracker.ietf.org/doc/html/rfc4648). This practice ensures no data is lost in the event that the encrypted data were needed to be transferred to a legacy system.
+
+#### Vigenére Cipher:
+
+The implemented Vigenére cipher is a polyalphabetic cipher. Our implementation uses all ASCII printable characters, as opposed to a traditional Vigenére cipher that uses the A-Z uppercase alphabet. This decision was made to increase ciphertext obscurity and to ensure plaintext maintains it's formatting when decrypted. <br>(e.g. `a` won't get changed to `A`)
+
+
+![Vigenére Cipher Example](image-8.png)<br>
+<i>Vigenére Cipher example with an alphabet of A-Z [(source)](https://www.britannica.com/topic/cryptology/Vigenere-ciphers)</i><br>
+
+
+![Vigenére Cipher implementation](image-2.png)<br>
+<i>Example of our Vigenére Cipher Implementation</i>
+
+#### XOR Cipher:
+
+The XOR cipher works by calculating the XOR value of the plaintext character with a corresponding character in the key, and the XOR value is used as the ciphertext character. As the key is 50 characters, a modulo operation is used such that every 50th plaintext character is XOR’d with the same key character.
+
+![XOR Cipher Example](image-3.png)<br>
+<i>XOR Cipher example [(source)](https://arpit.substack.com/p/deciphering-repeated-key-xor-ciphertext)</i><br>
+
+![XOR Cipher Implementation](image-4.png)<br>
+<i>Example of our XOR Cipher Implementation</i>
+
+#### Quagmire 3 Cipher:
+
+The Quagmire 3 cipher is one of four iterations of a Quagmire periodic cipher. They are cimilar in principle to a Vignere cipher, except they utilise a keyed alphabet derived from the key. The initial keyed alphabet is decided based on the first appearance of each character in the key, followed by the remaining unused printable ASCII characters. 
+
+Next, we utilise a keyword to formulate multiple keyed alphabets from this initial alphabet. The number of keyed alphabets used is equal to the number of letters in the keyword. So if the keyword is CIPHER, as used in our implementation, 6 keyed alphabets are generated. The variation in the keyed alphabets comes from shifting each alphabet across such that each letter of the keyword aligns with the indicator (the character ‘A’ in our implementation). 
+
+As an example, take the use of the alphabet A-Z, and the key PASSWORD. The initial keyed alphabet would be:
+
+> <span style="color:red">PASWORD</span>BCEFGHIJKLMNQTUVXYZ
+
+We then generate the keyed alphabet table:
+
+>P<span style="color:red">A</span>SWORDBCEFGHIJKLMNQTUVXYZ (Initial Alphabet)<br>
+>
+>B<span style="color:red">C</span>EFGHIJKLMNQTUVXYZPASWORD (Alphabet 1)<br>
+>H<span style="color:red">I</span>JKLMNQTUVXYZPASWORDBCEFG (Alphabet 2)<br>
+>Z<span style="color:red">P</span>ASWORDBCEFGHIJKLMNQTUVXY (Alphabet 3)<br>
+>G<span style="color:red">H</span>IJKLMNQTUVXYZPASWORDBCEF (Alphabet 4)<br>
+>C<span style="color:red">E</span>FGHIJKLMNQTUVXYZPASWORDB (Alphabet 5)<br>
+>O<span style="color:red">R</span>DBCEFGHIJKLMNQTUVXYZPASW (Alphabet 6)<br>
+
+In Quagmire 1, the standard ordered alphabet A-Z is rotated to create the table. Quagmire 3 adds a layer of complexity by using the keyed alphabet not only as the initial alphabet, but also the rotated alphabet to create the list of alphabets. To calculate the ciphertext, the plaintext is split into groups of strings equal to the length of the keyword (e.g. groups of strings of length 6 with the keyword CIPHER).
+
+The ciphertext character is calculated by following the process:
+1.	Get the index of the character in the initial alphabet
+2.	In the assigned alphabet from the list of keyed alphabets (e.g. letter 1 in the group is assigned Alphabet 1), select the character in the same index position
+
+This process is repeated for each character of the plaintext. Note that by changing the key, length of the keyword, letters of the keyword, or the indicator, will all alter the output of the algorithm.
+
+![Keyed Alphabet Table](image-6.png)<br>
+<i>Example generation of a keyed alphabet [(source)](https://sites.google.com/site/cryptocrackprogram/user-guide/cipher-types/substitution/quagmire)</i>
+
+![Quagmire 3 Example](image-5.png)
+<i>Quagmire 3 Example (same source)</i>
+
+![Quagmire 3 Implementation](image-7.png)
+<i>Our Quagmire 3 Implementation</i>
 ### Hashes
 The hash function can be called in conjuction with or seperate from the cipher
 functionality. When called with in conjuction with a cipher flag, the hashing
@@ -82,7 +147,7 @@ overall the format for calling RB-Crypt, as specified by the `--help` flag is
 ```
 
 
-## MTD System (Designed by Izzy and Daniel)
+## MTD System
 The MTD system we have impliment will run in a continuous loop that scans every 5 seconds once started until the operator stops the program. We believed this was best to achieve a safer filesystem, as it will be constantly scanning for the following dangers and making the changes necessary to maintain integrity within the filesystem.
 #### Yara Alert Raised
 Files in the monitored directory are presented to the yara engine for scanning. Files which trigger an alert macthing one or mone of the specified yara ruels are hashed, this hash is then queried against VirusTotal's API to find any previously matched file uploads. If any of these files have never been seen before we upload the file present on our system for scanning. The results from either the hash search or the file upload are checked for vulnerability ratings meeting or exceeding the specifications of the operator. Such files are then moved to a quarantine directory that only the MTD has access and is denied permission to execute. Files which trigger a Yara alert but do not return as meeting or excceeding the threshold, have their hashes added to an exempt list (`whitelist`) so further alerts wont trigger a query against VirusTotal's API. 

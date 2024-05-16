@@ -18,6 +18,8 @@ def apply_xor(string1, string2):
     result = ""
     for i in range(len(string1)):
         result += chr(ord(string1[i]) ^ ord(string2[i % len(string2)]))
+
+    print(f"XOR Encrypted Ciphertext: {bytes(result, 'utf-8')}")
     return result
 
 # Encrypts the plaintext with the key via an xor cipher

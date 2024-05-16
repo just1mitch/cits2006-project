@@ -11,7 +11,7 @@
 #
 from string import printable
 from base64 import b64encode, b64decode
-
+from util import generate_key
 
 # The keyword length determines the number of keyed alphabets used
 # and therefore the size of the groups the plaintext is split into
@@ -21,7 +21,7 @@ from base64 import b64encode, b64decode
 KEYWORD = "CIPHER" 
 
 # The indicator is character that determines the period and alignment
-# of the keyed alphabets generated usig the KEYWORD
+# of the keyed alphabets generated using the KEYWORD
 INDICATOR = "A"
 
 # In a quagmire cipher, the keyed alphabet is made from
