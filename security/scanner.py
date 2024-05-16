@@ -6,7 +6,7 @@ from YaraEngine import YaraEngine
 async def start(engine: YaraEngine, monitored: List[str]):
     while True:
         await scanner(engine, monitored)
-        await asyncio.sleep(5)  # wait for 5 seconds
+        await asyncio.sleep(5)
 
 async def scanner(engine: YaraEngine, monitored: List[str]):
     alert = False
