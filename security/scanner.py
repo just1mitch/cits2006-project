@@ -89,7 +89,7 @@ class Quarantiner:
         return_list = []
         with open(self.quarantine_dir + "/.quarantine", "r") as f:
             for line in f:
-                return_list.append((line.split(" ")[0], line.split(" ")[1]))
+                return_list.append((line.split(" ", maxsplit=1)[0], line.split(" ", maxsplit=1)[1]))
         return return_list
 
 async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, quarantine: str):

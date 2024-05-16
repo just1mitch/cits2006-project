@@ -1,7 +1,7 @@
 from os import remove
 from tempfile import mkstemp
 from cryptography.include import (
-    encrypt, 
+    encrypt as encrypt_lib, 
     decrypt, 
     hash_file
 )
@@ -28,15 +28,15 @@ class Cipher:
     # 'xor': XOR Cipher
     # 'vigenere': Vignere Cipher
     # 'quagmire': Quagmire 3 Cipher
-    def encrypt(self, file, cipher):
-        encrypt.encrypt(file, cipher, self.key)
+    def encrypt(self, file, cipher: encrypt_lib.Ciphers):
+        encrypt_lib.encrypt(file, cipher, self.key)
 
     # Decrypt file with given cipher
     # Cipher is one of the following: 
     # 'xor': XOR Cipher
     # 'vigenere': Vignere Cipher
     # 'quagmire': Quagmire 3 Cipher
-    def decrypt(self, file, cipher):
+    def decrypt(self, file, cipher: encrypt_lib.Ciphers):
         decrypt.decrypt(file, cipher, self.key)
 
 # Hash class to allow MTD to interact with hashing algorithms
