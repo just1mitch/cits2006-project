@@ -57,7 +57,7 @@ Very simple yara rule - detects a URL - that is its only functionality
 - _malware.yara_   
 Has two checks; does it have high entropy, and does it contain base64 content.   
 The reasoning behind this is: encrypted files tend to be _very_ random leading to high entropy.   
-Entropy _could_ be used to detect ciphered files, however detecting the cipher itself is a more robust method - we chose base64 as an example.   
+Encrypted files are also typically base64 encoded, so that they can be transferred over the network without the potential of loss of data (as base64 encodes the data into binary data representable by an ASCII string).
 - _netresource.yara_   
 This yara rule is too large to mention everything - however it does check the following:   
 HTTP Requests   
@@ -66,7 +66,7 @@ Basic File Access Calls
 Network DLL's   
 DNS Calls   
 The reasoning behind these is that quite often scripts will be accessing one of these network resources - and as per project requirements we MUST detect network activity.   
-We did have a look at a Yara import called `cuckoo` however that has since been deprecated.   
+We did have a look at a Yara import called `cuckoo` however that has since been deprecated and so we decided against supporting it.   
 - _scripts.yara_   
 This yara rule looks for common scripting languages and their structure, for example:   
 ```Powershell
