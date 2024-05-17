@@ -23,11 +23,11 @@ class Whitelist:
         return False
     
     def add_hash(self, hash: str, malicious_count: int):
-        if not self.check_hash(hash):
-            with open(self.whitelist, "a") as f:
-                timestamp = str(int(time.time()))
-                malicious_count = str(malicious_count)
-                f.write(hash + " " + malicious_count + " " + timestamp + "\n")
+        self.remove_hash(hash)
+        with open(self.whitelist, "a") as f:
+            timestamp = str(int(time.time()))
+            malicious_count = str(malicious_count)
+            f.write(hash + " " + malicious_count + " " + timestamp + "\n")
 
     @staticmethod
     def hash_file(file_path: str) -> str:
@@ -104,10 +104,10 @@ class Quarantiner:
                 return_list.append((line.split(" ", maxsplit=1)[0], line.split(" ", maxsplit=1)[1]))
         return return_list
 
-async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, quarantine: str, encryptor: Encryptor):
+async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, quarantine: str, encryptor: Encryptor, malicious_threshold: int):
     while True:
         try:
-            for_quarantine = await scanner(engine, monitored, whitelist)
+            for_quarantine = await scanner(engine, monitored, whitelist, malicious_threshold)
             quarantiner = Quarantiner(quarantine)
             for file_path in for_quarantine:
                 quarantiner.quarantine(file_path)
@@ -163,7 +163,7 @@ async def periodic_shuffle(encryptor: Encryptor):
             print(f"Error: {e}")
         await asyncio.sleep(86400)
 
-async def scanner(engine: YaraEngine, monitored: List[str], whitelist: Whitelist):
+async def scanner(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, malicious_threshold: int):
     dangerous_files: Dict[str, List[str]] = {}
     for_quarantine = []
     for path in monitored:
@@ -180,11 +180,11 @@ async def scanner(engine: YaraEngine, monitored: List[str], whitelist: Whitelist
     for _, file_path in enumerate(dangerous_files):
         file_hash = whitelist.hash_file(file_path)
         check_hash = whitelist.check_hash(file_hash)
-        if not check_hash or check_hash[0] < 0:
+        if not check_hash or check_hash[0] < malicious_threshold:
             print(f"Alert: {file_path} will be checked. {check_hash} {file_hash}")
             should_quarantine = await engine.virus_total_scan(file_path)
             if should_quarantine[0]:
                 for_quarantine.append(file_path)
             else:
-                whitelist.add_hash(file_hash, should_quarantine[1])
+                whitelist.add_hash(file_hash, malicious_threshold)
     return for_quarantine

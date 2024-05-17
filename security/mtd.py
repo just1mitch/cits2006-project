@@ -98,7 +98,7 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
         print("Alert: No VirusTotal API key found. Will not submit file hashes to VirusTotal.")
 
     whitelist = Whitelist(whitelist + '/.whitelist')
-    yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY)
+    yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY, malicious_threshold)
     encryptor = Encryptor(quarantine, sensitive)
 
 
@@ -107,7 +107,7 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     loop.add_signal_handler(signal.SIGINT, loop.stop)
 
     try:
-        loop.create_task(start(yara_engine, monitored, whitelist, quarantine, encryptor))
+        loop.create_task(start(yara_engine, monitored, whitelist, quarantine, encryptor, malicious_threshold))
         loop.create_task(encrypt_unencrypted(encryptor))
         loop.run_forever()
     except KeyboardInterrupt:
