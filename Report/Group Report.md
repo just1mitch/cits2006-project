@@ -328,3 +328,6 @@ By passing the directory/directories they wish to decrypt using the `-s` tag, al
 
 Additionally, the operator may invoke a manual shuffle of the encryption system by supplying the `--shuffle` argument.
 ## Dynamic Security Recommendations
+Our MTD system provides verbose logging out of the box. In the event an Alert is raised, a description of the alert is logged. As our MTD is designed to run as a headless application, these logs would likely be persisted by `journalctl` or distro equivalent utility.
+
+The Quarantining functionality of the MTD is designed to dynamically improve the security of the system. Instead of allowing a possible threat to exist until a log file is reviewed, the system will take immediate precautionary action to isolate the potential danger from the rest of the system. Only after a human operator reviews both the threat, and preferably the associated log information can the offending file be restored (or deleted, in the event of a valid detection).
