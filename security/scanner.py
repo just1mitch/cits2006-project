@@ -4,7 +4,7 @@ import os
 import time
 from typing import Dict, List
 from encryptor import Encryptor
-from yara_engine.YaraEngine_new import YaraEngine
+from yara_engine.YaraEngineClass import YaraEngine
 import datetime
 
 class Whitelist:

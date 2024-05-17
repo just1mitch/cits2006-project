@@ -10,7 +10,7 @@ import cmd
 from encryptor import Encryptor
 from cryptography.cryptoclasses import Cipher
 from cryptography.include.encrypt import Ciphers
-from yara_engine.YaraEngine_new import YaraEngine
+from yara_engine.YaraEngineClass import YaraEngine
 from scanner import Quarantiner, Whitelist, encrypt_unencrypted, start
 
 VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
