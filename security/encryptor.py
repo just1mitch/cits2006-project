@@ -15,21 +15,24 @@ class Encryptor:
             if contents:
                 self.stored_cipher, stored_key = contents.split(' ', maxsplit=1)
             else:
-                self.stored_cipher, stored_key = random.choice(list(Ciphers)), None
+                self.stored_cipher = None
+                stored_key = None
 
         print(f"Stored cipher: {self.stored_cipher}")
         print(f"Stored key: {stored_key}")
         if stored_key:
             print("Using stored cipher key...")
             self.cipher_handler = Cipher(assignkey=base64.b64decode(stored_key.encode('ascii')).decode('ascii'))
+            self.stored_cipher = Ciphers[self.stored_cipher]
         else:
-            print("Generating new cipher key...")
+            print("Generating new cipher key and choosing new cipher...")
             self.cipher_handler = Cipher(newkeysize=50)
+            self.stored_cipher = random.choice(list(Ciphers))
         self.stored_key = self.cipher_handler.key
 
         if not contents:
             with open(self.key_file, 'w') as f:
-                f.write(f"{self.stored_cipher} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
+                f.write(f"{self.stored_cipher.name} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
 
     def encrypt(self, file_path):
         #Check if file is already encrypted
@@ -38,7 +41,7 @@ class Encryptor:
         for line in lines:
             if file_path in line:
                 return
-        self.cipher_handler.encrypt(file_path, cipher=Ciphers.XOR)
+        self.cipher_handler.encrypt(file_path, cipher=self.stored_cipher)
         self.mark_file_as_encrypted(file_path)
 
     def decrypt(self, file_path):
@@ -55,8 +58,8 @@ class Encryptor:
             return
         else:
             print(f"Decrypting {file_path}")
-            self.cipher_handler.decrypt(file_path, cipher=Ciphers.XOR)
-            #self.unmark_file_as_encrypted(file_path)
+            self.cipher_handler.decrypt(file_path, cipher=self.stored_cipher)
+            self.unmark_file_as_encrypted(file_path)
 
     def encrypt_unencrypted(self):
         for sensitive_dir in self.sensitive_dirs:
@@ -69,7 +72,6 @@ class Encryptor:
         for sensitive_dir in self.sensitive_dirs:
             for root, dirs, files in os.walk(sensitive_dir):
                 for file in files:
-                    print(f"Decrypting! {os.path.join(root, file)}")
                     self.decrypt(os.path.join(root, file))
     
     def mark_file_as_encrypted(self, file_path):
@@ -93,8 +95,7 @@ class Encryptor:
         self.stored_cipher = random.choice(list(Ciphers))
 
         with open(self.key_file, 'w') as f:
-            f.write(f"{self.stored_cipher} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
+            f.write(f"{self.stored_cipher.name} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
         
         #Reencrypt the files
         self.encrypt_unencrypted()
-

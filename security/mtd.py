@@ -142,13 +142,16 @@ def quarantiner(quarantine: str):
     quarantiner_obj = Quarantiner(quarantine)
     QuarantineMenu(quarantiner_obj).cmdloop()
 
-def decryptor(sensitive: List[str], quarantine: str):
+def decryptor(sensitive: List[str], quarantine: str, shuffle: bool):
     sensitive = check_paths(sensitive)
     quarantine = check_path(quarantine)
     if not sensitive or not quarantine:
         return
     Path(quarantine + '/.encryption').touch(exist_ok=True)
     encryptor = Encryptor(quarantine, sensitive)
+    if shuffle:
+        encryptor.shuffle_encryption()
+        return
     encryptor.decrypt_encrypted()
     return
 
@@ -175,10 +178,12 @@ if __name__ == "__main__":
     quarantiner_parser = subparsers.add_parser('quarantiner', help='Start in Quarantiner mode. Allows you to restore quarantined files, or delete them.')
     quarantiner_parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
 
+    # Decryptor mode parser
     decryptor_parser = subparsers.add_parser('decryptor', help='Start in Decryptor mode. Decrypts all encrypted files in the sensitive directories.')
     decryptor_parser.add_argument('-s', '--sensitive', nargs='+', required=True,
                                help='Sensitive directories')
     decryptor_parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
+    decryptor_parser.add_argument('--shuffle', action='store_true', help='Shuffle the cipher/key used for encryption.', default=False)
 
     args = parser.parse_args()
     if (args.mode == 'quarantiner'):
@@ -186,7 +191,7 @@ if __name__ == "__main__":
     elif (args.mode == 'normal'):
         main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold, args.whitelist)
     elif (args.mode == 'decryptor'):
-        decryptor(args.sensitive, args.quarantine)
+        decryptor(args.sensitive, args.quarantine, args.shuffle)
     else:
         #Show help
         parser.print_help()
