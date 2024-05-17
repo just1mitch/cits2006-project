@@ -142,6 +142,16 @@ def quarantiner(quarantine: str):
     quarantiner_obj = Quarantiner(quarantine)
     QuarantineMenu(quarantiner_obj).cmdloop()
 
+def decryptor(sensitive: List[str], quarantine: str):
+    sensitive = check_paths(sensitive)
+    quarantine = check_path(quarantine)
+    if not sensitive or not quarantine:
+        return
+    Path(quarantine + '/.encryption').touch(exist_ok=True)
+    encryptor = Encryptor(quarantine, sensitive)
+    encryptor.decrypt_encrypted()
+    return
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog='RapidoBank MTD System',
@@ -151,7 +161,7 @@ if __name__ == "__main__":
     subparsers = parser.add_subparsers(dest='mode')
 
     # Normal mode parser
-    normal_parser = subparsers.add_parser('normal')
+    normal_parser = subparsers.add_parser('normal', help='Start in Normal mode. Monitors directories for threats.')
     normal_parser.add_argument('-m', '--monitored', nargs='+', required=True,
                                help='Monitored directories')
     normal_parser.add_argument('-s', '--sensitive', nargs='+', required=True,
@@ -162,14 +172,21 @@ if __name__ == "__main__":
     normal_parser.add_argument('--malicious-threshold', type=int, default=5, help='Threshold for the number of VirusTotal providers that must flag a file as malicious before quarantining action is taken.')
 
     # Quarantiner mode parser
-    quarantiner_parser = subparsers.add_parser('quarantiner')
+    quarantiner_parser = subparsers.add_parser('quarantiner', help='Start in Quarantiner mode. Allows you to restore quarantined files, or delete them.')
     quarantiner_parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
+
+    decryptor_parser = subparsers.add_parser('decryptor', help='Start in Decryptor mode. Decrypts all encrypted files in the sensitive directories.')
+    decryptor_parser.add_argument('-s', '--sensitive', nargs='+', required=True,
+                               help='Sensitive directories')
+    decryptor_parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
 
     args = parser.parse_args()
     if (args.mode == 'quarantiner'):
         quarantiner(args.quarantine)
     elif (args.mode == 'normal'):
         main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold, args.whitelist)
+    elif (args.mode == 'decryptor'):
+        decryptor(args.sensitive, args.quarantine)
     else:
         #Show help
         parser.print_help()

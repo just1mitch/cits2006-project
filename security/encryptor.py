@@ -7,7 +7,7 @@ from cryptography.include.encrypt import Ciphers
 
 
 class Encryptor:
-    def __init__(self, quarantiner_dir, sensitive_dirs: list[str]):
+    def __init__(self, quarantiner_dir: str, sensitive_dirs: list[str]):
         self.key_file = quarantiner_dir + '/.encryption'
         self.sensitive_dirs = sensitive_dirs
         with open(self.key_file, 'r') as f:
@@ -27,8 +27,9 @@ class Encryptor:
             self.cipher_handler = Cipher(newkeysize=50)
         self.stored_key = self.cipher_handler.key
 
-        with open(self.key_file, 'w') as f:
-            f.write(f"{self.stored_cipher} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
+        if not contents:
+            with open(self.key_file, 'w') as f:
+                f.write(f"{self.stored_cipher} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
 
     def encrypt(self, file_path):
         #Check if file is already encrypted
@@ -50,18 +51,26 @@ class Encryptor:
                 can_decrypt = True
                 break
         if not can_decrypt:
-            print(f"File {file_path} is not encrypted")
+            print(f"File {file_path} is not encrypted!")
             return
-        print(f"Decrypting {file_path}")
-        self.cipher_handler.decrypt(file_path, cipher=Ciphers.XOR)
-        self.unmark_file_as_encrypted(file_path)
+        else:
+            print(f"Decrypting {file_path}")
+            self.cipher_handler.decrypt(file_path, cipher=Ciphers.XOR)
+            #self.unmark_file_as_encrypted(file_path)
 
     def encrypt_unencrypted(self):
         for sensitive_dir in self.sensitive_dirs:
             for root, dirs, files in os.walk(sensitive_dir):
                 for file in files:
                     print(f"Encrypting {os.path.join(root, file)}")
-                    #self.encrypt(os.path.join(root, file))
+                    self.encrypt(os.path.join(root, file))
+    
+    def decrypt_encrypted(self):
+        for sensitive_dir in self.sensitive_dirs:
+            for root, dirs, files in os.walk(sensitive_dir):
+                for file in files:
+                    print(f"Decrypting! {os.path.join(root, file)}")
+                    self.decrypt(os.path.join(root, file))
     
     def mark_file_as_encrypted(self, file_path):
         with open(self.key_file, 'a') as f:
@@ -77,10 +86,7 @@ class Encryptor:
     
     def shuffle_encryption(self):
         #Decrypt all files
-        with open(self.key_file, 'r') as f:
-            lines = f.readlines()
-        for line in lines[1:]:
-            self.decrypt(line.strip())
+        self.decrypt_encrypted()
         #Change the encryption key
         self.cipher_handler = Cipher(newkeysize=50)
         self.stored_key = self.cipher_handler.key
@@ -88,4 +94,7 @@ class Encryptor:
 
         with open(self.key_file, 'w') as f:
             f.write(f"{self.stored_cipher} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
+        
+        #Reencrypt the files
+        self.encrypt_unencrypted()
 
