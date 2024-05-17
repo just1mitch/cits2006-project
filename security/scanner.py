@@ -29,20 +29,29 @@ class Whitelist:
                 malicious_count = str(malicious_count)
                 f.write(hash + " " + malicious_count + " " + timestamp + "\n")
 
-    def hash_file(self, file_path: str) -> str:
+    @staticmethod
+    def hash_file(file_path: str) -> str:
         with open(file_path, "rb") as f:
             return hashlib.md5(f.read()).hexdigest()
 
     def get_hash_list(self) -> List[str]:
         with open(self.whitelist, "r") as f:
             return [line.split(" ")[0] for line in f]
+    
+    def remove_hash(self, hash: str):
+        with open(self.whitelist, "r") as f:
+            lines = f.readlines()
+        with open(self.whitelist, "w") as f:
+            for line in lines:
+                if hash not in line:
+                    f.write(line)
         
 class Quarantiner:
     def __init__(self, quarantine: str):
         self.quarantine_dir = quarantine
 
     def quarantine(self, file_path: str):
-        hash = hashlib.md5(file_path.encode()).hexdigest()
+        hash = Whitelist.hash_file(file_path)
         new_path = os.path.join(self.quarantine_dir, f"{hash}-" + os.path.basename(file_path))
         print(f"Quarantining {file_path}. Moving from {file_path} to {new_path}")
         os.rename(file_path, new_path)
@@ -112,6 +121,8 @@ async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, 
 
 def check_for_add_mod_delete(monitored: List[str], whitelist: Whitelist):
     whitelist_hashes = whitelist.get_hash_list()
+    #it's possible for two identical files to have the same hash...
+    seen_hashes = []
     should_shuffle = False
     #Hash each file in monitored and check if it is in the whitelist
     for path in monitored:
@@ -119,13 +130,20 @@ def check_for_add_mod_delete(monitored: List[str], whitelist: Whitelist):
             for file in files:
                 file_path = os.path.join(root, file)
                 file_hash = whitelist.hash_file(file_path)
-                if not file_hash in whitelist_hashes:
+                if not file_hash in whitelist_hashes and not file_hash in seen_hashes:
                     print(f"Alert: {file_path} has been modified since last scan.")
                     should_shuffle = True
-                else:
+                    seen_hashes.append(file_hash)
                     whitelist_hashes.remove(file_hash)
+                elif file_hash in whitelist_hashes and not file_hash in seen_hashes:
+                    seen_hashes.append(file_hash)
+                    whitelist_hashes.remove(file_hash)
+
     if len(whitelist_hashes) > 0:
         print(f"Alert: {len(whitelist_hashes)} files have been deleted since last scan.")
+        for hash in whitelist_hashes:
+            print(f"Deleting {hash}")
+            whitelist.remove_hash(hash)
         should_shuffle = True
     return should_shuffle
 
@@ -156,9 +174,14 @@ async def scanner(engine: YaraEngine, monitored: List[str], whitelist: Whitelist
                 if scan_result:
                     dangerous_files[file_path] = scan_result
                     print(f"Alert: {file_path} matched a YARA rules {scan_result}")
+                else:
+                    whitelist.add_hash(whitelist.hash_file(file_path), 0)
+
     for _, file_path in enumerate(dangerous_files):
         file_hash = whitelist.hash_file(file_path)
-        if not whitelist.check_hash(file_hash):
+        check_hash = whitelist.check_hash(file_hash)
+        if not check_hash or check_hash[0] < 0:
+            print(f"Alert: {file_path} will be checked. {check_hash} {file_hash}")
             should_quarantine = await engine.virus_total_scan(file_path)
             if should_quarantine[0]:
                 for_quarantine.append(file_path)

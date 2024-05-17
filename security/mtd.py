@@ -107,7 +107,7 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     loop.add_signal_handler(signal.SIGINT, loop.stop)
 
     try:
-        #loop.create_task(start(yara_engine, monitored, whitelist, quarantine, encryptor))
+        loop.create_task(start(yara_engine, monitored, whitelist, quarantine, encryptor))
         loop.create_task(encrypt_unencrypted(encryptor))
         loop.run_forever()
     except KeyboardInterrupt:
@@ -121,9 +121,10 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
 class QuarantineMenu(cmd.Cmd):
     prompt = '(quarantine)'
 
-    def __init__(self, quarantiner: Quarantiner):
+    def __init__(self, quarantiner: Quarantiner, whitelist: Whitelist):
         super().__init__()
         self.quarantiner = quarantiner
+        self.whitelist = whitelist
         self.do_help(None)
 
     def do_list(self, args):
@@ -146,15 +147,24 @@ class QuarantineMenu(cmd.Cmd):
             print('Invalid hash')
             return
         self.quarantiner.unquarantine(hash)
+        self.whitelist.add_hash(hash, 9999999)
         print("File restored")
     
     def do_quit(self, args):
         """Quit the quarantine menu."""
         return True
 
-def quarantiner(quarantine: str):
+def quarantiner(quarantine: str, whitelist: str):
+    whitelist = check_path(whitelist)
+    quarantine = check_path(quarantine)
+    if not whitelist or not quarantine:
+        return
+    Path(whitelist + '/.whitelist').touch(exist_ok=True)
+    Path(quarantine + '/.quarantine').touch(exist_ok=True)
+
     quarantiner_obj = Quarantiner(quarantine)
-    QuarantineMenu(quarantiner_obj).cmdloop()
+    whitelist_obj = Whitelist(whitelist + '/.whitelist')
+    QuarantineMenu(quarantiner_obj, whitelist_obj).cmdloop()
 
 def decryptor(sensitive: List[str], quarantine: str, shuffle: bool):
     sensitive = check_paths(sensitive)
@@ -191,6 +201,8 @@ if __name__ == "__main__":
     # Quarantiner mode parser
     quarantiner_parser = subparsers.add_parser('quarantiner', help='Start in Quarantiner mode. Allows you to restore quarantined files, or delete them.')
     quarantiner_parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
+    quarantiner_parser.add_argument('--whitelist', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__))), help='Path to directory where .whitelist file will be stored.')
+
 
     # Decryptor mode parser
     decryptor_parser = subparsers.add_parser('decryptor', help='Start in Decryptor mode. Decrypts all encrypted files in the sensitive directories.')
@@ -201,7 +213,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if (args.mode == 'quarantiner'):
-        quarantiner(args.quarantine)
+        quarantiner(args.quarantine, args.whitelist)
     elif (args.mode == 'normal'):
         main(args.monitored, args.sensitive, args.quarantine, args.yara_rules, args.malicious_threshold, args.whitelist)
     elif (args.mode == 'decryptor'):
