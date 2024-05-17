@@ -259,19 +259,19 @@ options:
 Unencrypted files in the sensitive directories will be encrypted on start. The system will then begin scanning the monitored directories for files while violate the defined Yara rules.
 
 #### Yara Alert Raised
-Files in the monitored directory are presented to the Yara engine for scanning. Files which trigger an alert macthing one or mone of the specified yara rules are hashed, this hash is then queried against VirusTotal's API to find any previously matched file uploads. 
+Files in the monitored directory are presented to the Yara engine for scanning. Files which trigger an alert matching one or more of the specified Yara rules are hashed, this hash is then queried against VirusTotal's API to find any previously matched file uploads. 
 
-If any of these files have never been seen before we upload the file present on our system for scanning. The results from either the hash search or the file upload are are checked for whether the number of security vendors that consider the file a vulnerability meets or exceeds the specified vulnerability threshold (optionally defined on program invocation, defaults to 5).
+If any of these files have never been seen before we upload the file present on our system for scanning. The results from either the hash search or the file upload are checked for whether the number of security vendors that consider the file a vulnerability meets or exceeds the specified vulnerability threshold (optionally defined on program invocation, defaults to 5).
 
-Files exceeding this safety threshold are then moved to a quarantine directory that only the user running the MTD system has access to. Quarantined files have their permissions changed to be as restrictive as possible. 
+Files exceeding this safety threshold are then moved to a quarantine directory that only the user running the MTD system has access to (this is enforced by the system). Quarantined files have their permissions changed to be as restrictive as possible. 
 
-Files which trigger a Yara alert but do not exceed the specified malicious count threshold have their hashes added to an exempt list (`whitelist`) so further alerts wont trigger a query against VirusTotal's API. 
+Files which trigger a Yara alert but do not exceed the specified malicious count threshold have their hashes added to an exempt list (`[quarantine]/.whitelist`) so further alerts wont trigger a query against VirusTotal's API. 
 
 
 #### Changes to the Filesystem
 Files known to the MTD as safe have their hashes persisted inside a `[quarantine]/.whitelist` file. Should a file be added, modified or deleted within a monitored directory its hash will not appear inside this whitelist file.
 
-On the next system scan, offending files will themselves be scanned. Regardless of the scan outcome, the cipher system used to encrypt the contents of the sensitive directories is changed.
+On the next system scan, newly added or modified files will themselves be scanned. Regardless of the scan outcome, the cipher system used to encrypt the contents of the sensitive directories is changed.
 
 #### Passing of Time Interval
 As per the project brief the MTD system will change the security settings of the encrypted sensitive directories after a periodic amount of time. The nature of these changes is random, and it is not guaranteed that the encryption cipher used will change. However, the encryption key is guaranteed to change.
@@ -305,7 +305,7 @@ File restored
 (quarantine)quit
 ```
 
-When a file is restored, its hash is added to the system's `.whitelist` file, preventing it from being falsely flagged as malicious again.
+When a file is restored, its hash is added to the system's `[quarantine]/.whitelist` file, preventing it from being falsely flagged as malicious again.
 
 ### Decryptor
 By design of our MTD system, the sensitive directories persist as encrypted on disk even in the event the system is not running.
