@@ -59,6 +59,14 @@ def check_paths_rwx(paths: List[str]) -> bool:
                     return False
     return True
 
+def check_sensitive_not_subdir(monitored: List[str], sensitive: List[str]) -> bool:
+    for monitored_dir in monitored:
+        for sensitive_dir in sensitive:
+            if sensitive_dir.startswith(monitored_dir):
+                print(f"Error: {sensitive_dir} is a subdirectory of {monitored_dir}. Sensitive directories cannot be subdirectories of monitored directories.")
+                return False
+    return True
+
 def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules: List[str], malicious_threshold: int, whitelist: str):
     Path(quarantine).mkdir(parents=False, exist_ok=True)
     monitored = check_paths(monitored)
@@ -70,6 +78,12 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
     Path(quarantine + '/.quarantine').touch(exist_ok=True)
     Path(quarantine + '/.encryption').touch(exist_ok=True)
 
+
+    if not check_sensitive_not_subdir(monitored, sensitive):
+        return
+    
+    if not check_sensitive_not_subdir(monitored, [quarantine]):
+        return
 
     if not monitored or not sensitive or not yara_rules or not quarantine or not whitelist:
         return
