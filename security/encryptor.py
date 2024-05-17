@@ -11,9 +11,10 @@ class Encryptor:
         self.key_file = quarantiner_dir + '/.encryption'
         self.sensitive_dirs = sensitive_dirs
         with open(self.key_file, 'r') as f:
-            contents = f.read().strip()
+            contents = f.readlines()
             if contents:
-                self.stored_cipher, stored_key = contents.split(' ', maxsplit=1)
+                header = contents[0].strip()
+                self.stored_cipher, stored_key = header.split(' ', maxsplit=1)
             else:
                 self.stored_cipher = None
                 stored_key = None
@@ -41,6 +42,7 @@ class Encryptor:
         for line in lines:
             if file_path in line:
                 return
+        print(f"Encrypting {file_path}")
         self.cipher_handler.encrypt(file_path, cipher=self.stored_cipher)
         self.mark_file_as_encrypted(file_path)
 
@@ -65,7 +67,6 @@ class Encryptor:
         for sensitive_dir in self.sensitive_dirs:
             for root, dirs, files in os.walk(sensitive_dir):
                 for file in files:
-                    print(f"Encrypting {os.path.join(root, file)}")
                     self.encrypt(os.path.join(root, file))
     
     def decrypt_encrypted(self):

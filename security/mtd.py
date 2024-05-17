@@ -183,7 +183,7 @@ if __name__ == "__main__":
     decryptor_parser.add_argument('-s', '--sensitive', nargs='+', required=True,
                                help='Sensitive directories')
     decryptor_parser.add_argument('-q', '--quarantine', nargs='?', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "quarantine"), help='Quarantine directory')
-    decryptor_parser.add_argument('--shuffle', action='store_true', help='Shuffle the cipher/key used for encryption.', default=False)
+    decryptor_parser.add_argument('--shuffle', action='store_true', help='Shuffle the cipher/key used for encryption. Will encrypt all files in sensitive directory.', default=False)
 
     args = parser.parse_args()
     if (args.mode == 'quarantiner'):
