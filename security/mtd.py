@@ -11,7 +11,7 @@ from encryptor import Encryptor
 from cryptography.cryptoclasses import Cipher
 from cryptography.include.encrypt import Ciphers
 from yara_engine.YaraEngine_new import YaraEngine
-from scanner import Quarantiner, Whitelist, start
+from scanner import Quarantiner, Whitelist, encrypt_unencrypted, start
 
 VIRUS_TOTAL_API_KEY = os.environ.get('VIRUS_TOTAL_API_KEY')
 
@@ -85,22 +85,16 @@ def main(monitored: List[str], sensitive: List[str], quarantine: str, yara_rules
 
     whitelist = Whitelist(whitelist + '/.whitelist')
     yara_engine = YaraEngine(yara_rules, VIRUS_TOTAL_API_KEY)
-    encryptor = Encryptor(quarantine)
+    encryptor = Encryptor(quarantine, sensitive)
 
-    test_cipher = Cipher(newkeysize=50)
-    test_cipher.encrypt(sensitive[0] + "/super secret file!!!", cipher="xor")
-    test_cipher.decrypt(sensitive[0] + "/super secret file!!!", cipher="xor")
 
-    #encryptor.encrypt(sensitive[0] + "/super secret file!!!")
-    #encryptor.decrypt(sensitive[0] + "/super secret file!!!")
-    #Cipher(newkeysize=50).encrypt(sensitive[0] + "/super secret file!!!", cipher=Ciphers.XOR)
-    return 0
 
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, loop.stop)
 
     try:
-        loop.create_task(start(yara_engine, monitored, whitelist, quarantine, encryptor))
+        #loop.create_task(start(yara_engine, monitored, whitelist, quarantine, encryptor))
+        loop.create_task(encrypt_unencrypted(encryptor))
         loop.run_forever()
     except KeyboardInterrupt:
         tasks = asyncio.all_tasks(loop=loop)

@@ -98,9 +98,28 @@ async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, 
             quarantiner = Quarantiner(quarantine)
             for file_path in for_quarantine:
                 quarantiner.quarantine(file_path)
+            if for_quarantine:
+                print("Rotating encryption of sensitive files due to quarantined threat.")
+                encryptor.shuffle_encryption()
         except Exception as e:
             print(f"Error: {e}")
         await asyncio.sleep(5)
+
+async def encrypt_unencrypted(encryptor: Encryptor):
+    while True:
+        try:
+            encryptor.encrypt_unencrypted()
+        except Exception as e:
+            print(f"Error: {e}")
+        await asyncio.sleep(5)
+
+async def periodic_shuffle(encryptor: Encryptor):
+    while True:
+        try:
+            encryptor.shuffle_encryption()
+        except Exception as e:
+            print(f"Error: {e}")
+        await asyncio.sleep(86400)
 
 async def scanner(engine: YaraEngine, monitored: List[str], whitelist: Whitelist):
     dangerous_files: Dict[str, List[str]] = {}

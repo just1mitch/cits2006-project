@@ -1,13 +1,15 @@
 import base64
 import math
+import os
 import random
 from cryptography.cryptoclasses import Cipher
 from cryptography.include.encrypt import Ciphers
 
 
 class Encryptor:
-    def __init__(self, quarantiner_dir):
+    def __init__(self, quarantiner_dir, sensitive_dirs: list[str]):
         self.key_file = quarantiner_dir + '/.encryption'
+        self.sensitive_dirs = sensitive_dirs
         with open(self.key_file, 'r') as f:
             contents = f.read().strip()
             if contents:
@@ -53,6 +55,13 @@ class Encryptor:
         print(f"Decrypting {file_path}")
         self.cipher_handler.decrypt(file_path, cipher=Ciphers.XOR)
         self.unmark_file_as_encrypted(file_path)
+
+    def encrypt_unencrypted(self):
+        for sensitive_dir in self.sensitive_dirs:
+            for root, dirs, files in os.walk(sensitive_dir):
+                for file in files:
+                    print(f"Encrypting {os.path.join(root, file)}")
+                    #self.encrypt(os.path.join(root, file))
     
     def mark_file_as_encrypted(self, file_path):
         with open(self.key_file, 'a') as f:
@@ -79,3 +88,4 @@ class Encryptor:
 
         with open(self.key_file, 'w') as f:
             f.write(f"{self.stored_cipher} {base64.b64encode(self.stored_key.encode('ascii')).decode('ascii')}\n")
+

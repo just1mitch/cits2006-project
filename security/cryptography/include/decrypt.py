@@ -3,6 +3,7 @@ from cryptography.include.ciphers import (
     rba_xor,
     rba_quagmire,
 )
+from cryptography.include.encrypt import Ciphers
 
 def decrypt(file, format, key):
     file_content: str = ""
@@ -10,11 +11,11 @@ def decrypt(file, format, key):
         file_content = fd.read()
     
     match (format):
-        case 'vigenere':
+        case Ciphers.VIGENERE:
             file_content = rba_vigenere.vig_decrypt(file_content, key)
-        case 'xor':
+        case Ciphers.XOR:
             file_content = rba_xor.xor_decrypt(file_content, key)
-        case 'quagmire':
+        case Ciphers.QUAGMIRE:
             file_content = rba_quagmire.q3_decrypt(file_content, key)
         case _:
             return -1
