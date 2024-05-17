@@ -148,20 +148,19 @@ def check_for_add_mod_delete(monitored: List[str], whitelist: Whitelist):
     return should_shuffle
 
 async def encrypt_unencrypted(encryptor: Encryptor):
+    count =0
     while True:
         try:
+            count += 1
             encryptor.encrypt_unencrypted()
+            if count % 10 == 0:
+                count = 0
+                print("Rotating encryption of sensitive files due to time.")
+                encryptor.shuffle_encryption()
         except Exception as e:
             print(f"Error: {e}")
         await asyncio.sleep(5)
 
-async def periodic_shuffle(encryptor: Encryptor):
-    while True:
-        try:
-            encryptor.shuffle_encryption()
-        except Exception as e:
-            print(f"Error: {e}")
-        await asyncio.sleep(86400)
 
 async def scanner(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, malicious_threshold: int):
     dangerous_files: Dict[str, List[str]] = {}

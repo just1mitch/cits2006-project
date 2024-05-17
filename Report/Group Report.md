@@ -225,20 +225,106 @@ overall the format for calling RB-Crypt, as specified by the `--help` flag is
 
 
 ## MTD System
-The MTD system we have impliment will run in a continuous loop that scans every 5 seconds once started until the operator stops the program. We believed this was best to achieve a safer filesystem, as it will be constantly scanning for the following dangers and making the changes necessary to maintain integrity within the filesystem.
+The MTD system comprises three primary running modes, documented in the included CLI and outlined below.
+
+```
+{normal,quarantiner,decryptor}
+    normal              Start in Normal mode. Monitors directories for threats.
+    quarantiner         Start in Quarantiner mode. Allows you to restore quarantined files, or delete them.
+    decryptor           Start in Decryptor mode. Decrypts all encrypted files in the sensitive directories.
+```
+### Normal Mode
+In normal operation, the MTD system runs in a continuous loop that scans monitored directories every 5 seconds once started until the operator stops the program. Being a headless program, its intended deployment is as a background service, where it can spawn on system startup.
+
+To begin operation, at least one monitored directory and at least one sensitive directory must be passed as command line arguments.
+```
+usage: RapidoBank MTD System normal [-h] -m MONITORED [MONITORED ...] -s SENSITIVE [SENSITIVE ...] [-q [QUARANTINE]] [-y YARA_RULES [YARA_RULES ...]] [--whitelist [WHITELIST]]
+                                    [--malicious-threshold MALICIOUS_THRESHOLD]
+
+options:
+  -h, --help            show this help message and exit
+  -m MONITORED [MONITORED ...], --monitored MONITORED [MONITORED ...]
+                        Monitored directories
+  -s SENSITIVE [SENSITIVE ...], --sensitive SENSITIVE [SENSITIVE ...]
+                        Sensitive directories
+  -q [QUARANTINE], --quarantine [QUARANTINE]
+                        Quarantine directory
+  -y YARA_RULES [YARA_RULES ...], --yara-rules YARA_RULES [YARA_RULES ...]
+                        Path to additional YARA files directories
+  --whitelist [WHITELIST]
+                        Path to directory where .whitelist file will be stored.
+  --malicious-threshold MALICIOUS_THRESHOLD
+                        Threshold for the number of VirusTotal providers that must flag a file as malicious before quarantining action is taken.
+```
+Unencrypted files in the sensitive directories will be encrypted on start. The system will then begin scanning the monitored directories for files while violate the defined Yara rules.
+
 #### Yara Alert Raised
-Files in the monitored directory are presented to the yara engine for scanning. Files which trigger an alert macthing one or mone of the specified yara ruels are hashed, this hash is then queried against VirusTotal's API to find any previously matched file uploads. If any of these files have never been seen before we upload the file present on our system for scanning. The results from either the hash search or the file upload are checked for vulnerability ratings meeting or exceeding the specifications of the operator. Such files are then moved to a quarantine directory that only the MTD has access and is denied permission to execute. Files which trigger a Yara alert but do not return as meeting or excceeding the threshold, have their hashes added to an exempt list (`whitelist`) so further alerts wont trigger a query against VirusTotal's API. 
-- should a scan result in one or more q if a q is triggered the sens directed encrypted ...
+Files in the monitored directory are presented to the Yara engine for scanning. Files which trigger an alert macthing one or mone of the specified yara rules are hashed, this hash is then queried against VirusTotal's API to find any previously matched file uploads. 
+
+If any of these files have never been seen before we upload the file present on our system for scanning. The results from either the hash search or the file upload are are checked for whether the number of security vendors that consider the file a vulnerability meets or exceeds the specified vulnerability threshold (optionally defined on program invocation, defaults to 5).
+
+Files exceeding this safety threshold are then moved to a quarantine directory that only the user running the MTD system has access to. Quarantined files have their permissions changed to be as restrictive as possible. 
+
+Files which trigger a Yara alert but do not exceed the specified malicious count threshold have their hashes added to an exempt list (`whitelist`) so further alerts wont trigger a query against VirusTotal's API. 
+
+
 #### Changes to the Filesystem
-Any files that now come under the exempt list will be catergorised as safe. As a files hash will change as it is modifed or a new hash will be created when a file is added these will not be within the `whitelist`, therefore will be included in the next continous scan done by the MTD assessed by the previous criteria of the YARA rules or operator specified threshold.
+Files known to the MTD as safe have their hashes persisted inside a `[quarantine]/.whitelist` file. Should a file be added, modified or deleted within a monitored directory its hash will not appear inside this whitelist file.
+
+On the next system scan, offending files will themselves be scanned. Regardless of the scan outcome, the cipher system used to encrypt the contents of the sensitive directories is changed.
+
 #### Passing of Time Interval
-As per the project brief the MTD system will change the security settings of the filesystem after a predefined period of time. This results in <b>\<insert what happens here></b>
-#### Quarantiner Mode
-The following command is apart of the mtd model which allows the operator to interact with the files that are moved and held in the quarantine directory.
-`python security/mtd.py quarantiner`
-When you enter into this mode there are clearly labeled actions that you can perform upon the files within this directory. 
-- `List` the contents of the directory
-- `Delete` a quarantined file by its hash
-- `Restore` a quarantined file by its hash
-- `Quit` the quarantine menu (exit you out of this mode)
+As per the project brief the MTD system will change the security settings of the encrypted sensitive directories after a periodic amount of time. The nature of these changes is random, and it is not guaranteed that the encryption cipher used will change. However, the encryption key is guaranteed to change.
+### Quarantiner Mode
+In quarantiner mode, the system presents an interactive command line menu for viewing, restoring and deleting quarantined files.
+
+```
+usage: RapidoBank MTD System quarantiner [-h] [-q [QUARANTINE]] [--whitelist [WHITELIST]]
+
+options:
+  -h, --help            show this help message and exit
+  -q [QUARANTINE], --quarantine [QUARANTINE]
+                        Quarantine directory
+  --whitelist [WHITELIST]
+                        Path to directory where .whitelist file will be stored.
+```
+
+When a file is deemed dangerous by the Yara engine, it is placed in a segregated quarantine directory, and has its permissions stripped. Due to the possibility of false positives, we saw it prudent to implement a method of rectifying false positives.
+
+```
+Documented commands (type help <topic>):
+========================================
+delete  help  list  quit  restore
+
+(quarantine)list
+18c5140c131ad057b35ef4ba1fc8b7f9: /.../rapidobank/Monte's files/CEO's helpful scripts/networkpe.exe
+
+(quarantine)restore 18c5140c131ad057b35ef4ba1fc8b7f9
+18c5140c131ad057b35ef4ba1fc8b7f9-networkpe.exe
+File restored
+(quarantine)quit
+```
+
+When a file is restored, its hash is added to the system's `.whitelist` file, preventing it from being falsely flagged as malicious again.
+
+### Decryptor
+By design of our MTD system, the sensitive directories persist as encrypted on disk even in the event the system is not running.
+
+To decrypt the sensitive directories then, the system operator can run the MTD system in decryptor mode.
+
+```
+usage: RapidoBank MTD System decryptor [-h] -s SENSITIVE [SENSITIVE ...] [-q [QUARANTINE]] [--shuffle]
+
+options:
+  -h, --help            show this help message and exit
+  -s SENSITIVE [SENSITIVE ...], --sensitive SENSITIVE [SENSITIVE ...]
+                        Sensitive directories
+  -q [QUARANTINE], --quarantine [QUARANTINE]
+                        Quarantine directory
+  --shuffle             Shuffle the cipher/key used for encryption. Will encrypt all files in sensitive directory.
+```
+
+By passing the directory/directories they wish to decrypt using the `-s` tag, along with (optionally) the system's quarantine directory with `-q`, the system will decrypt the supplied directories. 
+
+Additionally, the operator may invoke a manual shuffle of the encryption system by supplying the `--shuffle` argument.
 ## Dynamic Security Recommendations
