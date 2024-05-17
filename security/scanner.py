@@ -33,6 +33,10 @@ class Whitelist:
         with open(file_path, "rb") as f:
             return hashlib.md5(f.read()).hexdigest()
 
+    def get_hash_list(self) -> List[str]:
+        with open(self.whitelist, "r") as f:
+            return [line.split(" ")[0] for line in f]
+        
 class Quarantiner:
     def __init__(self, quarantine: str):
         self.quarantine_dir = quarantine
@@ -98,12 +102,32 @@ async def start(engine: YaraEngine, monitored: List[str], whitelist: Whitelist, 
             quarantiner = Quarantiner(quarantine)
             for file_path in for_quarantine:
                 quarantiner.quarantine(file_path)
-            if for_quarantine:
-                print("Rotating encryption of sensitive files due to quarantined threat.")
+            should_shuffle = check_for_add_mod_delete(monitored, whitelist)
+            if for_quarantine or should_shuffle:
+                print("Rotating encryption of sensitive files due to quarantined threat, or file changes.")
                 encryptor.shuffle_encryption()
         except Exception as e:
             print(f"Error: {e}")
         await asyncio.sleep(5)
+
+def check_for_add_mod_delete(monitored: List[str], whitelist: Whitelist):
+    whitelist_hashes = whitelist.get_hash_list()
+    should_shuffle = False
+    #Hash each file in monitored and check if it is in the whitelist
+    for path in monitored:
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                file_hash = whitelist.hash_file(file_path)
+                if not file_hash in whitelist_hashes:
+                    print(f"Alert: {file_path} has been modified since last scan.")
+                    should_shuffle = True
+                else:
+                    whitelist_hashes.remove(file_hash)
+    if len(whitelist_hashes) > 0:
+        print(f"Alert: {len(whitelist_hashes)} files have been deleted since last scan.")
+        should_shuffle = True
+    return should_shuffle
 
 async def encrypt_unencrypted(encryptor: Encryptor):
     while True:
