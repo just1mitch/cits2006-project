@@ -12,9 +12,9 @@ Below is a description of our implementation of the project specification to des
 
 This report is separated into each section of the project specification:
 
-- [Yara Engine](#yara-engine-designed-by-joel-and-mitchell)
-- [Cipher system and Hashing Algorithm](#cipher-system-and-hashing-algorithm-designed-by-elijah)
-- [MTD System](#mtd-system-designed-by-izzy-and-daniel)
+- [Yara Engine](#yara-engine)
+- [Cipher system and Hashing Algorithm](#cipher-system-and-hashing-algorithm)
+- [MTD System](#mtd-system)
 - [Dynamic Security Recommendations](#dynamic-security-recommendations)
 
 ## Yara Engine
@@ -81,6 +81,10 @@ $first_name = {(46 | 66) 69 72 73 74 ?? (4e | 6e) 61 6d 65}
 $last_name = {(4c | 6c) 61 73 74 ?? (4e | 6e) 61 6d 65}
 ```
 For example this regex detects the string "first name" within a file - with F and N and the space all being non-determinate (f and be capatial or non-capital). Sensitive information also detects Australian bank details, IBAN number and Date of Birth. 
+
+#### VirusTotal Scanning
+Using the VirusTotal API, all potentially malicious files and URLs detected by the Yara Engine are sent to be scanned via a request to the VirusTotal API. The engine will save the scan results to a .json file named based on the MD5 Hash of the file. This allows any overseer to further investigate scan results if needed (beyond the handling performed by the MTD). Using the MD5 hash as the naming scheme ensures that each newly scanned file is saved separately. 
+
 ## Cipher System and Hashing Algorithm
 
 ### Brief
