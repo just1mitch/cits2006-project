@@ -133,21 +133,21 @@ Each cipher is encoded in ascii encoding, followed by base64 encoding, before be
 The implemented Vigenére cipher is a polyalphabetic cipher. Our implementation uses all ASCII printable characters, as opposed to a traditional Vigenére cipher that uses the A-Z uppercase alphabet. This decision was made to increase ciphertext obscurity and to ensure plaintext maintains it's formatting when decrypted. <br>(e.g. `a` won't get changed to `A`)
 
 
-![Vigenére Cipher Example](Report/image-8.png)<br>
+![Vigenére Cipher Example](image-8.png)<br>
 <i>Vigenére Cipher example with an alphabet of A-Z [(source)](https://www.britannica.com/topic/cryptology/Vigenere-ciphers)</i><br>
 
 
-![Vigenére Cipher implementation](Report/image-2.png)<br>
+![Vigenére Cipher implementation](image-2.png)<br>
 <i>Example of our Vigenére Cipher Implementation</i>
 
 #### XOR Cipher:
 
 The XOR cipher works by calculating the XOR value of the plaintext character with a corresponding character in the key, and the XOR value is used as the ciphertext character. As the key is 50 characters, a modulo operation is used such that every 50th plaintext character is XOR’d with the same key character.
 
-![XOR Cipher Example](Report/image-3.png)<br>
+![XOR Cipher Example](image-3.png)<br>
 <i>XOR Cipher example [(source)](https://arpit.substack.com/p/deciphering-repeated-key-xor-ciphertext)</i><br>
 
-![XOR Cipher Implementation](Report/image-4.png)<br>
+![XOR Cipher Implementation](image-4.png)<br>
 <i>Example of our XOR Cipher Implementation</i>
 
 #### Quagmire 3 Cipher:
@@ -179,13 +179,13 @@ The ciphertext character is calculated by following the process:
 
 This process is repeated for each character of the plaintext. Note that by changing the key, length of the keyword, letters of the keyword, or the indicator, will all alter the output of the algorithm.
 
-![Keyed Alphabet Table](Report/image-6.png)<br>
+![Keyed Alphabet Table](image-6.png)<br>
 <i>Example generation of a keyed alphabet [(source)](https://sites.google.com/site/cryptocrackprogram/user-guide/cipher-types/substitution/quagmire)</i>
 
-![Quagmire 3 Example](Report/image-5.png)
+![Quagmire 3 Example](image-5.png)
 <i>Quagmire 3 Example (same source)</i>
 
-![Quagmire 3 Implementation](Report/image-7.png)
+![Quagmire 3 Implementation](image-7.png)
 <i>Our Quagmire 3 Implementation</i>
 ### Hashes
 The hash function can be called in conjuction with or seperate from the cipher

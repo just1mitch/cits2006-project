@@ -6,3 +6,9 @@ scan_results/*
 *testfile*
 *.hash
 *.key
+.DS_STORE
+/rapidobank/Security/yara/scan_results
+.whitelist
+.quarantine
+.encryption
+Report/Group Report.pdf
